@@ -90,177 +90,193 @@
     }
   </style>
 </head>
-<body class="text-[#17171c] min-h-screen pb-32" data-page="dashboard_parceiro">
-  <header class="bg-white border-b border-[#e9e7f1] flex justify-between items-center w-full px-6 py-4 max-w-md lg:max-w-[1180px] mx-auto sticky top-0 z-40">
-    <div class="flex items-center gap-3">
-      <div class="w-12 h-12 rounded-[18px] overflow-hidden bg-surface-container border border-primary/20 p-2">
-        <img alt="Tem de Tudo" class="w-full h-full object-contain" src="/img/logo.png" onerror="this.onerror=null;this.src='/img/logo.png.png';" />
+<body data-page="dashboard_parceiro">
+  <header class="tdt-appbar" id="empresaAppbar">
+    <div class="tdt-appbar__inner">
+      <div class="tdt-appbar__greet">
+        <span class="tdt-appbar__hello">Painel da empresa</span>
+        <span class="tdt-appbar__sub">Seu programa de fidelidade</span>
       </div>
-      <div>
-        <h1 class="font-bold text-lg text-[#111B3F]">Painel da empresa</h1>
+      <div class="tdt-appbar__actions">
+        <button id="empresaNotifBtn" class="tdt-icon-btn" type="button" aria-label="Notificações">
+          <span class="material-symbols-outlined">notifications</span>
+        </button>
+        <a href="/meu_perfil.html" class="tdt-icon-btn" aria-label="Configurações da empresa">
+          <span class="material-symbols-outlined">settings</span>
+        </a>
       </div>
-    </div>
-    <div class="flex items-center gap-2">
-      <button id="empresaNotifBtn" class="text-[#111b3f] hover:opacity-80 transition-opacity scale-95 active:transition-all inline-flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm" type="button">
-        <span class="material-symbols-outlined">notifications</span>
-      </button>
-      <a href="/meu_perfil.html" class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#111B3F] shadow-sm" aria-label="Abrir perfil da empresa">
-        <span class="material-symbols-outlined">settings</span>
-      </a>
     </div>
   </header>
 
-  <main class="max-w-md lg:max-w-[1180px] mx-auto px-6 pt-4 space-y-8">
-    <section class="rounded-[30px] bg-[#4c1d95] p-5 text-white shadow-[0_18px_45px_rgba(17,27,63,0.18)]">
-      <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-        <div class="flex items-start gap-4">
-          <img id="empresaHeroLogo" src="/img/placeholder-store.svg" alt="Logo da empresa" class="h-20 w-20 rounded-[24px] bg-white object-cover p-2 shadow-[0_10px_24px_rgba(0,0,0,0.18)]" />
-          <div>
-            <h2 id="empresaHeroName" class="text-2xl font-extrabold leading-tight">Sua empresa</h2>
-            <p id="empresaHeroSubtitle" class="mt-2 text-sm leading-6 text-white/76">Carregando dados da loja e do relacionamento com clientes.</p>
-            <p id="empresaHeroMeta" class="mt-2 text-xs font-medium text-white/58"></p>
-          </div>
+  <main class="tdt-panelmain">
+    <!-- HEROI: identidade da loja + as duas acoes mais usadas -->
+    <section class="tdt-hero">
+      <div class="tdt-hero__row">
+        <img id="empresaHeroLogo" src="/img/placeholder-store.svg" alt="Logo da empresa" class="tdt-hero__logo" />
+        <div style="flex:1;min-width:220px">
+          <div class="tdt-hero__label">Sua loja</div>
+          <h2 id="empresaHeroName" class="tdt-hero__title">Sua empresa</h2>
+          <p id="empresaHeroSubtitle" class="tdt-hero__text">Carregando dados da loja e do relacionamento com clientes.</p>
+          <p id="empresaHeroMeta" class="tdt-hero__meta"></p>
         </div>
-        <div class="grid grid-cols-2 gap-3 lg:w-[320px]">
-          <a href="/validar_resgate.html?modo=beneficios" class="inline-flex h-12 items-center justify-center rounded-xl bg-white px-4 text-sm font-extrabold text-[#111B3F] shadow-[0_8px_18px_rgba(0,0,0,0.12)]">Meu QR da loja</a>
-          <a id="empresaDashboardPublicLinkBtn" href="/parceiros_tem_de_tudo.html" class="inline-flex h-12 items-center justify-center rounded-xl border border-white/16 bg-white/8 px-4 text-sm font-bold text-white">Ver página pública</a>
+        <div class="tdt-hero__actions">
+          <a href="/validar_resgate.html?modo=beneficios" class="tdt-btn tdt-btn--light">
+            <span class="material-symbols-outlined">qr_code_2</span> Meu QR da loja
+          </a>
+          <a id="empresaDashboardPublicLinkBtn" href="/parceiros_tem_de_tudo.html" class="tdt-btn tdt-btn--onhero">
+            Ver página pública
+          </a>
         </div>
       </div>
     </section>
 
-    <section class="space-y-4">
-      <div class="flex items-end justify-between gap-3">
-        <h2 class="text-xl font-extrabold text-[#111B3F]">Ferramentas</h2>
-        <a href="/gest_o_de_ofertas_parceiro.html" class="text-sm font-bold text-[#4c1d95]">Abrir gestão</a>
+    <!-- KPIs -->
+    <section>
+      <div class="tdt-section__head">
+        <h2 class="tdt-section__title">Sua base</h2>
+        <a href="/clientes_fidelizados_loja.html" class="tdt-section__link">Ver clientes</a>
       </div>
-      <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
-      <a href="/gest_o_de_ofertas_parceiro.html#formOferta" class="empresa-shortcut-card">
-        <span class="material-symbols-outlined">campaign</span>
-        <span>Promoções</span>
-      </a>
-      <a href="/gest_o_de_ofertas_parceiro.html#bonusAdesaoSection" class="empresa-shortcut-card">
-        <span class="material-symbols-outlined">workspace_premium</span>
-        <span>Bônus adesão</span>
-      </a>
-      <a href="/gest_o_de_ofertas_parceiro.html#cartaoFidelidadeSection" class="empresa-shortcut-card">
-        <span class="material-symbols-outlined">loyalty</span>
-        <span>Fidelidade</span>
-      </a>
-      <a href="/gest_o_de_ofertas_parceiro.html#birthdayBonusSection" class="empresa-shortcut-card">
-        <span class="material-symbols-outlined">cake</span>
-        <span>Aniversário</span>
-      </a>
-      <a href="/gest_o_de_ofertas_parceiro.html#returnReminderSection" class="empresa-shortcut-card">
-        <span class="material-symbols-outlined">notifications_active</span>
-        <span>Lembrete</span>
-      </a>
-      <a href="/clientes_fidelizados_loja.html" class="empresa-shortcut-card">
-        <span class="material-symbols-outlined">groups</span>
-        <span>Clientes</span>
-      </a>
-      <a href="/validar_resgate.html?modo=beneficios" class="empresa-shortcut-card">
-        <span class="material-symbols-outlined">qr_code_2</span>
-        <span>Meu QR</span>
-      </a>
-      <a href="/gest_o_de_ofertas_parceiro.html#empresaOffersPushSummary" class="empresa-shortcut-card">
-        <span class="material-symbols-outlined">send</span>
-        <span>Push e campanhas</span>
-      </a>
+      <div class="tdt-kgrid" style="grid-template-columns:repeat(2,1fr)">
+        <div class="tdt-k">
+          <div class="tdt-k__l"><span class="material-symbols-outlined">group</span> Base vinculada</div>
+          <div id="kpiVolume" class="tdt-k__v">--</div>
+          <div id="kpiVolumeDesc" class="tdt-k__d">Clientes ativos da empresa</div>
+        </div>
+        <div class="tdt-k">
+          <div class="tdt-k__l"><span class="material-symbols-outlined">cake</span> Aniversariantes</div>
+          <div id="kpiClientes" class="tdt-k__v">--</div>
+          <div class="tdt-k__d">Neste mês</div>
+        </div>
+        <div class="tdt-k">
+          <div class="tdt-k__l"><span class="material-symbols-outlined">star</span> Avaliações</div>
+          <div id="kpiResgates" class="tdt-k__v">--</div>
+          <div class="tdt-k__d">Recebidas até agora</div>
+        </div>
+        <div class="tdt-k">
+          <div class="tdt-k__l"><span class="material-symbols-outlined">qr_code_scanner</span> Validar</div>
+          <a href="/validar_resgate.html?modo=beneficios" class="tdt-btn tdt-btn--sm tdt-btn--block" style="margin-top:12px">
+            Ler QR do cliente
+          </a>
+        </div>
       </div>
     </section>
 
-    <section class="grid grid-cols-2 gap-3 lg:grid-cols-3">
-      <div class="col-span-2 lg:col-span-1 tdt-stat-card flex flex-col justify-between">
-        <div>
-          <span class="tdt-stat-card__label">Base vinculada</span>
-          <h3 id="kpiVolume" class="text-3xl font-extrabold text-[#111b3f] mt-1">--</h3>
-          <p id="kpiVolumeDesc" class="text-sm text-[#6b7280] mt-1">Clientes ativos da empresa</p>
-        </div>
-        <a href="/clientes_fidelizados_loja.html" class="btn btn--dark mt-4 self-start" style="height:44px;min-height:44px">
-          <span class="material-symbols-outlined text-base">group</span>Ver base de clientes
+    <!-- FERRAMENTAS -->
+    <section>
+      <div class="tdt-section__head">
+        <h2 class="tdt-section__title">Ferramentas</h2>
+        <a href="/gest_o_de_ofertas_parceiro.html" class="tdt-section__link">Abrir gestão</a>
+      </div>
+      <div class="tdt-grid-shortcuts">
+        <a href="/gest_o_de_ofertas_parceiro.html#formOferta" class="empresa-shortcut-card">
+          <span class="material-symbols-outlined">campaign</span><span>Promoções</span>
+        </a>
+        <a href="/gest_o_de_ofertas_parceiro.html#bonusAdesaoSection" class="empresa-shortcut-card">
+          <span class="material-symbols-outlined">workspace_premium</span><span>Bônus adesão</span>
+        </a>
+        <a href="/gest_o_de_ofertas_parceiro.html#cartaoFidelidadeSection" class="empresa-shortcut-card">
+          <span class="material-symbols-outlined">loyalty</span><span>Fidelidade</span>
+        </a>
+        <a href="/gest_o_de_ofertas_parceiro.html#birthdayBonusSection" class="empresa-shortcut-card">
+          <span class="material-symbols-outlined">cake</span><span>Aniversário</span>
+        </a>
+        <a href="/gest_o_de_ofertas_parceiro.html#returnReminderSection" class="empresa-shortcut-card">
+          <span class="material-symbols-outlined">notifications_active</span><span>Lembrete</span>
+        </a>
+        <a href="/clientes_fidelizados_loja.html" class="empresa-shortcut-card">
+          <span class="material-symbols-outlined">groups</span><span>Clientes</span>
+        </a>
+        <a href="/validar_resgate.html?modo=beneficios" class="empresa-shortcut-card">
+          <span class="material-symbols-outlined">qr_code_2</span><span>Meu QR</span>
+        </a>
+        <a href="/gest_o_de_ofertas_parceiro.html#empresaOffersPushSummary" class="empresa-shortcut-card">
+          <span class="material-symbols-outlined">send</span><span>Push e campanhas</span>
         </a>
       </div>
-      <div class="tdt-stat-card">
-        <span class="material-symbols-outlined text-[#111b3f]" style="font-variation-settings:'FILL' 1;">cake</span>
-        <p id="kpiClientes" class="text-2xl font-extrabold text-[#111B3F] mt-1">--</p>
-        <p class="tdt-stat-card__label">Aniversariantes do mês</p>
+    </section>
+
+    <!-- MOVIMENTACAO -->
+    <section>
+      <div class="tdt-section__head">
+        <h2 class="tdt-section__title">Movimentação</h2>
+        <span class="tdt-section__count">Últimos 7 dias</span>
       </div>
-      <div class="tdt-stat-card">
-        <span class="material-symbols-outlined text-[#4c1d95]" style="font-variation-settings:'FILL' 1;">star</span>
-        <p id="kpiResgates" class="text-2xl font-extrabold text-[#111B3F] mt-1">--</p>
-        <p class="tdt-stat-card__label">Avaliações recebidas</p>
+      <div id="movimentacaoBox" class="tdt-panel">
+        <div class="tdt-tx">
+          <div class="tdt-tx__r">
+            <div class="tdt-tx__ic"><span class="material-symbols-outlined">stars</span></div>
+            <div class="tdt-tx__b"><div class="tdt-tx__t">Pontos distribuídos</div></div>
+            <div id="movDistribuido" class="tdt-tx__v is-in">--</div>
+          </div>
+          <div class="tdt-tx__r">
+            <div class="tdt-tx__ic"><span class="material-symbols-outlined">redeem</span></div>
+            <div class="tdt-tx__b"><div class="tdt-tx__t">Promoções resgatadas</div></div>
+            <div id="movResgatado" class="tdt-tx__v">--</div>
+          </div>
+          <div class="tdt-tx__r">
+            <div class="tdt-tx__ic"><span class="material-symbols-outlined">bedtime</span></div>
+            <div class="tdt-tx__b"><div class="tdt-tx__t">Clientes inativos</div></div>
+            <div id="movClientes" class="tdt-tx__v is-out">--</div>
+          </div>
+        </div>
+        <p id="movMsg" class="tdt-k__d" style="margin-top:14px">Carregando movimentação...</p>
       </div>
     </section>
 
-    <section class="space-y-4">
-      <div class="flex justify-between items-end">
-        <h2 class="font-headline font-bold text-xl text-on-surface">Movimentação</h2>
-        <span class="text-xs text-primary font-semibold">Últimos 7 dias</span>
+    <!-- CAMPANHAS -->
+    <section>
+      <div class="tdt-section__head">
+        <h2 class="tdt-section__title">Campanhas ativas</h2>
+        <a href="/gest_o_de_ofertas_parceiro.html" class="tdt-section__link">Ver todas</a>
       </div>
-      <div id="movimentacaoBox" class="bg-surface-container-low rounded-2xl p-6 space-y-3">
-        <div class="flex items-center justify-between text-sm">
-          <span>Pontos distribuídos</span><span id="movDistribuido" class="font-semibold text-primary">--</span>
-        </div>
-        <div class="flex items-center justify-between text-sm">
-          <span>Promoções resgatadas</span><span id="movResgatado" class="font-semibold text-primary">--</span>
-        </div>
-        <div class="flex items-center justify-between text-sm">
-          <span>Clientes inativos</span><span id="movClientes" class="font-semibold text-primary">--</span>
-        </div>
-        <p id="movMsg" class="text-xs text-on-surface-variant">Carregando movimentação...</p>
-      </div>
+      <div id="campanhasAtivas" style="display:grid;gap:12px"></div>
+      <p id="campanhasEmpty" class="tdt-k__d">Nenhuma campanha ativa no momento.</p>
     </section>
 
-    <section class="space-y-4 pb-2">
-      <div class="flex justify-between items-center">
-        <h2 class="font-headline font-bold text-xl text-on-surface">Campanhas ativas</h2>
-        <a href="/gest_o_de_ofertas_parceiro.html" class="text-xs text-tertiary font-bold">Ver todas</a>
-      </div>
-      <div id="campanhasAtivas" class="space-y-3"></div>
-      <p id="campanhasEmpty" class="text-xs text-outline">Nenhuma campanha ativa no momento.</p>
-    </section>
-
-    <section class="grid gap-4 pb-12 md:grid-cols-2">
+    <!-- LISTAS -->
+    <section class="tdt-panelgrid">
       <article class="tdt-panel">
-        <div class="flex items-center justify-between gap-3">
-          <h2 class="text-lg font-extrabold text-[#111B3F]">Últimos vínculos</h2>
-          <a href="/clientes_fidelizados_loja.html" class="text-sm font-bold text-[#4c1d95]">Abrir lista</a>
+        <div class="tdt-section__head" style="margin-bottom:10px">
+          <h2 class="tdt-section__title" style="font-size:16px">Últimos vínculos</h2>
+          <a href="/clientes_fidelizados_loja.html" class="tdt-section__link">Abrir lista</a>
         </div>
-        <div id="empresaRecentClients" class="mt-4 space-y-3"></div>
-        <p id="empresaRecentClientsEmpty" class="text-sm text-[#8a8f9c] mt-4">Nenhum cliente vinculado recentemente.</p>
+        <div id="empresaRecentClients" class="tdt-tx"></div>
+        <p id="empresaRecentClientsEmpty" class="tdt-k__d">Nenhum cliente vinculado recentemente.</p>
       </article>
       <article class="tdt-panel">
-        <div class="flex items-center justify-between gap-3">
-          <h2 class="text-lg font-extrabold text-[#111B3F]">Últimos resgates</h2>
-          <a href="/validar_resgate.html?modo=beneficios" class="text-sm font-bold text-[#4c1d95]">Ver meu QR</a>
+        <div class="tdt-section__head" style="margin-bottom:10px">
+          <h2 class="tdt-section__title" style="font-size:16px">Últimos resgates</h2>
+          <a href="/validar_resgate.html?modo=beneficios" class="tdt-section__link">Ver meu QR</a>
         </div>
-        <div id="empresaLatestRedemptions" class="mt-4 space-y-3"></div>
-        <p id="empresaLatestRedemptionsEmpty" class="text-sm text-[#8a8f9c] mt-4">Nenhum resgate recente.</p>
+        <div id="empresaLatestRedemptions" class="tdt-tx"></div>
+        <p id="empresaLatestRedemptionsEmpty" class="tdt-k__d">Nenhum resgate recente.</p>
       </article>
     </section>
   </main>
 
-  <nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-3 bg-white/90 backdrop-blur-xl z-50 rounded-t-[1.5rem] shadow-[0_-8px_32px_rgba(11,31,58,0.08)] border-t border-[#4c1d95]/20">
-    <a class="flex flex-col items-center justify-center text-[#111b3f] relative after:content-[''] after:w-1 after:h-1 after:bg-[#4c1d95] after:rounded-full after:mt-1 hover:text-[#111b3f] transition-colors scale-90 active:transition-transform duration-200" href="/dashboard_parceiro.html">
-      <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
-      <span class="font-['Inter'] font-semibold text-[10px] uppercase tracking-wider">Início</span>
-    </a>
-    <a class="flex flex-col items-center justify-center text-[#aeacb4] hover:text-[#111b3f] transition-colors scale-90 active:transition-transform duration-200" href="/clientes_fidelizados_loja.html">
-      <span class="material-symbols-outlined">groups</span>
-      <span class="font-['Inter'] font-semibold text-[10px] uppercase tracking-wider">Clientes</span>
-    </a>
-    <a class="flex flex-col items-center justify-center text-[#aeacb4] hover:text-[#111b3f] transition-colors scale-90 active:transition-transform duration-200" href="/validar_resgate.html?modo=beneficios">
-      <span class="material-symbols-outlined">qr_code_2</span>
-      <span class="font-['Inter'] font-semibold text-[10px] uppercase tracking-wider">Meu QR</span>
-    </a>
-    <a class="flex flex-col items-center justify-center text-[#aeacb4] hover:text-[#111b3f] transition-colors scale-90 active:transition-transform duration-200" href="/minhas_campanhas_loja.html">
-      <span class="material-symbols-outlined">campaign</span>
-      <span class="font-['Inter'] font-semibold text-[10px] uppercase tracking-wider">Ofertas</span>
-    </a>
-    <a class="flex flex-col items-center justify-center text-[#aeacb4] hover:text-[#111b3f] transition-colors scale-90 active:transition-transform duration-200" href="/dashboard_parceiro.html#movimentacaoBox">
-      <span class="material-symbols-outlined">insights</span>
-      <span class="font-['Inter'] font-semibold text-[10px] uppercase tracking-wider">Métricas</span>
-    </a>
+  <nav class="app-mobile-dock">
+    <div class="app-mobile-dock__inner">
+      <a class="app-mobile-dock__item app-mobile-dock__item--active" href="/dashboard_parceiro.html">
+        <span class="app-mobile-dock__item-icon"><span class="material-symbols-outlined">home</span></span>
+        <span class="app-mobile-dock__item-label">Início</span>
+      </a>
+      <a class="app-mobile-dock__item" href="/clientes_fidelizados_loja.html">
+        <span class="app-mobile-dock__item-icon"><span class="material-symbols-outlined">groups</span></span>
+        <span class="app-mobile-dock__item-label">Clientes</span>
+      </a>
+      <a class="app-mobile-dock__item" href="/validar_resgate.html?modo=beneficios">
+        <span class="app-mobile-dock__item-icon"><span class="material-symbols-outlined">qr_code_scanner</span></span>
+        <span class="app-mobile-dock__item-label">Validar</span>
+      </a>
+      <a class="app-mobile-dock__item" href="/minhas_campanhas_loja.html">
+        <span class="app-mobile-dock__item-icon"><span class="material-symbols-outlined">campaign</span></span>
+        <span class="app-mobile-dock__item-label">Ofertas</span>
+      </a>
+      <a class="app-mobile-dock__item" href="/dashboard_parceiro.html#movimentacaoBox">
+        <span class="app-mobile-dock__item-icon"><span class="material-symbols-outlined">insights</span></span>
+        <span class="app-mobile-dock__item-label">Métricas</span>
+      </a>
+    </div>
   </nav>
   <script src="/dist/stitch-app.min.js?v=20260721-app51"></script>
 </body>

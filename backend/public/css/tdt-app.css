@@ -392,14 +392,54 @@ html[data-theme="dark"] .app-mobile-dock { background: rgba(28, 28, 36, 0.94); }
 /* ---------- 15. PAINEIS DE EMPRESA E ADMIN ----------
    Alinhamento minimo para nao destoar do resto enquanto as telas nao sao
    reestruturadas: mesma superficie, mesma borda, mesma sombra. */
-.admin-card, .admin-kpi-card, .empresa-shortcut-card {
-  background: var(--tdt-surface); border: 1px solid var(--tdt-border);
-  border-radius: var(--tdt-r-md); box-shadow: var(--tdt-shadow-1);
+.admin-card, .admin-kpi-card {
+  background: var(--tdt-surface);
+  border: 1px solid var(--tdt-border);
+  border-radius: var(--tdt-r-md);
+  box-shadow: var(--tdt-shadow-1);
 }
-.admin-kpi-number { color: var(--tdt-text); letter-spacing: -0.8px; }
-.admin-section-title { color: var(--tdt-text); }
-.admin-nav-item { border-radius: var(--tdt-r-sm); }
-.admin-icon-box { border-radius: var(--tdt-r-sm); }
+.admin-card:hover, .admin-kpi-card:hover { box-shadow: var(--tdt-shadow-2); border-color: var(--tdt-border); }
+.admin-kpi-number { color: var(--tdt-text); font-weight: 800; font-size: 27px; letter-spacing: -1px; }
+.admin-section-title { color: var(--tdt-text); font-size: 19px; font-weight: 800; letter-spacing: -0.3px; }
+.admin-header {
+  background: color-mix(in srgb, var(--tdt-bg) 88%, transparent);
+  border-bottom: 1px solid var(--tdt-border);
+  backdrop-filter: saturate(1.4) blur(14px);
+}
+.admin-nav-item {
+  border-radius: var(--tdt-r-sm); color: var(--tdt-text-muted); font-weight: 600;
+}
+.admin-nav-item:hover { background: var(--tdt-surface-2); color: var(--tdt-text); }
+.admin-nav-item.is-active, .admin-nav-item[aria-current="page"] {
+  background: var(--tdt-accent); color: #fff;
+  box-shadow: 0 8px 18px rgba(176, 23, 116, 0.26);
+}
+.admin-nav-item.is-active .material-symbols-outlined,
+.admin-nav-item[aria-current="page"] .material-symbols-outlined { color: #fff; }
+.admin-icon-box {
+  border-radius: var(--tdt-r-sm); padding: 9px;
+  background: color-mix(in srgb, var(--tdt-accent) 12%, transparent);
+  color: var(--tdt-accent);
+}
+html[data-theme="dark"] .admin-icon-box { color: #f472b6; }
+.admin-icon-box.teal { background: color-mix(in srgb, #4c1d95 14%, transparent); color: #6d28d9; }
+html[data-theme="dark"] .admin-icon-box.teal { color: #a78bfa; }
+.admin-badge-live {
+  border-radius: 999px; font-weight: 700;
+  background: color-mix(in srgb, var(--tdt-good) 16%, transparent); color: var(--tdt-good);
+}
+.admin-search-stack { background: var(--tdt-surface); border: 1px solid var(--tdt-border); border-radius: var(--tdt-r-md); }
+.admin-search-stack-label { color: var(--tdt-text-faint); }
+
+/* Painel admin no desktop: a coluna era esticada de ponta a ponta. */
+@media (min-width: 1024px) {
+  body[data-page="dashboard_admin_master"] main,
+  body[data-page^="gest_o_"] main,
+  body[data-page^="relat_rios"] main,
+  body[data-page="tickets_admin_master"] main,
+  body[data-page="banners_e_categorias_master"] main,
+  body[data-page="configuracoes_admin"] main { max-width: 1180px; }
+}
 
 /* ---------- 16. NEUTRALIZA O LEGADO ----------
    i9plus-phase8.css tem regras com !important que venceriam esta camada por
@@ -444,6 +484,144 @@ body[data-page="meus_pontos"] .tdt-searchbar__icon { color: var(--tdt-text-faint
 @media (min-width: 1024px) {
   body[data-page="parceiros_tem_de_tudo"] > main.tdt-home { max-width: 820px !important; }
 }
+
+/* ==========================================================================
+   PARTE 2 — COMPONENTES DE PAINEL (empresa e admin)
+   Portados do prototipo. Usados pelo markup estatico das telas convertidas.
+   ========================================================================== */
+
+/* Heroi generico (a versao do cliente e .wallet-card) */
+.tdt-hero {
+  position: relative; overflow: hidden;
+  background: var(--tdt-hero-bg); color: #fff;
+  border-radius: var(--tdt-r-lg); padding: 24px;
+  box-shadow: var(--tdt-shadow-hero);
+}
+.tdt-hero::after {
+  content: ""; position: absolute; right: -60px; top: -80px; width: 260px; height: 260px;
+  background: radial-gradient(circle, rgba(233, 30, 133, 0.42), transparent 68%);
+  pointer-events: none;
+}
+.tdt-hero > * { position: relative; z-index: 1; }
+.tdt-hero__label {
+  font-size: 11.5px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--tdt-hero-muted);
+}
+.tdt-hero__title { margin: 10px 0 0; font-size: clamp(24px, 3.4vw, 30px); font-weight: 800; letter-spacing: -0.6px; line-height: 1.15; }
+.tdt-hero__text { margin: 9px 0 0; font-size: 14px; line-height: 1.6; color: var(--tdt-hero-muted); max-width: 60ch; }
+.tdt-hero__meta { margin: 8px 0 0; font-size: 12.5px; color: var(--tdt-hero-muted); }
+.tdt-hero__row { display: flex; gap: 18px; align-items: flex-start; flex-wrap: wrap; }
+.tdt-hero__logo {
+  width: 76px; height: 76px; border-radius: var(--tdt-r-md); flex: 0 0 auto;
+  background: #fff; object-fit: contain; padding: 8px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
+}
+.tdt-hero__actions { display: grid; gap: 10px; margin-top: 20px; grid-template-columns: 1fr 1fr; }
+@media (min-width: 900px) { .tdt-hero__actions { margin-top: 0; width: 320px; align-content: start; } }
+
+/* Botoes */
+.tdt-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: 48px; padding: 0 18px; border-radius: var(--tdt-r-sm); border: 0; cursor: pointer;
+  background: var(--tdt-accent); color: #fff; font: inherit; font-size: 14.5px; font-weight: 700;
+  text-decoration: none; box-shadow: 0 10px 22px rgba(176, 23, 116, 0.28);
+}
+.tdt-btn .material-symbols-outlined { font-size: 20px; }
+.tdt-btn--ghost { background: var(--tdt-surface-2); color: var(--tdt-text); box-shadow: none; border: 1px solid var(--tdt-border); }
+.tdt-btn--light { background: #fff; color: #17131f; box-shadow: 0 8px 18px rgba(0, 0, 0, 0.14); }
+.tdt-btn--onhero { background: rgba(255, 255, 255, 0.14); color: #fff; box-shadow: none; border: 1px solid var(--tdt-hero-line); }
+.tdt-btn--sm { height: 40px; font-size: 13.5px; padding: 0 14px; }
+.tdt-btn--block { width: 100%; }
+
+/* KPIs */
+.tdt-kgrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+@media (min-width: 800px) { .tdt-kgrid { grid-template-columns: repeat(4, 1fr); } }
+.tdt-k {
+  background: var(--tdt-surface); border: 1px solid var(--tdt-border);
+  border-radius: var(--tdt-r-md); padding: 16px; box-shadow: var(--tdt-shadow-1);
+}
+.tdt-k__l {
+  display: flex; align-items: center; gap: 7px; font-size: 11.5px; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase; color: var(--tdt-text-faint);
+}
+.tdt-k__l .material-symbols-outlined { font-size: 16px; }
+.tdt-k__v { font-size: 27px; font-weight: 800; letter-spacing: -1px; margin-top: 9px; color: var(--tdt-text); }
+.tdt-k__d { font-size: 12.5px; margin-top: 5px; color: var(--tdt-text-muted); }
+.tdt-k__d.is-up { color: var(--tdt-good); font-weight: 700; }
+.tdt-k__d.is-down { color: var(--tdt-bad); font-weight: 700; }
+
+/* Atalhos da empresa */
+.empresa-shortcut-card {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 9px;
+  padding: 16px 8px; text-align: center; text-decoration: none;
+  background: var(--tdt-surface); border: 1px solid var(--tdt-border);
+  border-radius: var(--tdt-r-md); box-shadow: var(--tdt-shadow-1);
+  color: var(--tdt-text); font-size: 12.5px; font-weight: 600; min-height: 96px;
+  transition: transform 0.12s ease, box-shadow 0.15s ease;
+}
+.empresa-shortcut-card:hover { transform: translateY(-2px); box-shadow: var(--tdt-shadow-2); }
+.empresa-shortcut-card .material-symbols-outlined {
+  width: 44px; height: 44px; border-radius: var(--tdt-r-sm); display: grid; place-items: center;
+  background: color-mix(in srgb, var(--tdt-accent) 12%, transparent); color: var(--tdt-accent); font-size: 22px;
+}
+html[data-theme="dark"] .empresa-shortcut-card .material-symbols-outlined { color: #f472b6; }
+.tdt-grid-shortcuts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+@media (min-width: 700px) { .tdt-grid-shortcuts { grid-template-columns: repeat(4, 1fr); } }
+
+/* Linhas de movimento / listas de painel */
+.tdt-tx { display: flex; flex-direction: column; }
+.tdt-tx__r { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--tdt-border); }
+.tdt-tx__r:last-child { border-bottom: 0; padding-bottom: 0; }
+.tdt-tx__ic {
+  width: 38px; height: 38px; border-radius: 999px; flex: 0 0 auto; display: grid; place-items: center;
+  background: var(--tdt-surface-2); color: var(--tdt-text-muted);
+}
+.tdt-tx__ic .material-symbols-outlined { font-size: 19px; }
+.tdt-tx__b { min-width: 0; flex: 1; }
+.tdt-tx__t { font-size: 14px; font-weight: 600; color: var(--tdt-text); }
+.tdt-tx__d { font-size: 11.5px; color: var(--tdt-text-faint); margin-top: 2px; }
+.tdt-tx__v { font-size: 15px; font-weight: 800; color: var(--tdt-text); }
+.tdt-tx__v.is-in { color: var(--tdt-good); }
+.tdt-tx__v.is-out { color: var(--tdt-bad); }
+
+/* Pilulas de estado */
+.tdt-pill { display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+.tdt-pill .material-symbols-outlined { font-size: 14px; }
+.tdt-pill--ok { background: color-mix(in srgb, #059669 14%, transparent); color: #047857; }
+.tdt-pill--warn { background: color-mix(in srgb, #d97706 16%, transparent); color: #b45309; }
+.tdt-pill--bad { background: color-mix(in srgb, #e11d48 14%, transparent); color: #be123c; }
+.tdt-pill--info { background: color-mix(in srgb, #2563eb 14%, transparent); color: #1d4ed8; }
+html[data-theme="dark"] .tdt-pill--ok { color: #4ade80; }
+html[data-theme="dark"] .tdt-pill--warn { color: #fbbf24; }
+html[data-theme="dark"] .tdt-pill--bad { color: #fb7185; }
+html[data-theme="dark"] .tdt-pill--info { color: #60a5fa; }
+
+/* Colunas de painel */
+.tdt-panelgrid { display: grid; gap: 16px; }
+@media (min-width: 900px) { .tdt-panelgrid { grid-template-columns: 1fr 1fr; } }
+
+/* Coluna do painel: mesma medida do app do cliente */
+.tdt-panelmain {
+  width: 100%; max-width: 480px; margin: 0 auto;
+  padding: 0 16px calc(110px + env(safe-area-inset-bottom, 0px));
+  display: flex; flex-direction: column; gap: 26px;
+}
+@media (min-width: 1024px) { .tdt-panelmain { max-width: 1100px; padding-left: 24px; padding-right: 24px; } }
+
+/* Blocos que o bundle ainda injeta com utilitario Tailwind: alinha superficie
+   e raio para nao destoar enquanto o JS nao e convertido. Precisa de
+   !important porque o CDN injeta o <style> depois desta folha. */
+body[data-page="dashboard_parceiro"] .bg-surface-container-lowest,
+body[data-page="dashboard_parceiro"] .bg-surface-container-low,
+body[data-page="dashboard_parceiro"] .bg-surface-container {
+  background-color: var(--tdt-surface) !important;
+  border: 1px solid var(--tdt-border) !important;
+  border-radius: var(--tdt-r-md) !important;
+  box-shadow: var(--tdt-shadow-1) !important;
+}
+body[data-page="dashboard_parceiro"] .text-on-surface { color: var(--tdt-text) !important; }
+body[data-page="dashboard_parceiro"] .text-on-surface-variant,
+body[data-page="dashboard_parceiro"] .text-outline { color: var(--tdt-text-muted) !important; }
 
 /* ---------- 17. BOTAO DE TEMA ---------- */
 .tdt-theme-btn {
