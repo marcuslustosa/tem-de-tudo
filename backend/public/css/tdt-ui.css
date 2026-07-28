@@ -934,3 +934,532 @@ body.ap-authbody { padding: 0; display: grid; min-height: 100vh; grid-template-c
 }
 .app-mobile-sheet h2 { font-size: 19px; font-weight: 800; letter-spacing: -0.3px; margin: 6px 0 0; }
 .app-mobile-sheet p { color: var(--text-muted); }
+
+
+/* ==========================================================================
+   PAINEIS: EMPRESA E ADMIN
+   Os componentes abaixo vieram da camada anterior e falam --tdt-*; este bloco
+   liga esses nomes aos tokens desta folha, para o tema claro/escuro continuar
+   valendo com uma unica fonte de verdade.
+   ========================================================================== */
+:root,
+html[data-theme="light"],
+html[data-theme="dark"] {
+  --tdt-accent: var(--accent);
+  --tdt-accent-2: var(--accent-2);
+  --tdt-accent-ink: var(--accent-ink);
+  --tdt-bg: var(--bg);
+  --tdt-surface: var(--surface);
+  --tdt-surface-2: var(--surface-2);
+  --tdt-border: var(--border);
+  --tdt-text: var(--text);
+  --tdt-text-muted: var(--text-muted);
+  --tdt-text-faint: var(--text-faint);
+  --tdt-hero-bg: var(--hero-bg);
+  --tdt-hero-muted: var(--hero-muted);
+  --tdt-hero-line: var(--hero-line);
+  --tdt-shadow-1: var(--shadow-1);
+  --tdt-shadow-2: var(--shadow-2);
+  --tdt-shadow-hero: var(--shadow-hero);
+  --tdt-r-sm: var(--r-sm);
+  --tdt-r-md: var(--r-md);
+  --tdt-r-lg: var(--r-lg);
+  --tdt-shell: var(--shell);
+  --tdt-side: var(--side-w);
+  --tdt-good: #059669;
+  --tdt-bad: #e11d48;
+}
+html[data-theme="dark"] { --tdt-good: #4ade80; --tdt-bad: #fb7185; }
+
+/* ---------- 4. APP BAR ---------- */
+.tdt-appbar {
+  background: color-mix(in srgb, var(--tdt-bg) 88%, transparent);
+  border-bottom-color: transparent;
+}
+.tdt-appbar.is-stuck {
+  border-bottom-color: var(--tdt-border);
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.05);
+}
+/* A app bar acompanha a largura da coluna de conteudo de cada tela,
+   senao o cabecalho fica mais largo que o conteudo e o alinhamento quebra. */
+@media (min-width: 1024px) {
+  .tdt-appbar__inner,
+  body.tdt-has-sidebar .tdt-appbar__inner { max-width: 820px; }
+  body[data-page="meus_pontos"] .tdt-appbar__inner,
+  body.tdt-has-sidebar[data-page="meus_pontos"] .tdt-appbar__inner { max-width: var(--tdt-shell); }
+}
+.tdt-appbar__hello { font-size: 22px; font-weight: 800; letter-spacing: -0.4px; color: var(--tdt-text); }
+.tdt-appbar__sub { font-size: 13px; color: var(--tdt-text-muted); }
+.tdt-icon-btn {
+  background: var(--tdt-surface); color: var(--tdt-text);
+  border: 1px solid var(--tdt-border); border-radius: var(--tdt-r-sm);
+}
+.tdt-avatar-btn { border-color: var(--tdt-accent); background: var(--tdt-surface); color: var(--tdt-accent); }
+
+
+/* ==========================================================================
+   PARTE 2 — COMPONENTES DE PAINEL (empresa e admin)
+   Portados do prototipo. Usados pelo markup estatico das telas convertidas.
+   ========================================================================== */
+
+/* Heroi generico (a versao do cliente e .wallet-card) */
+.tdt-hero {
+  position: relative; overflow: hidden;
+  background: var(--tdt-hero-bg); color: #fff;
+  border-radius: var(--tdt-r-lg); padding: 24px;
+  box-shadow: var(--tdt-shadow-hero);
+}
+.tdt-hero::after {
+  content: ""; position: absolute; right: -60px; top: -80px; width: 260px; height: 260px;
+  background: radial-gradient(circle, rgba(233, 30, 133, 0.42), transparent 68%);
+  pointer-events: none;
+}
+.tdt-hero > * { position: relative; z-index: 1; }
+.tdt-hero__label {
+  font-size: 11.5px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--tdt-hero-muted);
+}
+.tdt-hero__title { margin: 10px 0 0; font-size: clamp(24px, 3.4vw, 30px); font-weight: 800; letter-spacing: -0.6px; line-height: 1.15; }
+.tdt-hero__text { margin: 9px 0 0; font-size: 14px; line-height: 1.6; color: var(--tdt-hero-muted); max-width: 60ch; }
+.tdt-hero__meta { margin: 8px 0 0; font-size: 12.5px; color: var(--tdt-hero-muted); }
+.tdt-hero__row { display: flex; gap: 18px; align-items: flex-start; flex-wrap: wrap; }
+.tdt-hero__logo {
+  width: 76px; height: 76px; border-radius: var(--tdt-r-md); flex: 0 0 auto;
+  background: #fff; object-fit: contain; padding: 8px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
+}
+.tdt-hero__actions { display: grid; gap: 10px; margin-top: 20px; grid-template-columns: 1fr 1fr; }
+@media (min-width: 900px) { .tdt-hero__actions { margin-top: 0; width: 320px; align-content: start; } }
+
+/* Botoes */
+.tdt-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: 48px; padding: 0 18px; border-radius: var(--tdt-r-sm); border: 0; cursor: pointer;
+  background: var(--tdt-accent); color: #fff; font: inherit; font-size: 14.5px; font-weight: 700;
+  text-decoration: none; box-shadow: 0 10px 22px rgba(176, 23, 116, 0.28);
+}
+.tdt-btn .material-symbols-outlined { font-size: 20px; }
+.tdt-btn--ghost { background: var(--tdt-surface-2); color: var(--tdt-text); box-shadow: none; border: 1px solid var(--tdt-border); }
+.tdt-btn--light { background: #fff; color: #17131f; box-shadow: 0 8px 18px rgba(0, 0, 0, 0.14); }
+.tdt-btn--onhero { background: rgba(255, 255, 255, 0.14); color: #fff; box-shadow: none; border: 1px solid var(--tdt-hero-line); }
+.tdt-btn--sm { height: 40px; font-size: 13.5px; padding: 0 14px; }
+.tdt-btn--block { width: 100%; }
+
+/* KPIs */
+.tdt-kgrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+@media (min-width: 800px) { .tdt-kgrid { grid-template-columns: repeat(4, 1fr); } }
+.tdt-k {
+  background: var(--tdt-surface); border: 1px solid var(--tdt-border);
+  border-radius: var(--tdt-r-md); padding: 16px; box-shadow: var(--tdt-shadow-1);
+}
+.tdt-k__l {
+  display: flex; align-items: center; gap: 7px; font-size: 11.5px; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase; color: var(--tdt-text-faint);
+}
+.tdt-k__l .material-symbols-outlined { font-size: 16px; }
+.tdt-k__v { font-size: 27px; font-weight: 800; letter-spacing: -1px; margin-top: 9px; color: var(--tdt-text); }
+.tdt-k__d { font-size: 12.5px; margin-top: 5px; color: var(--tdt-text-muted); }
+.tdt-k__d.is-up { color: var(--tdt-good); font-weight: 700; }
+.tdt-k__d.is-down { color: var(--tdt-bad); font-weight: 700; }
+
+/* Atalhos da empresa */
+.empresa-shortcut-card {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 9px;
+  padding: 16px 8px; text-align: center; text-decoration: none;
+  background: var(--tdt-surface); border: 1px solid var(--tdt-border);
+  border-radius: var(--tdt-r-md); box-shadow: var(--tdt-shadow-1);
+  color: var(--tdt-text); font-size: 12.5px; font-weight: 600; min-height: 96px;
+  transition: transform 0.12s ease, box-shadow 0.15s ease;
+}
+.empresa-shortcut-card:hover { transform: translateY(-2px); box-shadow: var(--tdt-shadow-2); }
+.empresa-shortcut-card .material-symbols-outlined {
+  width: 44px; height: 44px; border-radius: var(--tdt-r-sm); display: grid; place-items: center;
+  background: color-mix(in srgb, var(--tdt-accent) 12%, transparent); color: var(--tdt-accent); font-size: 22px;
+}
+html[data-theme="dark"] .empresa-shortcut-card .material-symbols-outlined { color: #f472b6; }
+.tdt-grid-shortcuts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+@media (min-width: 700px) { .tdt-grid-shortcuts { grid-template-columns: repeat(4, 1fr); } }
+
+/* Linhas de movimento / listas de painel */
+.tdt-tx { display: flex; flex-direction: column; }
+.tdt-tx__r { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--tdt-border); }
+.tdt-tx__r:last-child { border-bottom: 0; padding-bottom: 0; }
+.tdt-tx__ic {
+  width: 38px; height: 38px; border-radius: 999px; flex: 0 0 auto; display: grid; place-items: center;
+  background: var(--tdt-surface-2); color: var(--tdt-text-muted);
+}
+.tdt-tx__ic .material-symbols-outlined { font-size: 19px; }
+.tdt-tx__b { min-width: 0; flex: 1; }
+.tdt-tx__t { font-size: 14px; font-weight: 600; color: var(--tdt-text); }
+.tdt-tx__d { font-size: 11.5px; color: var(--tdt-text-faint); margin-top: 2px; }
+.tdt-tx__v { font-size: 15px; font-weight: 800; color: var(--tdt-text); }
+.tdt-tx__v.is-in { color: var(--tdt-good); }
+.tdt-tx__v.is-out { color: var(--tdt-bad); }
+
+/* Pilulas de estado */
+.tdt-pill { display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+.tdt-pill .material-symbols-outlined { font-size: 14px; }
+.tdt-pill--ok { background: color-mix(in srgb, #059669 14%, transparent); color: #047857; }
+.tdt-pill--warn { background: color-mix(in srgb, #d97706 16%, transparent); color: #b45309; }
+.tdt-pill--bad { background: color-mix(in srgb, #e11d48 14%, transparent); color: #be123c; }
+.tdt-pill--info { background: color-mix(in srgb, #2563eb 14%, transparent); color: #1d4ed8; }
+html[data-theme="dark"] .tdt-pill--ok { color: #4ade80; }
+html[data-theme="dark"] .tdt-pill--warn { color: #fbbf24; }
+html[data-theme="dark"] .tdt-pill--bad { color: #fb7185; }
+html[data-theme="dark"] .tdt-pill--info { color: #60a5fa; }
+
+/* Colunas de painel */
+.tdt-panelgrid { display: grid; gap: 16px; }
+@media (min-width: 900px) { .tdt-panelgrid { grid-template-columns: 1fr 1fr; } }
+
+/* Coluna do painel: mesma medida do app do cliente */
+.tdt-panelmain {
+  width: 100%; max-width: 480px; margin: 0 auto;
+  padding: 0 16px calc(110px + env(safe-area-inset-bottom, 0px));
+  display: flex; flex-direction: column; gap: 26px;
+}
+@media (min-width: 1024px) { .tdt-panelmain { max-width: 1100px; padding-left: 24px; padding-right: 24px; } }
+
+/* Blocos que o bundle ainda injeta com utilitario Tailwind: alinha superficie
+   e raio para nao destoar enquanto o JS nao e convertido. Precisa de
+   !important porque o CDN injeta o <style> depois desta folha. */
+body[data-page="dashboard_parceiro"] .bg-surface-container-lowest,
+body[data-page="dashboard_parceiro"] .bg-surface-container-low,
+body[data-page="dashboard_parceiro"] .bg-surface-container,
+body[data-page="gest_o_de_ofertas_parceiro"] .bg-surface-container-lowest,
+body[data-page="gest_o_de_ofertas_parceiro"] .bg-surface-container-low,
+body[data-page="gest_o_de_ofertas_parceiro"] .bg-surface-container,
+body[data-page="gestao_pontos"] .bg-surface-container-lowest,
+body[data-page="gestao_pontos"] .bg-surface-container-low {
+  background-color: var(--tdt-surface) !important;
+  border: 1px solid var(--tdt-border) !important;
+  border-radius: var(--tdt-r-md) !important;
+  box-shadow: var(--tdt-shadow-1) !important;
+}
+body[data-page="dashboard_parceiro"] .text-on-surface,
+body[data-page="gest_o_de_ofertas_parceiro"] .text-on-surface,
+body[data-page="gestao_pontos"] .text-on-surface { color: var(--tdt-text) !important; }
+body[data-page="dashboard_parceiro"] .text-on-surface-variant,
+body[data-page="dashboard_parceiro"] .text-outline,
+body[data-page="gest_o_de_ofertas_parceiro"] .text-on-surface-variant,
+body[data-page="gest_o_de_ofertas_parceiro"] .text-outline,
+body[data-page="gestao_pontos"] .text-on-surface-variant { color: var(--tdt-text-muted) !important; }
+
+/* Tiles de ferramenta da gestao de ofertas */
+.offer-tool-card {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 9px;
+  min-height: 96px; padding: 16px 8px; text-align: center; text-decoration: none;
+  background: var(--tdt-surface); border: 1px solid var(--tdt-border);
+  border-radius: var(--tdt-r-md); box-shadow: var(--tdt-shadow-1);
+  color: var(--tdt-text); font-size: 12.5px; font-weight: 600;
+  transition: transform 0.12s ease, box-shadow 0.15s ease;
+}
+.offer-tool-card:hover { transform: translateY(-2px); box-shadow: var(--tdt-shadow-2); }
+.offer-tool-card .material-symbols-outlined {
+  width: 44px; height: 44px; border-radius: var(--tdt-r-sm); display: grid; place-items: center;
+  background: color-mix(in srgb, var(--tdt-accent) 12%, transparent); color: var(--tdt-accent); font-size: 22px;
+}
+html[data-theme="dark"] .offer-tool-card .material-symbols-outlined { color: #f472b6; }
+.offer-tool-strip { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+@media (min-width: 700px) { .offer-tool-strip { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 1100px) { .offer-tool-strip { grid-template-columns: repeat(6, 1fr); } }
+
+/* Formularios dos paineis */
+.tdt-field { display: grid; gap: 7px; margin-bottom: 14px; }
+.tdt-field__l { font-size: 12.5px; font-weight: 700; color: var(--tdt-text-muted); }
+.tdt-input, .tdt-select, .tdt-textarea {
+  width: 100%; padding: 0 15px; border-radius: var(--tdt-r-sm);
+  font: inherit; font-size: 15px; color: var(--tdt-text);
+  background: var(--tdt-surface); border: 1px solid var(--tdt-border); outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.tdt-input, .tdt-select { height: 50px; }
+.tdt-textarea { padding: 13px 15px; min-height: 92px; resize: vertical; line-height: 1.5; }
+.tdt-input:focus, .tdt-select:focus, .tdt-textarea:focus {
+  border-color: var(--tdt-accent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--tdt-accent) 16%, transparent);
+}
+.tdt-input::placeholder, .tdt-textarea::placeholder { color: var(--tdt-text-faint); }
+.tdt-fieldrow { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.tdt-check { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--tdt-text); margin-bottom: 14px; }
+.tdt-check input { width: 20px; height: 20px; accent-color: var(--tdt-accent); }
+
+/* Barra de filtros em chips com rolagem */
+.tdt-chipbar { display: flex; gap: 9px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
+.tdt-chipbar::-webkit-scrollbar { display: none; }
+
+/* Ponte com o bundle: ele liga/desliga a classe utilitaria `bg-primary` para
+   marcar o filtro ativo. Enquanto o JS nao e convertido, o chip entende isso. */
+.tdt-chip.bg-primary,
+.tdt-chip.bg-primary:hover {
+  background: var(--tdt-accent) !important;
+  border-color: var(--tdt-accent) !important;
+  color: #fff !important;
+}
+
+/* Scanner de QR (balcao da empresa e vinculo do cliente) */
+.tdt-scan {
+  position: relative; width: 100%; max-width: 460px; margin: 0 auto;
+  aspect-ratio: 3 / 4; border-radius: var(--tdt-r-lg); overflow: hidden; background: #0b0b10;
+}
+@media (min-width: 700px) { .tdt-scan { aspect-ratio: 4 / 3; } }
+.tdt-scan__video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.tdt-scan__frame {
+  position: absolute; left: 50%; top: 46%; transform: translate(-50%, -50%);
+  width: min(64%, 260px); aspect-ratio: 1; border-radius: 22px; z-index: 2;
+  box-shadow: 0 0 0 9999px rgba(6, 6, 10, 0.62);
+  display: grid; place-items: center;
+}
+.tdt-scan__c { position: absolute; width: 34px; height: 34px; border: 4px solid var(--tdt-accent-2); }
+.tdt-scan__c--tl { top: -2px; left: -2px; border-right: 0; border-bottom: 0; border-radius: 18px 0 0 0; }
+.tdt-scan__c--tr { top: -2px; right: -2px; border-left: 0; border-bottom: 0; border-radius: 0 18px 0 0; }
+.tdt-scan__c--bl { bottom: -2px; left: -2px; border-right: 0; border-top: 0; border-radius: 0 0 0 18px; }
+.tdt-scan__c--br { bottom: -2px; right: -2px; border-left: 0; border-top: 0; border-radius: 0 0 18px 0; }
+.tdt-scan__ph { color: rgba(255, 255, 255, 0.5); font-size: 76px; }
+.tdt-scan__ok {
+  position: absolute; inset: 0; z-index: 3; display: grid; place-items: center;
+  background: rgba(5, 150, 105, 0.35); backdrop-filter: blur(2px);
+  border-radius: 22px; color: #fff;
+}
+.tdt-scan__ok .material-symbols-outlined { font-size: 76px; font-variation-settings: 'FILL' 1; }
+.tdt-scan__status {
+  position: absolute; top: 16px; left: 50%; transform: translateX(-50%); z-index: 4;
+  padding: 8px 14px; border-radius: 999px; background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(8px); color: #fff; font-size: 12px; font-weight: 700; white-space: nowrap;
+}
+.tdt-scan__tools { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); z-index: 4; display: flex; gap: 10px; }
+.tdt-scan__tool {
+  height: 42px; padding: 0 14px; border-radius: 999px; border: 0; cursor: pointer;
+  background: rgba(255, 255, 255, 0.16); backdrop-filter: blur(8px); color: #fff;
+  display: inline-flex; align-items: center; gap: 7px; font: inherit; font-size: 12.5px; font-weight: 700;
+}
+.tdt-scan__tool .material-symbols-outlined { font-size: 18px; }
+.tdt-scan__close {
+  position: absolute; top: 14px; right: 14px; z-index: 5;
+  width: 40px; height: 40px; border-radius: 999px; border: 0; cursor: pointer;
+  background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(8px); color: #fff;
+  display: grid; place-items: center;
+}
+.tdt-scan__hint { margin: 16px auto 0; max-width: 460px; text-align: center; font-size: 13.5px; line-height: 1.55; color: var(--tdt-text-muted); }
+
+/* ---------- CONTROLES NATIVOS NAS TELAS DE PAINEL ----------
+   As telas de gestao (empresa e admin) tem dezenas de campos escritos com
+   utilitario Tailwind. Em vez de reescrever cada um, o proprio elemento recebe
+   o visual do sistema. Especificidade (0,1,1) vence a do utilitario (0,1,0),
+   entao funciona mesmo com o CDN injetando estilo depois. */
+body[data-page="gestao_pontos"] input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+body[data-page="gestao_pontos"] select,
+body[data-page="gestao_pontos"] textarea,
+body[data-page="gest_o_de_ofertas_parceiro"] input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+body[data-page="gest_o_de_ofertas_parceiro"] select,
+body[data-page="gest_o_de_ofertas_parceiro"] textarea,
+body[data-page="gest_o_de_estabelecimentos"] input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+body[data-page="gest_o_de_estabelecimentos"] select,
+body[data-page="gest_o_de_usu_rios_master"] input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+body[data-page="gest_o_de_usu_rios_master"] select,
+body[data-page="gest_o_de_clientes_master"] input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+body[data-page="gest_o_de_clientes_master"] select,
+body[data-page="configuracoes_admin"] input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+body[data-page="configuracoes_admin"] select,
+body[data-page="configuracoes_admin"] textarea {
+  min-height: 48px; padding: 12px 15px; border-radius: var(--tdt-r-sm);
+  background: var(--tdt-surface); border: 1px solid var(--tdt-border);
+  color: var(--tdt-text); font: inherit; font-size: 15px; outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+body[data-page="gestao_pontos"] textarea,
+body[data-page="gest_o_de_ofertas_parceiro"] textarea,
+body[data-page="configuracoes_admin"] textarea { min-height: 92px; line-height: 1.5; }
+body[data-page="gestao_pontos"] input:focus,
+body[data-page="gestao_pontos"] select:focus,
+body[data-page="gestao_pontos"] textarea:focus,
+body[data-page="gest_o_de_ofertas_parceiro"] input:focus,
+body[data-page="gest_o_de_ofertas_parceiro"] select:focus,
+body[data-page="gest_o_de_ofertas_parceiro"] textarea:focus,
+body[data-page="gest_o_de_estabelecimentos"] input:focus,
+body[data-page="gest_o_de_usu_rios_master"] input:focus,
+body[data-page="gest_o_de_clientes_master"] input:focus,
+body[data-page="configuracoes_admin"] input:focus {
+  border-color: var(--tdt-accent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--tdt-accent) 16%, transparent);
+}
+body[data-page="gestao_pontos"] input[type="checkbox"],
+body[data-page="gest_o_de_ofertas_parceiro"] input[type="checkbox"],
+body[data-page="configuracoes_admin"] input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--tdt-accent); }
+
+/* Tabelas de gestao */
+body[data-page="gestao_pontos"] table,
+body[data-page^="gest_o_"] table,
+body[data-page="relat_rios_gerais_master"] table,
+body[data-page="tickets_admin_master"] table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+body[data-page="gestao_pontos"] th,
+body[data-page^="gest_o_"] th,
+body[data-page="relat_rios_gerais_master"] th,
+body[data-page="tickets_admin_master"] th {
+  text-align: left; padding: 11px 12px; font-size: 11.5px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em; color: var(--tdt-text-faint);
+  border-bottom: 1px solid var(--tdt-border); white-space: nowrap;
+}
+body[data-page="gestao_pontos"] td,
+body[data-page^="gest_o_"] td,
+body[data-page="relat_rios_gerais_master"] td,
+body[data-page="tickets_admin_master"] td {
+  padding: 13px 12px; border-bottom: 1px solid var(--tdt-border); color: var(--tdt-text);
+}
+body[data-page="gestao_pontos"] tbody tr:hover,
+body[data-page^="gest_o_"] tbody tr:hover { background: var(--tdt-surface-2); }
+
+/* ---------- 17. BOTAO DE TEMA ---------- */
+.tdt-theme-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: 42px; padding: 0 14px; border-radius: 999px; cursor: pointer;
+  background: var(--tdt-surface); color: var(--tdt-text);
+  border: 1px solid var(--tdt-border); font: inherit; font-size: 13px; font-weight: 700;
+}
+.tdt-theme-btn .material-symbols-outlined { font-size: 18px; }
+.tdt-theme-btn:active { transform: scale(0.96); }
+
+/* ==========================================================================
+   MINI-UTILITARIOS
+   O bundle ainda injeta blocos escritos com utilitario Tailwind. Como as
+   paginas convertidas nao carregam mais o CDN, as classes que ele realmente
+   usa sao definidas aqui — presas aos tokens desta folha, entao seguem o tema.
+   Levantadas dos templates do proprio bundle, nao adivinhadas.
+   Este bloco sai quando o markup do bundle for convertido.
+   ========================================================================== */
+.flex { display: flex; }
+.inline-flex { display: inline-flex; }
+.grid { display: grid; }
+.hidden { display: none !important; }
+.flex-col { flex-direction: column; }
+.flex-wrap { flex-wrap: wrap; }
+.flex-1 { flex: 1 1 0%; }
+.items-center { align-items: center; }
+.items-start { align-items: flex-start; }
+.items-end { align-items: flex-end; }
+.justify-between { justify-content: space-between; }
+.justify-center { justify-content: center; }
+.w-full { width: 100%; }
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.uppercase { text-transform: uppercase; }
+.truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.gap-1 { gap: 4px; } .gap-2 { gap: 8px; } .gap-3 { gap: 12px; } .gap-4 { gap: 16px; }
+.mt-1 { margin-top: 4px; } .mt-2 { margin-top: 8px; } .mt-3 { margin-top: 12px; }
+.mt-4 { margin-top: 16px; } .mt-6 { margin-top: 24px; } .mb-2 { margin-bottom: 8px; }
+.mb-4 { margin-bottom: 16px; } .p-3 { padding: 12px; } .p-4 { padding: 16px; } .p-5 { padding: 20px; }
+.px-3 { padding-left: 12px; padding-right: 12px; } .px-4 { padding-left: 16px; padding-right: 16px; }
+.py-2 { padding-top: 8px; padding-bottom: 8px; } .py-3 { padding-top: 12px; padding-bottom: 12px; }
+.space-y-2 > * + * { margin-top: 8px; }
+.space-y-3 > * + * { margin-top: 12px; }
+.space-y-4 > * + * { margin-top: 16px; }
+
+.text-\[10px\] { font-size: 10px; }
+.text-\[11px\] { font-size: 11px; }
+.text-xs { font-size: 12px; }
+.text-sm { font-size: 13.5px; }
+.text-base { font-size: 15px; }
+.text-lg { font-size: 17px; }
+.text-xl { font-size: 19px; }
+.text-2xl { font-size: 23px; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.font-extrabold { font-weight: 800; }
+.font-headline, .font-body, .font-label { font-family: var(--font); }
+.tracking-\[0\.14em\] { letter-spacing: 0.14em; }
+.tracking-\[0\.16em\] { letter-spacing: 0.16em; }
+.tracking-wider { letter-spacing: 0.05em; }
+.leading-6 { line-height: 1.6; }
+
+.rounded-lg { border-radius: var(--r-xs); }
+.rounded-xl { border-radius: var(--r-sm); }
+.rounded-2xl { border-radius: var(--r-md); }
+.rounded-full { border-radius: var(--r-pill); }
+.border { border: 1px solid var(--border); }
+.shadow-sm { box-shadow: var(--shadow-1); }
+
+.bg-white,
+.bg-surface-container-lowest { background-color: var(--surface); }
+.bg-surface-container-low,
+.bg-surface-container,
+.bg-surface-container-high { background-color: var(--surface-2); }
+.text-on-surface { color: var(--text); }
+.text-on-surface-variant, .text-outline, .text-outline-variant { color: var(--text-muted); }
+.text-primary, .text-tertiary { color: var(--accent); }
+[data-theme="dark"] .text-primary, [data-theme="dark"] .text-tertiary { color: #f472b6; }
+.text-white { color: #fff; }
+.bg-primary { background-color: var(--accent); color: #fff; }
+.opacity-60 { opacity: 0.6; }
+.opacity-70 { opacity: 0.7; }
+.cursor-not-allowed { cursor: not-allowed; }
+
+/* Cartoes injetados: superficie + borda, para nao ficarem "soltos" */
+.bg-surface-container-lowest.rounded-2xl,
+.bg-surface-container-lowest.rounded-xl,
+.bg-surface-container-low.rounded-2xl,
+.bg-surface-container-low.rounded-xl {
+  border: 1px solid var(--border); box-shadow: var(--shadow-1);
+}
+
+/* App bar e cabecalho de secao completos (antes dependiam do CSS antigo) */
+.tdt-appbar {
+  position: sticky; top: 0; z-index: 40;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: saturate(1.4) blur(14px);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.tdt-appbar.is-stuck { border-bottom-color: var(--border); }
+.tdt-appbar__inner {
+  width: min(var(--shell), 100%); margin: 0 auto;
+  display: flex; align-items: center; gap: 12px; padding: 16px;
+}
+@media (min-width: 1100px) { .tdt-appbar__inner { padding: 20px 28px; } }
+.tdt-appbar__greet { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+.tdt-appbar__hello { font-size: var(--step-h1); font-weight: 800; letter-spacing: -0.4px; line-height: 1.15; color: var(--text); }
+.tdt-appbar__sub { font-size: var(--step-cap); color: var(--text-muted); margin-top: 2px; }
+.tdt-appbar__actions { margin-left: auto; display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
+.tdt-icon-btn {
+  width: 42px; height: 42px; border-radius: var(--r-sm); flex: 0 0 auto;
+  border: 1px solid var(--border); background: var(--surface); color: var(--text);
+  display: grid; place-items: center; cursor: pointer; text-decoration: none;
+}
+.tdt-section__head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 14px; }
+.tdt-section__title { font-size: var(--step-h2); font-weight: 800; letter-spacing: -0.3px; margin: 0; color: var(--text); }
+.tdt-section__link { margin-left: auto; font-size: var(--step-cap); font-weight: 700; color: var(--accent); text-decoration: none; }
+[data-theme="dark"] .tdt-section__link { color: #f472b6; }
+.tdt-section__count { margin-left: auto; font-size: var(--step-cap); color: var(--text-faint); }
+
+/* KPIs do painel: 2 colunas no celular, 4 no desktop (o inline das paginas
+   nao deve travar em 2 numa tela larga) */
+@media (min-width: 900px) {
+  .tdt-kgrid { grid-template-columns: repeat(4, 1fr) !important; }
+  .tdt-kgrid--3 { grid-template-columns: repeat(3, 1fr) !important; }
+}
+
+/* Grades responsivas usadas pelos blocos injetados */
+.grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+@media (min-width: 640px) {
+  .sm\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sm\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .sm\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+@media (min-width: 768px) {
+  .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .md\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (min-width: 1024px) {
+  .lg\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .lg\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .lg\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .lg\:hidden { display: none !important; }
+  .lg\:flex { display: flex; }
+}
+.col-span-2 { grid-column: span 2 / span 2; }
+
+/* A app bar acompanha a largura da coluna de conteudo do painel */
+body[data-profile="painel"] .tdt-appbar__inner,
+.tdt-panelmain ~ * .tdt-appbar__inner { max-width: 1100px; }
