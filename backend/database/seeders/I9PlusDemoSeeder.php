@@ -238,8 +238,10 @@ class I9PlusDemoSeeder extends Seeder
         ];
 
         $clients = [
-            'joao' => $this->syncUser(env('DEMO_CLIENTE_EMAIL', 'joao@demo.local'), [
-                'name' => env('DEMO_CLIENTE_NAME', 'João Cliente Demo'),
+            // Via config (nao env direto): em producao o env() nao chega ao app,
+            // e o demo rico ia parar em joao@demo.local em vez da conta real.
+            'joao' => $this->syncUser(config('demo.cliente_email', 'joao@demo.local'), [
+                'name' => config('demo.cliente_nome', 'João Cliente Demo'),
                 'password' => Hash::make(self::DEMO_PASSWORD),
                 'perfil' => 'cliente',
                 'status' => 'ativo',

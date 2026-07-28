@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -20,7 +21,7 @@ use Illuminate\Support\Facades\Schema;
  */
 class DemoProvisionController extends Controller
 {
-    public function seed(): JsonResponse
+    public function seed(Request $request): JsonResponse
     {
         if (!$this->isEnabled()) {
             return response()->json([
@@ -29,18 +30,41 @@ class DemoProvisionController extends Controller
             ], 403);
         }
 
-        $output = [];
-        $errors = [];
+        $request->validate([
+            'email' => ['sometimes', 'email', 'max:255'],
+            'nome' => ['sometimes', 'string', 'max:120'],
+            'acessos' => ['sometimes', 'boolean'],
+        ]);
 
-        foreach ([
+        // O ambiente de producao nao entrega DEMO_CLIENTE_EMAIL para o app, entao
+        // a conta alvo pode vir explicita na chamada. Sem isto o demo rico cai
+        // sempre no default (joao@demo.local) em vez da conta que voce usa.
+        if ($request->filled('email')) {
+            config(['demo.cliente_email' => strtolower(trim((string) $request->input('email')))]);
+        }
+        if ($request->filled('nome')) {
+            config(['demo.cliente_nome' => trim((string) $request->input('nome'))]);
+        }
+
+        $steps = [
             'seed' => fn () => Artisan::call('db:seed', [
                 '--class' => \Database\Seeders\I9PlusDemoSeeder::class,
                 '--force' => true,
             ]),
-            'acessos' => fn () => Artisan::call('app:ensure-demo-access', [
+        ];
+
+        // Opcional e desligado por padrao: com o env fora do ar, este comando cai
+        // nos defaults e reescreveria senhas das contas de handoff.
+        if ($request->boolean('acessos')) {
+            $steps['acessos'] = fn () => Artisan::call('app:ensure-demo-access', [
                 '--sync-passwords' => true,
-            ]),
-        ] as $step => $run) {
+            ]);
+        }
+
+        $output = [];
+        $errors = [];
+
+        foreach ($steps as $step => $run) {
             try {
                 $run();
                 $output[$step] = trim(Artisan::output());
@@ -89,7 +113,7 @@ class DemoProvisionController extends Controller
      */
     private function demoClientState(): array
     {
-        $email = strtolower(trim((string) env('DEMO_CLIENTE_EMAIL', 'joao@demo.local')));
+        $email = strtolower(trim((string) config('demo.cliente_email', 'joao@demo.local')));
         $user = User::query()->where('email', $email)->first();
 
         if (!$user) {
