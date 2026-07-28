@@ -4961,12 +4961,17 @@
           return { icon: 'shopping_bag', cls: 'text-primary', bg: 'bg-primary-container/20' };
         };
 
+        // Saida se decide pelo TIPO, nao pelo sinal: os resgates ja gravados
+        // estao com pontos positivos no banco e aparecendo como ganho.
+        const isSaida = (tipo) => /resg|redeem|troca|gast/.test((tipo || '').toLowerCase());
+
         Object.entries(grouped).forEach(([day, arr]) => {
           const cards = arr
             .map((i) => {
               const { icon, cls, bg } = iconFor(i.tipo);
-              const pts = i.pontos || 0;
-              const sign = pts > 0 ? '+' : '';
+              const saida = isSaida(i.tipo);
+              const pts = Math.abs(Number(i.pontos) || 0);
+              const sign = saida ? '−' : '+';
               return `
               <div class="bg-surface-container-lowest p-4 rounded-xl flex items-center justify-between hover:bg-surface-container-high transition-all active:scale-[0.98]">
                 <div class="flex items-center gap-4">
@@ -4979,7 +4984,7 @@
                   </div>
                 </div>
                 <div class="text-right">
-                  <p class="font-headline font-extrabold ${pts >= 0 ? 'text-primary' : 'text-secondary'} text-base">${sign}${pts} pts</p>
+                  <p class="font-headline font-extrabold ${saida ? 'tdt-val--out' : 'tdt-val--in'} text-base">${sign}${pts} pts</p>
                   ${i.status ? `<span class="text-[10px] font-bold uppercase text-tertiary">${i.status}</span>` : ''}
                 </div>
               </div>`;
