@@ -1,168 +1,201 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-theme="light">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Início - Tem de Tudo</title>
   <meta name="theme-color" content="#ffffff" />
-  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
   <link rel="manifest" href="/manifest.json" />
   <link rel="icon" type="image/png" href="/img/logo.png" />
   <link rel="shortcut icon" href="/img/logo.png" />
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
-  <link href="/css/i9plus-phase8.css?v=20260721-app51" rel="stylesheet" />
-  <link href="/css/tdt-app.css?v=20260727-ui1" rel="stylesheet" />
-  <script src="/js/tdt-app.js?v=20260727-ui1"></script>
-  <style>
-    body { background: #ffffff; min-height: 100vh; }
-    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24; }
-  </style>
+  <!-- Sistema visual aprovado. Esta tela NAO carrega i9plus-phase8.css nem o
+       Tailwind: eram eles que mantinham o heroi roxo e os cards claros. -->
+  <link href="/css/tdt-ui.css?v=20260728-ui4" rel="stylesheet" />
+  <script src="/js/tdt-app.js?v=20260728-ui4"></script>
 </head>
-<body class="text-[#17171c]" data-page="meus_pontos">
+<body data-page="meus_pontos">
 
-  <header class="tdt-appbar" id="homeAppbar">
-    <div class="tdt-appbar__inner">
-      <div class="tdt-appbar__greet">
-        <span class="tdt-appbar__hello" id="header-welcome">Olá</span>
-        <span class="tdt-appbar__sub">Seus benefícios em um só lugar</span>
+  <header class="ap-top" id="homeAppbar">
+    <div class="ap-top__in">
+      <div>
+        <div class="ap-top__hi" id="header-welcome">Olá</div>
+        <div class="ap-top__sub">Seus benefícios em um só lugar</div>
       </div>
-      <div class="tdt-appbar__actions">
-        <button type="button" class="tdt-icon-btn" aria-label="Notificações" data-push-open>
+      <div class="ap-top__acts tdt-appbar__actions">
+        <button type="button" class="ap-iconbtn" aria-label="Notificações" data-push-open>
           <span class="material-symbols-outlined">notifications</span>
+          <span class="ap-iconbtn__dot"></span>
         </button>
-        <a id="clientHomeMenuBtn" href="/meu_perfil.html" class="tdt-avatar-btn" aria-label="Meu perfil">
+        <a id="clientHomeMenuBtn" href="/meu_perfil.html" class="ap-iconbtn" aria-label="Meu perfil">
           <span class="material-symbols-outlined">person</span>
         </a>
       </div>
     </div>
   </header>
 
-  <main class="tdt-home">
-    <!-- Wallet: saldo de pontos em destaque -->
-    <section class="wallet-card">
-      <div class="wallet-card__top">
-        <span class="wallet-card__label">Saldo de pontos</span>
-        <span id="hero-nivel" class="wallet-card__tier">Membro</span>
-      </div>
-      <!-- Anel: espelha a barra de progresso, preenchido por tdt-app.js -->
-      <div class="wallet-card__ring" aria-hidden="true">
-        <span class="wallet-card__ring-in">
-          <b data-tdt-ring-num>0%</b>
-          <i>do próximo nível</i>
-        </span>
-      </div>
-      <h1 id="hero-saldo" class="wallet-card__balance">0 <span>Pontos</span></h1>
-      <div class="wallet-card__progress">
-        <div class="wallet-card__bar"><div id="hero-progress-bar" class="wallet-card__fill" style="width:0%"></div></div>
-        <p id="hero-progress-msg" class="wallet-card__msg">Carregando seu saldo…</p>
-      </div>
-    </section>
+  <div class="ap-shell tdt-home">
+    <div class="ap-main">
 
-    <!-- Wallet: ações rápidas -->
-    <section class="quick-row" aria-label="Ações rápidas">
-      <a href="/validar_resgate.html?modo=vinculo-empresa" class="quick-row__item" id="btnReadCompanyQr">
-        <span class="quick-row__icon quick-row__icon--mag"><span class="material-symbols-outlined">qr_code_scanner</span></span>Ler QR
-      </a>
-      <a href="/recompensas.html" class="quick-row__item">
-        <span class="quick-row__icon quick-row__icon--blue"><span class="material-symbols-outlined">redeem</span></span>Benefícios
-      </a>
-      <a href="/hist_rico_de_uso.html" class="quick-row__item">
-        <span class="quick-row__icon quick-row__icon--teal"><span class="material-symbols-outlined">history</span></span>Histórico
-      </a>
-      <a href="/meu_perfil.html" class="quick-row__item">
-        <span class="quick-row__icon quick-row__icon--navy"><span class="material-symbols-outlined">person</span></span>Perfil
-      </a>
-    </section>
-
-    <!-- Busca -->
-    <form id="homeSearchForm" class="tdt-searchbar" role="search">
-      <span class="material-symbols-outlined tdt-searchbar__icon" aria-hidden="true">search</span>
-      <input id="homeSearchInput" type="search" placeholder="Buscar empresa ou categoria" autocomplete="off" enterkeyhint="search" aria-label="Buscar empresas" />
-    </form>
-
-    <!-- Categorias (scroll horizontal) -->
-    <nav class="tdt-chips" aria-label="Categorias">
-      <a href="/parceiros_tem_de_tudo.html" class="tdt-chip is-active"><span class="material-symbols-outlined">grid_view</span>Tudo</a>
-      <a href="/parceiros_tem_de_tudo.html?categoria=restaurantes" class="tdt-chip"><span class="material-symbols-outlined">restaurant</span>Restaurantes</a>
-      <a href="/parceiros_tem_de_tudo.html?categoria=beleza" class="tdt-chip"><span class="material-symbols-outlined">content_cut</span>Beleza</a>
-      <a href="/parceiros_tem_de_tudo.html?categoria=japonesa" class="tdt-chip"><span class="material-symbols-outlined">ramen_dining</span>Japonesa</a>
-      <a href="/parceiros_tem_de_tudo.html?categoria=sorveterias" class="tdt-chip"><span class="material-symbols-outlined">icecream</span>Sorveterias</a>
-      <a href="/parceiros_tem_de_tudo.html?categoria=petshops" class="tdt-chip"><span class="material-symbols-outlined">pets</span>Petshops</a>
-      <a href="/parceiros_tem_de_tudo.html?categoria=bares" class="tdt-chip"><span class="material-symbols-outlined">local_bar</span>Bares</a>
-    </nav>
-
-    <!-- Minhas empresas -->
-    <section class="tdt-section" id="linkedCompaniesSection">
-      <div class="tdt-section__head">
-        <h2 class="tdt-section__title">Minhas empresas</h2>
-        <span id="linkedCompaniesCount" class="tdt-section__count">Carregando…</span>
-      </div>
-      <div id="linkedCompaniesSkeleton" class="tdt-list">
-        <div class="tdt-skel-row"><div class="tdt-skel-box" style="width:60px;height:60px"></div><div style="flex:1"><div class="tdt-skel-box" style="width:55%;height:14px"></div><div class="tdt-skel-box" style="width:35%;height:11px;margin-top:8px"></div></div></div>
-        <div class="tdt-skel-row"><div class="tdt-skel-box" style="width:60px;height:60px"></div><div style="flex:1"><div class="tdt-skel-box" style="width:45%;height:14px"></div><div class="tdt-skel-box" style="width:40%;height:11px;margin-top:8px"></div></div></div>
-      </div>
-      <div id="linkedCompaniesEmpty" class="tdt-empty hidden">
-        <div class="tdt-empty__icon"><span class="material-symbols-outlined">qr_code_scanner</span></div>
-        <p>Você ainda não está em nenhuma empresa.<br>Toque em <b>Ler QR da empresa</b> para começar.</p>
-      </div>
-      <div id="linkedCompaniesList" class="tdt-list"></div>
-    </section>
-
-    <!-- Explorar -->
-    <section class="tdt-section hidden" id="featuredCompaniesSection">
-      <div class="tdt-section__head">
-        <h2 class="tdt-section__title">Descubra empresas</h2>
-        <a href="/parceiros_tem_de_tudo.html" class="tdt-section__link">Ver todas</a>
-      </div>
-      <div id="featuredCompaniesList" class="tdt-feat-scroll"></div>
-    </section>
-
-    <!-- Trilho lateral: so aparece no desktop, onde antes sobrava vazio. -->
-    <aside class="tdt-rail">
-      <a href="/meus_pontos.html?mostrar=meu-qrcode" class="tdt-qrcard">
-        <span class="tdt-qrcard__top"><span>Meu cartão</span><span>Tem de Tudo</span></span>
-        <span class="tdt-qrcard__box"><span class="material-symbols-outlined">qr_code_2</span></span>
-        <span class="tdt-qrcard__who">
-          <span class="tdt-qrcard__name">Mostrar meu QR</span>
-          <span class="tdt-qrcard__hint">Apresente no caixa para pontuar</span>
-        </span>
-      </a>
-
-      <div class="tdt-panel">
-        <h3 class="tdt-panel__t">Como ganhar pontos</h3>
-        <div class="tdt-steps">
-          <div class="tdt-steps__i">
-            <span class="tdt-steps__n">1</span>
-            <span>Leia o <b>QR Code da empresa</b> no balcão para entrar no programa dela.</span>
+      <!-- HEROI: saldo, anel de nivel e o resumo do periodo -->
+      <section class="ap-hero wallet-card">
+        <div class="ap-hero__grid">
+          <div class="ap-hero__left">
+            <div class="ap-hero__label">Saldo de pontos</div>
+            <h1 class="ap-hero__value" id="hero-saldo">0 <span>pontos</span></h1>
+            <span class="ap-hero__tier" id="hero-nivel">
+              <span class="material-symbols-outlined">workspace_premium</span> Membro
+            </span>
           </div>
-          <div class="tdt-steps__i">
-            <span class="tdt-steps__n">2</span>
-            <span>Na hora de pagar, mostre o <b>seu QR</b> e a equipe registra os pontos.</span>
+          <div class="ap-ring">
+            <svg width="108" height="108" viewBox="0 0 108 108" aria-hidden="true">
+              <circle cx="54" cy="54" r="46" fill="none" stroke="var(--ring-track)" stroke-width="10"/>
+              <circle cx="54" cy="54" r="46" fill="none" stroke="url(#ringGrad)" stroke-width="10"
+                      stroke-linecap="round" stroke-dasharray="289" stroke-dashoffset="289" data-tdt-ring-arc/>
+              <defs><linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#e91e85"/><stop offset="100%" stop-color="#f7c948"/>
+              </linearGradient></defs>
+            </svg>
+            <div class="ap-ring__txt">
+              <div class="ap-ring__num" data-tdt-ring-num>0%</div>
+              <div class="ap-ring__cap">do próximo nível</div>
+            </div>
           </div>
-          <div class="tdt-steps__i">
-            <span class="tdt-steps__n">3</span>
-            <span>Troque por benefícios em <b>Benefícios</b>, com validação presencial.</span>
+        </div>
+
+        <!-- A barra continua existindo: e dela que o bundle define o progresso,
+             e o anel acima espelha esse valor. -->
+        <div class="wallet-card__progress" style="position:relative;z-index:1;margin-top:18px">
+          <div class="wallet-card__bar" style="height:8px;border-radius:999px;background:rgba(255,255,255,0.16);overflow:hidden">
+            <div id="hero-progress-bar" class="wallet-card__fill"
+                 style="height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,#e91e85,#f7c948);transition:width .5s ease"></div>
+          </div>
+          <p id="hero-progress-msg" class="ap-spark__cap" style="margin:10px 0 0">Carregando seu saldo…</p>
+        </div>
+      </section>
+
+      <!-- ACOES RAPIDAS -->
+      <section class="ap-quick">
+        <a href="/validar_resgate.html?modo=vinculo-empresa" class="ap-quick__i" id="btnReadCompanyQr">
+          <div class="ap-quick__ic ap-quick__ic--1"><span class="material-symbols-outlined">qr_code_scanner</span></div>
+          <div class="ap-quick__t">Ler QR</div>
+        </a>
+        <a href="/recompensas.html" class="ap-quick__i">
+          <div class="ap-quick__ic ap-quick__ic--2"><span class="material-symbols-outlined">redeem</span></div>
+          <div class="ap-quick__t">Benefícios</div>
+        </a>
+        <a href="/hist_rico_de_uso.html" class="ap-quick__i">
+          <div class="ap-quick__ic ap-quick__ic--3"><span class="material-symbols-outlined">history</span></div>
+          <div class="ap-quick__t">Histórico</div>
+        </a>
+        <a href="/meu_perfil.html" class="ap-quick__i">
+          <div class="ap-quick__ic ap-quick__ic--4"><span class="material-symbols-outlined">person</span></div>
+          <div class="ap-quick__t">Perfil</div>
+        </a>
+      </section>
+
+      <!-- BUSCA + CATEGORIAS -->
+      <section style="display:grid;gap:14px">
+        <form id="homeSearchForm" class="ap-search" role="search">
+          <span class="material-symbols-outlined" aria-hidden="true">search</span>
+          <input id="homeSearchInput" type="search" placeholder="Buscar empresa ou categoria"
+                 autocomplete="off" enterkeyhint="search" aria-label="Buscar empresas" />
+        </form>
+        <nav class="ap-chips" aria-label="Categorias">
+          <a href="/parceiros_tem_de_tudo.html" class="ap-chip is-active"><span class="material-symbols-outlined">grid_view</span>Tudo</a>
+          <a href="/parceiros_tem_de_tudo.html?categoria=restaurantes" class="ap-chip"><span class="material-symbols-outlined">restaurant</span>Restaurantes</a>
+          <a href="/parceiros_tem_de_tudo.html?categoria=beleza" class="ap-chip"><span class="material-symbols-outlined">content_cut</span>Beleza</a>
+          <a href="/parceiros_tem_de_tudo.html?categoria=japonesa" class="ap-chip"><span class="material-symbols-outlined">ramen_dining</span>Japonesa</a>
+          <a href="/parceiros_tem_de_tudo.html?categoria=sorveterias" class="ap-chip"><span class="material-symbols-outlined">icecream</span>Sorveterias</a>
+          <a href="/parceiros_tem_de_tudo.html?categoria=petshops" class="ap-chip"><span class="material-symbols-outlined">pets</span>Petshops</a>
+          <a href="/parceiros_tem_de_tudo.html?categoria=bares" class="ap-chip"><span class="material-symbols-outlined">local_bar</span>Bares</a>
+        </nav>
+      </section>
+
+      <!-- MINHAS EMPRESAS -->
+      <section id="linkedCompaniesSection">
+        <div class="ap-sec__head">
+          <h2 class="ap-sec__title">Minhas empresas</h2>
+          <span id="linkedCompaniesCount" class="ap-sec__link" style="color:var(--text-faint)">Carregando…</span>
+        </div>
+        <div id="linkedCompaniesSkeleton" class="tdt-list">
+          <div class="tdt-skel-row">
+            <div class="tdt-skel-box" style="width:56px;height:56px"></div>
+            <div style="flex:1">
+              <div class="tdt-skel-box" style="width:55%;height:14px"></div>
+              <div class="tdt-skel-box" style="width:35%;height:11px;margin-top:8px"></div>
+            </div>
+          </div>
+          <div class="tdt-skel-row">
+            <div class="tdt-skel-box" style="width:56px;height:56px"></div>
+            <div style="flex:1">
+              <div class="tdt-skel-box" style="width:45%;height:14px"></div>
+              <div class="tdt-skel-box" style="width:40%;height:11px;margin-top:8px"></div>
+            </div>
+          </div>
+        </div>
+        <div id="linkedCompaniesEmpty" class="tdt-empty hidden">
+          <div class="tdt-empty__icon"><span class="material-symbols-outlined">qr_code_scanner</span></div>
+          <p style="margin:0">Você ainda não está em nenhuma empresa.<br>Toque em <b>Ler QR</b> para começar.</p>
+        </div>
+        <div id="linkedCompaniesList" class="tdt-list"></div>
+      </section>
+
+      <!-- DESCUBRA -->
+      <section class="hidden" id="featuredCompaniesSection">
+        <div class="ap-sec__head">
+          <h2 class="ap-sec__title">Descubra empresas</h2>
+          <a href="/parceiros_tem_de_tudo.html" class="ap-sec__link">Ver todas</a>
+        </div>
+        <div id="featuredCompaniesList" class="tdt-feat-scroll"></div>
+      </section>
+    </div>
+
+    <!-- TRILHO (desktop) -->
+    <aside class="ap-rail">
+      <a href="/meus_pontos.html?mostrar=meu-qrcode" class="ap-qr">
+        <div class="ap-qr__top"><span>Meu cartão</span><span>Tem de Tudo</span></div>
+        <div class="ap-qr__code"><i></i></div>
+        <div class="ap-qr__who">
+          <div class="ap-qr__name">Mostrar meu QR</div>
+          <div class="ap-qr__hint">Apresente no caixa para pontuar</div>
+        </div>
+      </a>
+
+      <div class="ap-panel">
+        <h3 class="ap-panel__t">Como ganhar pontos</h3>
+        <div style="display:grid;gap:16px">
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <span style="width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-size:12.5px;font-weight:800;flex:0 0 auto">1</span>
+            <div style="font-size:13.5px;line-height:1.5;color:var(--text-muted)">Leia o <b style="color:var(--text)">QR da empresa</b> no balcão para entrar no programa dela.</div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <span style="width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-size:12.5px;font-weight:800;flex:0 0 auto">2</span>
+            <div style="font-size:13.5px;line-height:1.5;color:var(--text-muted)">Na hora de pagar, mostre o <b style="color:var(--text)">seu QR</b> e a equipe registra os pontos.</div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <span style="width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-size:12.5px;font-weight:800;flex:0 0 auto">3</span>
+            <div style="font-size:13.5px;line-height:1.5;color:var(--text-muted)">Troque por benefícios com validação presencial.</div>
           </div>
         </div>
       </div>
 
-      <div class="tdt-panel">
-        <h3 class="tdt-panel__t">Seu histórico</h3>
-        <p style="margin:0 0 14px;font-size:13.5px;line-height:1.55;color:var(--tdt-text-muted)">
+      <div class="ap-panel">
+        <h3 class="ap-panel__t">Seu histórico</h3>
+        <p style="margin:0 0 14px;font-size:13.5px;line-height:1.55;color:var(--text-muted)">
           Todo ponto ganho e resgatado fica registrado no seu extrato.
         </p>
-        <a href="/hist_rico_de_uso.html" class="tdt-chip" style="width:100%;justify-content:center">
-          <span class="material-symbols-outlined">history</span> Ver extrato completo
+        <a href="/hist_rico_de_uso.html" class="ap-btn ap-btn--ghost">
+          <span class="material-symbols-outlined" style="font-size:20px">history</span> Ver extrato completo
         </a>
       </div>
     </aside>
-  </main>
+  </div>
 
   <script src="/dist/stitch-app.min.js?v=20260721-app51"></script>
   <script>
-    // App bar ganha borda/sombra ao rolar (sensação de app nativo).
     (function () {
       var bar = document.getElementById('homeAppbar');
       if (!bar) return;

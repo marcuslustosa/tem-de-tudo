@@ -66,6 +66,7 @@
     var bar = document.getElementById('hero-progress-bar');
     var hero = document.querySelector('.wallet-card');
     var num = document.querySelector('[data-tdt-ring-num]');
+    var arc = document.querySelector('[data-tdt-ring-arc]');
     if (!bar || !hero) return;
 
     var sync = function () {
@@ -74,6 +75,8 @@
       pct = Math.max(0, Math.min(100, pct));
       hero.style.setProperty('--p', String(pct));
       if (num) num.textContent = Math.round(pct) + '%';
+      // Arco SVG: 2 * PI * r, com r = 46 -> 289. O quanto falta e o offset.
+      if (arc) arc.setAttribute('stroke-dashoffset', String(289 - (289 * pct) / 100));
     };
 
     sync();
