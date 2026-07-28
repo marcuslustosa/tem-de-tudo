@@ -137,23 +137,40 @@ class QRCodeService
         ];
     }
 
+    /**
+     * Caminho esperado do arquivo para o conteudo ATUAL do QR.
+     *
+     * O nome carrega um resumo do payload de proposito: o QR da empresa aponta
+     * para uma URL montada com APP_URL, e a imagem ficava gravada em disco para
+     * sempre. Se o dominio do app mudasse, o adesivo que ja esta colado na mesa
+     * continuava mandando o cliente para o host antigo, sem nunca ser regerado.
+     * Com o resumo no nome, mudou o destino, mudou o arquivo.
+     */
+    private function caminhoEsperadoDoArquivo(QRCode $qrCode, string $payload, string $extension): string
+    {
+        $folder = $qrCode->empresa_id ? 'qrcodes/empresas' : 'qrcodes/generic';
+        $id = $qrCode->empresa_id ?? $qrCode->id;
+        $resumo = substr(sha1($payload), 0, 10);
+
+        return "{$folder}/{$id}_{$qrCode->id}_{$resumo}.{$extension}";
+    }
+
     public function getQRCodeImageDataUrl(QRCode $qrCode)
     {
-        if ($qrCode->qr_image) {
-            return 'data:image/png;base64,' . $qrCode->qr_image;
-        }
+        $payload = $this->getQrPayload($qrCode);
+        $asset = $this->renderQrAsset($payload);
+        $esperado = $this->caminhoEsperadoDoArquivo($qrCode, $payload, $asset['extension']);
 
-        if ($qrCode->qr_path && Storage::disk('public')->exists($qrCode->qr_path)) {
-            $imageData = Storage::disk('public')->get($qrCode->qr_path);
-            $mime = str_ends_with(strtolower((string) $qrCode->qr_path), '.svg')
-                ? 'image/svg+xml'
-                : 'image/png';
+        // So reaproveita o arquivo em disco se ele foi gerado para este mesmo
+        // destino. Caso contrario regrava, para o QR nunca ficar desatualizado.
+        if ($qrCode->qr_path === $esperado && Storage::disk('public')->exists($esperado)) {
+            $imageData = Storage::disk('public')->get($esperado);
+            $mime = str_ends_with(strtolower($esperado), '.svg') ? 'image/svg+xml' : 'image/png';
 
             return 'data:' . $mime . ';base64,' . base64_encode($imageData);
         }
 
-        $payload = $this->getQrPayload($qrCode);
-        $asset = $this->renderQrAsset($payload);
+        $this->salvarQRCodeNoStorage($qrCode);
 
         return 'data:' . $asset['mime'] . ';base64,' . base64_encode($asset['contents']);
     }
@@ -185,15 +202,15 @@ class QRCodeService
 
     public function salvarQRCodeNoStorage(QRCode $qrCode)
     {
-        $folder = $qrCode->empresa_id ? 'qrcodes/empresas' : 'qrcodes/generic';
-        $id = $qrCode->empresa_id ?? $qrCode->id;
         $payload = $this->getQrPayload($qrCode);
         $asset = $this->renderQrAsset($payload);
-        $filename = "{$id}_{$qrCode->id}.{$asset['extension']}";
-        $path = "{$folder}/{$filename}";
+        $path = $this->caminhoEsperadoDoArquivo($qrCode, $payload, $asset['extension']);
 
         Storage::disk('public')->put($path, $asset['contents']);
 
+        // A coluna base64 `qr_image` e do formato antigo e nem existe em toda
+        // base. Nao mexemos nela: o getter simplesmente deixou de consultar,
+        // entao um base64 velho nao tem mais como devolver o destino errado.
         $qrCode->update([
             'qr_path' => $path,
         ]);

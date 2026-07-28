@@ -1276,77 +1276,126 @@
         try { ui.message('App instalado! Abra pelo icone na tela de inicio.', 'success'); } catch (_) { /* silencioso */ }
       });
 
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
+      // O passo a passo muda por NAVEGADOR, nao so por sistema. Chamar tudo de
+      // "Chrome" fazia o cliente do Samsung Internet, do Firefox ou do Safari
+      // procurar um menu que nao existe no aparelho dele.
+      const ua = navigator.userAgent || '';
+      const isIOS = /iPad|iPhone|iPod/.test(ua)
         || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      const isAndroid = /Android/i.test(ua);
+      const navegador = (() => {
+        if (/SamsungBrowser/i.test(ua)) return 'samsung';
+        if (/FxiOS|Firefox/i.test(ua)) return 'firefox';
+        if (/OPR\/|Opera|OPiOS/i.test(ua)) return 'opera';
+        if (/Edg/i.test(ua)) return 'edge';
+        if (/CriOS|Chrome|Chromium/i.test(ua)) return 'chrome';
+        if (/Safari/i.test(ua)) return 'safari';
+        return 'generico';
+      })();
+      const nomeNavegador = {
+        samsung: 'Samsung Internet', firefox: 'Firefox', opera: 'Opera',
+        edge: 'Edge', chrome: 'Chrome', safari: 'Safari', generico: 'seu navegador',
+      }[navegador];
 
-      // Passos ilustrados por plataforma. No iPhone o navegador não permite
-      // instalar com 1 toque (limitação da Apple); no Android sem prompt
-      // nativo, mostramos o caminho do menu do Chrome.
-      const iosSteps = `
+      const passo = (n, texto, mock) => `
               <li>
-                <span class="tdt-install-sheet__num">1</span>
+                <span class="tdt-install-sheet__num">${n}</span>
                 <div class="tdt-install-step">
-                  <p>Toque em <b>Compartilhar</b> na barra do navegador.</p>
+                  <p>${texto}</p>
+                  ${mock || ''}
+                </div>
+              </li>`;
+      const mockBarra = (icone, voltar) => `
+                  <div class="tdt-install-step__mock tdt-install-step__mock--bar" aria-hidden="true">
+                    <span class="material-symbols-outlined">${voltar || 'arrow_back'}</span>
+                    <span class="tdt-install-step__url">temdetudo.app</span>
+                    <span class="tdt-install-step__target"><span class="material-symbols-outlined">${icone}</span></span>
+                  </div>`;
+      const mockMenu = (linhaFria, linhaQuente, icone) => `
+                  <div class="tdt-install-step__mock tdt-install-step__mock--menu" aria-hidden="true">
+                    <span class="tdt-install-step__menu-row"><span>${linhaFria}</span><span class="material-symbols-outlined">more_horiz</span></span>
+                    <span class="tdt-install-step__menu-row tdt-install-step__menu-row--hot"><span>${linhaQuente}</span><span class="material-symbols-outlined">${icone}</span></span>
+                  </div>`;
+      const mockConfirma = (rotulo) => `
+                  <div class="tdt-install-step__mock tdt-install-step__mock--confirm" aria-hidden="true">
+                    <span>Cancelar</span>
+                    <span class="tdt-install-step__confirm">${rotulo}</span>
+                  </div>`;
+
+      // No iPhone e no iPad todos os navegadores usam o motor da Apple, entao o
+      // caminho e sempre o botao Compartilhar. So muda ONDE ele fica na tela.
+      const ondeFicaCompartilhar = navegador === 'safari'
+        ? 'na barra de baixo'
+        : (navegador === 'chrome' || navegador === 'edge'
+            ? 'no canto superior direito'
+            : 'na barra do navegador');
+
+      const passosIOS = [
+        passo(1,
+          `Toque em <b>Compartilhar</b> (o quadrado com a seta para cima), ${ondeFicaCompartilhar}.`,
+          `
                   <div class="tdt-install-step__mock tdt-install-step__mock--bar" aria-hidden="true">
                     <span class="material-symbols-outlined">arrow_back_ios_new</span>
                     <span class="tdt-install-step__url">temdetudo.app</span>
                     <span class="tdt-install-step__target"><span class="material-symbols-outlined">ios_share</span></span>
                     <span class="material-symbols-outlined">content_copy</span>
-                  </div>
-                </div>
-              </li>
-              <li>
-                <span class="tdt-install-sheet__num">2</span>
-                <div class="tdt-install-step">
-                  <p>Role o menu e toque em <b>Adicionar à Tela de Início</b>.</p>
-                  <div class="tdt-install-step__mock tdt-install-step__mock--menu" aria-hidden="true">
-                    <span class="tdt-install-step__menu-row"><span>Copiar</span><span class="material-symbols-outlined">content_copy</span></span>
-                    <span class="tdt-install-step__menu-row tdt-install-step__menu-row--hot"><span>Adicionar à Tela de Início</span><span class="material-symbols-outlined">add_box</span></span>
-                  </div>
-                </div>
-              </li>
-              <li>
-                <span class="tdt-install-sheet__num">3</span>
-                <div class="tdt-install-step">
-                  <p>Confirme tocando em <b>Adicionar</b> no canto superior.</p>
-                  <div class="tdt-install-step__mock tdt-install-step__mock--confirm" aria-hidden="true">
-                    <span>Cancelar</span>
-                    <span class="tdt-install-step__confirm">Adicionar</span>
-                  </div>
-                </div>
-              </li>`;
-      const androidSteps = `
-              <li>
-                <span class="tdt-install-sheet__num">1</span>
-                <div class="tdt-install-step">
-                  <p>Toque no menu <b>⋮</b> no canto superior do Chrome.</p>
-                  <div class="tdt-install-step__mock tdt-install-step__mock--bar" aria-hidden="true">
-                    <span class="material-symbols-outlined">arrow_back</span>
-                    <span class="tdt-install-step__url">temdetudo.app</span>
-                    <span class="tdt-install-step__target"><span class="material-symbols-outlined">more_vert</span></span>
-                  </div>
-                </div>
-              </li>
-              <li>
-                <span class="tdt-install-sheet__num">2</span>
-                <div class="tdt-install-step">
-                  <p>Toque em <b>Adicionar à tela inicial</b> (ou <b>Instalar app</b>).</p>
-                  <div class="tdt-install-step__mock tdt-install-step__mock--menu" aria-hidden="true">
-                    <span class="tdt-install-step__menu-row"><span>Nova guia</span><span class="material-symbols-outlined">add</span></span>
-                    <span class="tdt-install-step__menu-row tdt-install-step__menu-row--hot"><span>Adicionar à tela inicial</span><span class="material-symbols-outlined">install_mobile</span></span>
-                  </div>
-                </div>
-              </li>
-              <li>
-                <span class="tdt-install-sheet__num">3</span>
-                <div class="tdt-install-step">
-                  <p>Confirme em <b>Instalar</b>.</p>
-                  <div class="tdt-install-step__mock tdt-install-step__mock--confirm" aria-hidden="true">
-                    <span>Cancelar</span>
-                    <span class="tdt-install-step__confirm">Instalar</span>
-                  </div>
-                </div>
-              </li>`;
+                  </div>`),
+        passo(2,
+          'Role o menu e toque em <b>Adicionar à Tela de Início</b>.',
+          mockMenu('Copiar', 'Adicionar à Tela de Início', 'add_box')),
+        passo(3,
+          'Confirme tocando em <b>Adicionar</b> no canto superior.',
+          mockConfirma('Adicionar')),
+      ].join('');
+
+      const passosSamsung = [
+        passo(1,
+          'Toque no menu <b>☰</b> (três linhas) no canto inferior direito.',
+          mockBarra('menu')),
+        passo(2,
+          'Toque em <b>Adicionar página a</b> e escolha <b>Tela inicial</b>.',
+          mockMenu('Adicionar marcador', 'Adicionar página a', 'add_to_home_screen')),
+        passo(3, 'Confirme em <b>Adicionar</b>.', mockConfirma('Adicionar')),
+      ].join('');
+
+      const passosFirefox = [
+        passo(1,
+          'Toque no menu <b>⋮</b> do Firefox.',
+          mockBarra('more_vert')),
+        passo(2,
+          'Toque em <b>Adicionar à tela inicial</b>.',
+          mockMenu('Marcar página', 'Adicionar à tela inicial', 'add_to_home_screen')),
+        passo(3, 'Confirme em <b>Adicionar</b>.', mockConfirma('Adicionar')),
+      ].join('');
+
+      const passosMenuAndroid = [
+        passo(1,
+          `Toque no menu <b>⋮</b> ${navegador === 'generico' ? 'do navegador' : 'do ' + nomeNavegador}.`,
+          mockBarra('more_vert')),
+        passo(2,
+          'Toque em <b>Instalar app</b> (em alguns aparelhos aparece como <b>Adicionar à tela inicial</b>).',
+          mockMenu('Nova guia', 'Instalar app', 'install_mobile')),
+        passo(3, 'Confirme em <b>Instalar</b>.', mockConfirma('Instalar')),
+      ].join('');
+
+      const passosDesktop = navegador === 'safari'
+        ? [
+            passo(1, 'No menu <b>Arquivo</b>, escolha <b>Adicionar à Dock</b>.'),
+            passo(2, 'Confirme em <b>Adicionar</b>.', mockConfirma('Adicionar')),
+          ].join('')
+        : [
+            passo(1,
+              'Clique no ícone de <b>instalar</b> na barra de endereço, à direita do link.',
+              mockBarra('install_desktop', 'lock')),
+            passo(2, 'Confirme em <b>Instalar</b>.', mockConfirma('Instalar')),
+          ].join('');
+
+      const passosInstalacao = isIOS
+        ? passosIOS
+        : (isAndroid
+            ? (navegador === 'samsung' ? passosSamsung
+               : (navegador === 'firefox' ? passosFirefox : passosMenuAndroid))
+            : passosDesktop);
 
       let installSheet = null;
       const openInstallGuide = () => {
@@ -1365,8 +1414,8 @@
                 <p class="tdt-install-sheet__sub">Fica igual a um app, com atalho na tela de início.</p>
               </div>
             </div>
-            <ol class="tdt-install-sheet__steps tdt-install-sheet__steps--visual">${isIOS ? iosSteps : androidSteps}</ol>
-            <p class="tdt-install-sheet__foot">Depois <b>abra pelo ícone</b> na tela de início para conseguir <b>ativar as notificações</b>.</p>
+            <ol class="tdt-install-sheet__steps tdt-install-sheet__steps--visual">${passosInstalacao}</ol>
+            <p class="tdt-install-sheet__foot">${isIOS || isAndroid ? 'Depois <b>abra pelo ícone</b> na tela de início para conseguir <b>ativar as notificações</b>.' : 'Depois abra o app pelo atalho para receber as notificações.'}</p>
             <button type="button" class="tdt-install-sheet__ok" data-close>Entendi</button>
           </div>`;
         document.body.appendChild(installSheet);
@@ -2168,7 +2217,7 @@
           tone: 'warning',
           badge: 'Indisponível',
           status: 'Seu navegador não suporta notificações push.',
-          helper: 'Use Chrome, Edge ou Safari em um dispositivo compatível com PWA e notificações.',
+          helper: 'Abra em um navegador atualizado do seu celular ou computador. No iPhone, instale o app na tela de início antes de ativar.',
         };
       }
 
