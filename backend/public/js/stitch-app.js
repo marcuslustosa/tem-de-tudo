@@ -2824,6 +2824,86 @@
     el.className = `text-xs leading-5 ${toneMap[tone] || toneMap.info}`;
   }
 
+  /**
+   * Sparkline do heroi da Inicio: saldo acumulado ao longo das movimentacoes
+   * reais do cliente. Serie unica, sem eixos e sem legenda — o titulo nomeia a
+   * serie e o periodo de verdade (nada de "ultimos 6 meses" quando o cliente
+   * so tem tres semanas de historico).
+   * Com menos de 3 movimentacoes a linha nao diz nada, entao nem aparece.
+   */
+  function renderHeroSparkline(historico) {
+    const wrap = document.getElementById('hero-spark');
+    if (!wrap) return;
+
+    const linha = document.getElementById('hero-spark-line');
+    const area = document.getElementById('hero-spark-area');
+    const cap = document.getElementById('hero-spark-cap');
+    const dot = document.getElementById('hero-spark-dot');
+    const svg = document.getElementById('hero-spark-svg');
+
+    const movimentos = (Array.isArray(historico) ? historico : [])
+      .map((item) => ({
+        pontos: Number(item.pontos || 0),
+        saida: /resg|redeem|troca|gast/.test(String(item.tipo || '').toLowerCase()),
+        data: new Date(item.created_at || item.data || 0),
+      }))
+      .filter((m) => m.pontos > 0 && !Number.isNaN(m.data.getTime()))
+      .sort((a, b) => a.data - b.data);
+
+    if (movimentos.length < 3) {
+      wrap.classList.add('hidden');
+      return;
+    }
+
+    let acumulado = 0;
+    const serie = movimentos.map((m) => {
+      acumulado += m.saida ? -m.pontos : m.pontos;
+      return Math.max(0, acumulado);
+    });
+
+    const W = 320;
+    const H = 62;
+    const padX = 6;
+    const padTop = 8;
+    const padBottom = 12;
+    const maior = Math.max(...serie, 1);
+    const passo = serie.length > 1 ? (W - padX * 2) / (serie.length - 1) : 0;
+
+    const pontos = serie.map((v, i) => {
+      const x = padX + passo * i;
+      const y = padTop + (1 - v / maior) * (H - padTop - padBottom);
+      return `${x.toFixed(1)},${y.toFixed(1)}`;
+    });
+
+    const traco = `M${pontos.join(' L')}`;
+    if (linha) linha.setAttribute('d', traco);
+    if (area) area.setAttribute('d', `${traco} L${(W - padX).toFixed(1)},${H - 2} L${padX},${H - 2} Z`);
+
+    // O historico pode vir paginado, entao a legenda fala do que esta plotado
+    // ("ultimas N movimentacoes") em vez de fingir que cobre a conta inteira.
+    if (cap) {
+      const liquido = serie[serie.length - 1];
+      cap.innerHTML = `Saldo nas últimas ${movimentos.length} movimentações `
+        + `<b>${liquido >= 0 ? '+' : ''}${liquido.toLocaleString('pt-BR')} no período</b>`;
+    }
+
+    // Precisa estar visivel antes de medir: escondido, todo rect e zero.
+    wrap.classList.remove('hidden');
+
+    // A bolinha marca o valor de hoje. Como o wrapper e position:relative, ela
+    // e posicionada em pixels: mede-se o topo do svg dentro dele por
+    // getBoundingClientRect (offsetTop nao existe em elemento SVG) e converte-se
+    // a coordenada do viewBox para a altura realmente renderizada.
+    if (dot && svg) {
+      const caixaSvg = svg.getBoundingClientRect();
+      const alturaCss = caixaSvg.height || H;
+      const topoSvg = caixaSvg.top - wrap.getBoundingClientRect().top;
+      const yUltimo = padTop + (1 - serie[serie.length - 1] / maior) * (H - padTop - padBottom);
+      dot.style.top = `${topoSvg + (yUltimo / H) * alturaCss - 5}px`;
+      dot.style.display = 'block';
+    }
+  }
+
   // ---------------------- Notificacoes internas ---------------------- //
   const notifications = (() => {
     async function fetchAll() {
@@ -2915,6 +2995,24 @@
             ? `Faltam ${(meta - saldo).toLocaleString('pt-BR')} pontos para o próximo nível`
             : 'Você está no nível máximo. Aproveite!';
         } catch (_) { /* mantém o placeholder se falhar */ }
+
+        // Ganhos x resgates: o dashboard ja traz os dois totais consolidados.
+        const totalGanho = Number(payload.usuario?.total_ganho ?? 0);
+        const totalGasto = Number(payload.usuario?.total_gasto ?? 0);
+        const kpiIn = document.getElementById('hero-kpi-in');
+        const kpiOut = document.getElementById('hero-kpi-out');
+        if (kpiIn) kpiIn.textContent = `+${totalGanho.toLocaleString('pt-BR')}`;
+        if (kpiOut) kpiOut.textContent = totalGasto > 0 ? `−${totalGasto.toLocaleString('pt-BR')}` : '0';
+
+        // A curva do saldo pede o extrato completo; se falhar, a area some e o
+        // resto do heroi continua de pe.
+        if (document.getElementById('hero-spark')) {
+          try {
+            const { data: histResp } = await api.request('/pontos/historico', {}, { notify: false });
+            const lista = histResp?.data?.data || histResp?.data || [];
+            renderHeroSparkline(toArray(lista));
+          } catch (_) { /* sem curva, sem drama */ }
+        }
 
         const renderCompanyCard = (company) => {
           const rating = Number(company.avaliacao_media || 0);
@@ -3094,6 +3192,13 @@
       document.querySelector('button.w-full.mb-10')?.addEventListener('click', () => {
         window.location.href = '/parceiros_tem_de_tudo.html';
       });
+
+      const kpiIn = document.getElementById('hero-kpi-in');
+      const kpiOut = document.getElementById('hero-kpi-out');
+      if (kpiIn) kpiIn.textContent = `+${totalGanho.toLocaleString('pt-BR')}`;
+      if (kpiOut) kpiOut.textContent = totalGasto > 0 ? `−${totalGasto.toLocaleString('pt-BR')}` : '0';
+
+      renderHeroSparkline(historico);
 
       const historicoContainer = document.getElementById('historicoContainer');
       if (historicoContainer) {

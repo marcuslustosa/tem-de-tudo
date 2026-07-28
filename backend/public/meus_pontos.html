@@ -74,6 +74,39 @@
           </div>
           <p id="hero-progress-msg" class="ap-spark__cap" style="margin:10px 0 0">Carregando seu saldo…</p>
         </div>
+
+        <!-- Quanto entrou e quanto saiu no total. Sao os dois numeros que o
+             cliente confere depois de olhar o saldo. -->
+        <div class="ap-hero__kpis">
+          <div class="ap-kpi ap-kpi--in">
+            <div class="ap-kpi__k"><span class="material-symbols-outlined">trending_up</span> Ganhos</div>
+            <div class="ap-kpi__v" id="hero-kpi-in">—</div>
+          </div>
+          <div class="ap-kpi ap-kpi--out">
+            <div class="ap-kpi__k"><span class="material-symbols-outlined">redeem</span> Resgatados</div>
+            <div class="ap-kpi__v" id="hero-kpi-out">—</div>
+          </div>
+        </div>
+
+        <!-- Serie unica, sem legenda: o titulo nomeia a serie e o periodo real.
+             Fica escondida ate o bundle ter movimentacao suficiente para
+             desenhar uma linha que signifique alguma coisa. -->
+        <div class="ap-spark hidden" id="hero-spark">
+          <div class="ap-spark__cap" id="hero-spark-cap"></div>
+          <svg viewBox="0 0 320 62" preserveAspectRatio="none" role="img" id="hero-spark-svg">
+            <defs>
+              <linearGradient id="sparkFill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#e91e85" stop-opacity="0.45"/>
+                <stop offset="100%" stop-color="#e91e85" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <path id="hero-spark-area" d="" fill="url(#sparkFill)"/>
+            <path id="hero-spark-line" d="" fill="none" stroke="#f472b6" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+          </svg>
+          <span id="hero-spark-dot"
+                style="position:absolute;right:1px;width:10px;height:10px;border-radius:50%;background:#fff;border:2.5px solid #e91e85;display:none"></span>
+        </div>
       </section>
 
       <!-- ACOES RAPIDAS -->
@@ -194,7 +227,7 @@
     </aside>
   </div>
 
-  <script src="/dist/stitch-app.min.js?v=20260721-app51"></script>
+  <script src="/dist/stitch-app.min.js?v=20260721-app52"></script>
   <script>
     (function () {
       var bar = document.getElementById('homeAppbar');
