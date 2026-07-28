@@ -99,182 +99,143 @@
   <link href="/css/tdt-app.css?v=20260727-ui1" rel="stylesheet" />
   <script src="/js/tdt-app.js?v=20260727-ui1"></script>
 </head>
-<body class="bg-[#f7f7f7] font-body text-on-background antialiased pb-24" data-page="minhas_campanhas_loja">
-<!-- TopAppBar -->
-<header class="bg-white border-b border-[#e9e7f1] top-0 z-40 sticky">
-<div class="flex justify-between items-center w-full px-6 py-3">
-<div class="flex items-center gap-3">
-<span class="text-xl font-black text-[#2e2e34] font-headline"><img src="/img/logo.png" alt="Tem de Tudo" class="h-8 w-auto" onerror="this.onerror=null;this.src='/img/logo.png.png';" /></span>
-</div>
-<div class="flex items-center gap-4">
-<button class="material-symbols-outlined text-slate-500 hover:bg-[#e9e7f1] transition-colors p-2 rounded-full" data-icon="notifications" type="button">notifications</button>
-<div class="w-8 h-8 rounded-full overflow-hidden border-2 border-primary">
-<img alt="User profile" class="w-full h-full object-cover" data-alt="professional headshot of a smiling manager in a modern studio setting with soft purple background light" src="/img/placeholder-store.svg"/>
-</div>
-</div>
-</div>
-</header>
-<main class="max-w-7xl mx-auto px-4 pt-6 space-y-8 lg:ml-64">
-<!-- Welcome & Hero Section (Bento Style) -->
-<section class="grid grid-cols-1 md:grid-cols-3 gap-4">
-<div class="md:col-span-2 premium-gradient rounded-xl p-6 text-on-primary shadow-lg flex flex-col justify-between relative overflow-hidden">
-<div class="relative z-10">
-<span class="label-sm font-label font-bold tracking-widest bg-white/20 px-2 py-1 rounded-lg">LIVE DASHBOARD</span>
-<h1 class="headline-sm font-headline font-bold mt-4 text-white">Operação de campanhas e clientes</h1>
-<p class="body-md mt-2 opacity-90 max-w-sm">Use esta área para acompanhar promoções, push e indicadores reais da sua operação.</p>
-</div>
-<div class="mt-8 flex gap-4 relative z-10">
-<a href="/gest_o_de_ofertas_parceiro.html#formOferta" class="inline-flex items-center justify-center bg-white text-primary px-6 py-2.5 rounded-full font-bold text-sm shadow-sm active:scale-95 transition-transform">
-                        Abrir Gestao de Ofertas
-                    </a>
-</div>
-<!-- Decorative element -->
-<div class="absolute -right-10 -bottom-10 w-48 h-48 bg-tertiary-container/20 rounded-full blur-3xl"></div>
-</div>
-<div class="bg-surface-container-lowest rounded-xl p-6 shadow-[0_8px_32_rgba(11,31,58,0.08)] flex flex-col justify-center">
-<div class="flex items-center justify-between mb-4">
-<span class="text-slate-500 font-bold text-xs uppercase tracking-tighter">Receita acompanhada</span>
-<span class="material-symbols-outlined text-primary" data-icon="trending_up">trending_up</span>
-</div>
-<div class="text-4xl font-black font-headline text-on-surface">--</div>
-<div class="mt-2 flex items-center gap-2">
-<span class="text-accent-cyan text-xs font-bold bg-tertiary-container/20 px-2 py-0.5 rounded-full text-tertiary">Carregando resumo real</span>
-</div>
-</div>
-</section>
-<!-- Quick Metrics Grid -->
-<section class="grid grid-cols-2 md:grid-cols-4 gap-4">
-<div class="bg-surface-container-low p-4 rounded-xl">
-<p class="text-[10px] font-bold text-slate-500 uppercase">Cartoes ativos</p>
-<p class="text-xl font-bold font-headline mt-1">--</p>
-</div>
-<div class="bg-surface-container-low p-4 rounded-xl">
-<p class="text-[10px] font-bold text-slate-500 uppercase">Resgates Pendentes</p>
-<p class="text-xl font-bold font-headline mt-1">--</p>
-</div>
-<div class="bg-surface-container-low p-4 rounded-xl">
-<p class="text-[10px] font-bold text-slate-500 uppercase">Mdia de Selos</p>
-<p class="text-xl font-bold font-headline mt-1"><span id="campMediaSelos">--</span></p>
-</div>
-<div class="bg-surface-container-low p-4 rounded-xl">
-<p class="text-[10px] font-bold text-slate-500 uppercase">Novos Clientes</p>
-<p class="text-xl font-bold font-headline mt-1">--</p>
-</div>
-</section>
-<!-- Active Campaigns Section -->
-<section class="space-y-4">
-<div class="flex items-center justify-between">
-<h2 class="headline-sm font-headline font-bold text-on-surface">Campanhas publicadas</h2>
-<a href="/gest_o_de_ofertas_parceiro.html" class="text-primary font-bold text-sm">Gerenciar</a>
-</div>
-<div class="flex gap-3 mb-4 overflow-x-auto pb-2 no-scrollbar">
-<button id="filterTodas" data-status="todas" class="bg-primary text-on-primary px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap" type="button">Todas (<span id="countTodas">0</span>)</button>
-<button id="filterAtivas" data-status="ativas" class="bg-surface-container-low text-on-surface-variant px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap hover:bg-surface-container-high transition-colors" type="button">Ativas (<span id="countAtivas">0</span>)</button>
-<button id="filterProgramadas" data-status="programadas" class="bg-surface-container-low text-on-surface-variant px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap hover:bg-surface-container-high transition-colors" type="button">Programadas (<span id="countProgramadas">0</span>)</button>
-<button id="filterInativas" data-status="inativas" class="bg-surface-container-low text-on-surface-variant px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap hover:bg-surface-container-high transition-colors" type="button">Inativas (<span id="countInativas">0</span>)</button>
-</div>
-<div id="ofertasLista" class="space-y-4"></div>
-<p id="ofertasEmpty" class="text-xs text-outline">Nenhuma campanha cadastrada.</p>
-</section>
-<!-- Formulrio de campanha -->
-<section id="formOferta" class="space-y-3 bg-surface-container-lowest rounded-2xl p-4 shadow-sm border border-surface-variant/40">
-<h3 class="font-headline font-bold text-on-surface text-lg">Nova/Editar Promocao</h3>
-<div class="space-y-2">
-<label class="text-xs font-semibold text-on-surface-variant uppercase">Ttulo</label>
-<input id="ofertaTitulo" class="w-full rounded-xl border border-surface-variant/60 bg-white px-3 py-2 text-sm" placeholder="Nome da campanha"/>
-</div>
-<div class="space-y-2">
-<label class="text-xs font-semibold text-on-surface-variant uppercase">Descricao</label>
-<textarea id="ofertaDescricao" class="w-full rounded-xl border border-surface-variant/60 bg-white px-3 py-2 text-sm" rows="2" placeholder="Detalhes"></textarea>
-</div>
-<div class="grid grid-cols-2 gap-3">
-<div class="space-y-2">
-<label class="text-xs font-semibold text-on-surface-variant uppercase">Preo/Valor</label>
-<input id="ofertaPreco" class="w-full rounded-xl border border-surface-variant/60 bg-white px-3 py-2 text-sm" placeholder="Ex: 19.90"/>
-</div>
-<div class="space-y-2">
-<label class="text-xs font-semibold text-on-surface-variant uppercase">Tipo</label>
-<select id="ofertaTipo" class="w-full rounded-xl border border-surface-variant/60 bg-white px-3 py-2 text-sm">
-<option value="desconto">Desconto</option>
-<option value="preco_fixo">Preo fixo</option>
-<option value="brinde">Brinde</option>
-</select>
-</div>
-</div>
-<div class="flex items-center gap-2">
-<input id="ofertaAtiva" type="checkbox" class="rounded border-surface-variant text-primary focus:ring-primary" checked/>
-<label for="ofertaAtiva" class="text-sm text-on-surface">Ativa</label>
-</div>
-<div class="flex gap-2">
-<button id="ofertaSalvar" type="button" class="flex-1 bg-primary text-white rounded-xl py-3 font-semibold">Salvar</button>
-<button id="ofertaCancelar" type="button" class="px-4 py-3 rounded-xl border border-outline text-on-surface text-sm">Cancelar</button>
-</div>
-<p id="ofertaMsg" class="text-xs text-outline"></p>
-</section>
-<!-- Encerradas (usando filtros de status acima) -->
+<body class="tdt-has-sidebar" data-page="minhas_campanhas_loja">
 
+<nav class="tdt-sidebar">
+  <a class="tdt-sidebar__brand" href="/dashboard_parceiro.html">
+    <img src="/img/logo.png" alt="" onerror="this.onerror=null;this.src='/img/logo.png.png';" />
+    <span>Painel da empresa</span>
+  </a>
+  <a class="tdt-sidebar__cta" href="/validar_resgate.html?modo=beneficios">
+    <span class="material-symbols-outlined">qr_code_scanner</span> Meu QR da loja
+  </a>
+  <div class="tdt-sidebar__nav">
+    <a class="tdt-sidebar__link" href="/dashboard_parceiro.html"><span class="material-symbols-outlined">dashboard</span> Painel</a>
+    <a class="tdt-sidebar__link" href="/clientes_fidelizados_loja.html"><span class="material-symbols-outlined">groups</span> Clientes</a>
+    <a class="tdt-sidebar__link is-active" href="/minhas_campanhas_loja.html"><span class="material-symbols-outlined">campaign</span> Campanhas</a>
+    <a class="tdt-sidebar__link" href="/gest_o_de_ofertas_parceiro.html"><span class="material-symbols-outlined">local_offer</span> Ofertas</a>
+    <a class="tdt-sidebar__link" href="/meu_perfil.html"><span class="material-symbols-outlined">settings</span> Configuracoes</a>
+  </div>
+  <button id="logoutBtn" class="tdt-sidebar__link" type="button" style="width:100%;text-align:left;background:none;border:0;cursor:pointer">
+    <span class="material-symbols-outlined">logout</span> Sair
+  </button>
+</nav>
+
+<header class="tdt-appbar">
+  <div class="tdt-appbar__inner">
+    <div class="tdt-appbar__greet">
+      <span class="tdt-appbar__hello">Campanhas</span>
+      <span class="tdt-appbar__sub">Promoções publicadas da sua loja</span>
+    </div>
+    <div class="tdt-appbar__actions">
+      <button class="tdt-icon-btn" type="button" aria-label="Notificações">
+        <span class="material-symbols-outlined">notifications</span>
+      </button>
+      <a href="/meu_perfil.html" class="tdt-icon-btn" aria-label="Configurações">
+        <span class="material-symbols-outlined">settings</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<main class="tdt-panelmain">
+  <section class="tdt-hero">
+    <div class="tdt-hero__label">Operação</div>
+    <h1 class="tdt-hero__title">Campanhas e clientes</h1>
+    <p class="tdt-hero__text">Acompanhe promoções, push e indicadores reais da sua operação.</p>
+    <div class="tdt-hero__actions" style="grid-template-columns:1fr">
+      <a href="/gest_o_de_ofertas_parceiro.html#formOferta" class="tdt-btn tdt-btn--light">Abrir gestão de ofertas</a>
+    </div>
+  </section>
+
+  <section class="tdt-kgrid">
+    <div class="tdt-k">
+      <div class="tdt-k__l"><span class="material-symbols-outlined">loyalty</span> Cartões ativos</div>
+      <div class="tdt-k__v">--</div>
+    </div>
+    <div class="tdt-k">
+      <div class="tdt-k__l"><span class="material-symbols-outlined">pending_actions</span> Resgates pendentes</div>
+      <div class="tdt-k__v">--</div>
+    </div>
+    <div class="tdt-k">
+      <div class="tdt-k__l"><span class="material-symbols-outlined">stars</span> Média de selos</div>
+      <div class="tdt-k__v"><span id="campMediaSelos">--</span></div>
+    </div>
+    <div class="tdt-k">
+      <div class="tdt-k__l"><span class="material-symbols-outlined">person_add</span> Novos clientes</div>
+      <div class="tdt-k__v">--</div>
+    </div>
+  </section>
+
+  <section>
+    <div class="tdt-section__head">
+      <h2 class="tdt-section__title">Campanhas publicadas</h2>
+      <a href="/gest_o_de_ofertas_parceiro.html" class="tdt-section__link">Gerenciar</a>
+    </div>
+    <nav class="tdt-chipbar" style="margin-bottom:16px">
+      <button id="filterTodas" data-status="todas" class="tdt-chip bg-primary" type="button">Todas (<span id="countTodas">0</span>)</button>
+      <button id="filterAtivas" data-status="ativas" class="tdt-chip" type="button">Ativas (<span id="countAtivas">0</span>)</button>
+      <button id="filterProgramadas" data-status="programadas" class="tdt-chip" type="button">Programadas (<span id="countProgramadas">0</span>)</button>
+      <button id="filterInativas" data-status="inativas" class="tdt-chip" type="button">Inativas (<span id="countInativas">0</span>)</button>
+    </nav>
+    <div id="ofertasLista" style="display:grid;gap:12px"></div>
+    <p id="ofertasEmpty" class="tdt-k__d">Nenhuma campanha cadastrada.</p>
+  </section>
+
+  <section id="formOferta" class="tdt-panel">
+    <h3 class="tdt-panel__t">Nova / editar promoção</h3>
+    <div class="tdt-field">
+      <label class="tdt-field__l" for="ofertaTitulo">Título</label>
+      <input id="ofertaTitulo" class="tdt-input" placeholder="Nome da campanha" />
+    </div>
+    <div class="tdt-field">
+      <label class="tdt-field__l" for="ofertaDescricao">Descrição</label>
+      <textarea id="ofertaDescricao" class="tdt-textarea" rows="2" placeholder="Detalhes da oferta"></textarea>
+    </div>
+    <div class="tdt-fieldrow">
+      <div class="tdt-field">
+        <label class="tdt-field__l" for="ofertaPreco">Preço / valor</label>
+        <input id="ofertaPreco" class="tdt-input" placeholder="Ex.: 19,90" />
+      </div>
+      <div class="tdt-field">
+        <label class="tdt-field__l" for="ofertaTipo">Tipo</label>
+        <select id="ofertaTipo" class="tdt-select">
+          <option value="desconto">Desconto</option>
+          <option value="preco_fixo">Preço fixo</option>
+          <option value="brinde">Brinde</option>
+        </select>
+      </div>
+    </div>
+    <label class="tdt-check">
+      <input id="ofertaAtiva" type="checkbox" checked /> Campanha ativa
+    </label>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button id="ofertaSalvar" type="button" class="tdt-btn" style="flex:1">Salvar</button>
+      <button id="ofertaCancelar" type="button" class="tdt-btn tdt-btn--ghost">Cancelar</button>
+    </div>
+    <p id="ofertaMsg" class="tdt-k__d" style="margin-top:12px"></p>
+  </section>
 </main>
-<!-- BottomNavBar -->
-<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pt-3 pb-6 bg-white dark:bg-slate-950 rounded-t-[1.5rem] border-t border-[#4c1d95]/10 shadow-[0_-4px_20px_rgba(11,31,58,0.06)] lg:hidden">
-<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 tap-highlight-transparent active:scale-95 transition-all" href="/dashboard_parceiro.html">
-<span class="material-symbols-outlined" data-icon="home">home</span>
-<span class="font-['Inter'] text-[10px] font-bold uppercase tracking-wider mt-1">Inicio</span>
-</a>
-<a class="flex flex-col items-center justify-center text-[#111b3f] relative after:content-[''] after:w-1 after:h-1 after:bg-[#4c1d95] after:rounded-full after:mt-1 tap-highlight-transparent active:scale-95 transition-all" href="/minhas_campanhas_loja.html">
-<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
-<span class="font-['Inter'] text-[10px] font-bold uppercase tracking-wider mt-1">Operação</span>
-</a>
-<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 tap-highlight-transparent active:scale-95 transition-all" href="/validar_resgate.html?modo=beneficios">
-<span class="material-symbols-outlined" data-icon="qr_code_scanner">qr_code_scanner</span>
-<span class="font-['Inter'] text-[10px] font-bold uppercase tracking-wider mt-1">Validar</span>
-</a>
-<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 tap-highlight-transparent active:scale-95 transition-all" href="/clientes_fidelizados_loja.html">
-<span class="material-symbols-outlined" data-icon="groups">groups</span>
-<span class="font-['Inter'] text-[10px] font-bold uppercase tracking-wider mt-1">Clientes</span>
-</a>
-<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 tap-highlight-transparent active:scale-95 transition-all" href="/meu_perfil.html">
-<span class="material-symbols-outlined" data-icon="person">person</span>
-<span class="font-['Inter'] text-[10px] font-bold uppercase tracking-wider mt-1">Perfil</span>
-</a>
+
+<nav class="app-mobile-dock">
+  <div class="app-mobile-dock__inner">
+    <a class="app-mobile-dock__item" href="/dashboard_parceiro.html">
+      <span class="app-mobile-dock__item-icon"><span class="material-symbols-outlined">home</span></span>
+      <span class="app-mobile-dock__item-label">In&iacute;cio</span></a>
+    <a class="app-mobile-dock__item" href="/clientes_fidelizados_loja.html">
+      <span class="app-mobile-dock__item-icon"><span class="material-symbols-outlined">groups</span></span>
+      <span class="app-mobile-dock__item-label">Clientes</span></a>
+    <a class="app-mobile-dock__item" href="/validar_resgate.html?modo=beneficios">
+      <span class="app-mobile-dock__item-icon"><span class="material-symbols-outlined">qr_code_scanner</span></span>
+      <span class="app-mobile-dock__item-label">Validar</span></a>
+    <a class="app-mobile-dock__item app-mobile-dock__item--active" href="/minhas_campanhas_loja.html">
+      <span class="app-mobile-dock__item-icon"><span class="material-symbols-outlined">campaign</span></span>
+      <span class="app-mobile-dock__item-label">Ofertas</span></a>
+    <a class="app-mobile-dock__item" href="/meu_perfil.html">
+      <span class="app-mobile-dock__item-icon"><span class="material-symbols-outlined">person</span></span>
+      <span class="app-mobile-dock__item-label">Perfil</span></a>
+  </div>
 </nav>
-<!-- SideNavBar (Desktop Only) -->
-<aside class="hidden lg:flex flex-col fixed left-0 top-0 h-full p-4 h-screen w-64 bg-white border-r border-[#e9e7f1]">
-<div class="mb-8 px-4">
-<span class="text-lg font-bold text-[#2e2e34]">Painel da Empresa</span>
-<p class="text-[10px] font-bold text-slate-500">CAMPANHAS E BENEFICIOS</p>
-</div>
-<nav class="flex-1 space-y-2">
-<a class="flex items-center gap-3 p-3 text-slate-600 dark:text-slate-400 hover:text-[#111b3f] font-['Inter'] text-sm font-semibold translate-x-1 transition-transform" href="/dashboard_parceiro.html">
-<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
-                Dashboard
-            </a>
-<a class="flex items-center gap-3 p-3 text-slate-600 dark:text-slate-400 hover:text-[#111b3f] font-['Inter'] text-sm font-semibold translate-x-1 transition-transform" href="/clientes_fidelizados_loja.html">
-<span class="material-symbols-outlined" data-icon="groups">groups</span>
-                Clientes
-            </a>
-<a class="flex items-center gap-3 p-3 bg-white dark:bg-slate-800 text-[#111b3f] rounded-xl shadow-sm font-['Inter'] text-sm font-semibold translate-x-1 transition-transform" href="/minhas_campanhas_loja.html">
-<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
-                Operacao
-            </a>
-<a class="flex items-center gap-3 p-3 text-slate-600 dark:text-slate-400 hover:text-[#111b3f] font-['Inter'] text-sm font-semibold translate-x-1 transition-transform" href="/gest_o_de_ofertas_parceiro.html">
-<span class="material-symbols-outlined" data-icon="payments">payments</span>
-                Ofertas
-            </a>
-<a class="flex items-center gap-3 p-3 text-slate-600 dark:text-slate-400 hover:text-[#111b3f] font-['Inter'] text-sm font-semibold translate-x-1 transition-transform" href="/meu_perfil.html">
-<span class="material-symbols-outlined" data-icon="settings">settings</span>
-                Configuracoes
-            </a>
-</nav>
-<div class="pt-4 border-t border-slate-300/30 space-y-2">
-<button class="w-full text-left flex items-center gap-3 p-3 text-slate-600 font-semibold text-sm hover:bg-white/50 rounded-xl transition-colors" type="button" data-settings-shortcut>
-<span class="material-symbols-outlined" data-icon="help">help</span>
-                Suporte
-            </button>
-<button id="logoutBtn" class="w-full text-left flex items-center gap-3 p-3 text-error font-semibold text-sm hover:bg-white/50 rounded-xl transition-colors" type="button">
-<span class="material-symbols-outlined" data-icon="logout">logout</span>
-                Sair
-            </button>
-</div>
-</aside>
+
 <script src="/dist/stitch-app.min.js?v=20260721-app51"></script>
 </body></html>

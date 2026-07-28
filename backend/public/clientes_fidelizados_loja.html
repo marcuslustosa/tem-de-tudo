@@ -95,140 +95,128 @@
     }
   </style>
   </head>
-<body class="bg-[#f7f7f7] bg-surface font-body text-on-surface antialiased pb-24 lg:pb-0 lg:pl-64" data-page="clientes_fidelizados_loja">
-<!-- TopAppBar -->
-<header class="bg-white border-b border-[#e9e7f1] font-bold text-[#2e2e34] flex justify-between items-center w-full px-6 py-3 sticky top-0 z-40">
-<div class="flex items-center gap-3">
-<span class="text-xl font-black text-[#2e2e34]"><img src="/img/logo.png" alt="Tem de Tudo" class="h-8 w-auto" onerror="this.onerror=null;this.src='/img/logo.png.png';" /></span>
-</div>
-<div class="flex items-center gap-4">
-<button class="material-symbols-outlined text-slate-500 hover:bg-[#e9e7f1] p-2 rounded-full transition-colors scale-95 active:scale-90" data-icon="notifications" type="button">notifications</button>
-<a href="/meu_perfil.html" class="material-symbols-outlined text-slate-500 hover:bg-[#e9e7f1] p-2 rounded-full transition-colors scale-95 active:scale-90" data-icon="settings" aria-label="Abrir perfil da empresa">settings</a>
-<div class="w-8 h-8 rounded-full bg-surface-container overflow-hidden">
-<img alt="User profile" class="w-full h-full object-cover" data-alt="professional portrait of a manager in a modern office with soft cinematic lighting and blurred background" src="/img/placeholder-store.svg"/>
-</div>
-</div>
+<body class="tdt-has-sidebar" data-page="clientes_fidelizados_loja">
+
+<!-- Sidebar (desktop) -->
+<nav class="tdt-sidebar">
+  <a class="tdt-sidebar__brand" href="/dashboard_parceiro.html">
+    <img src="/img/logo.png" alt="" onerror="this.onerror=null;this.src='/img/logo.png.png';" />
+    <span>Painel da empresa</span>
+  </a>
+  <a class="tdt-sidebar__cta" href="/validar_resgate.html?modo=beneficios">
+    <span class="material-symbols-outlined">qr_code_scanner</span> Meu QR da loja
+  </a>
+  <div class="tdt-sidebar__nav">
+    <a class="tdt-sidebar__link" href="/dashboard_parceiro.html">
+      <span class="material-symbols-outlined">dashboard</span> Painel
+    </a>
+    <a class="tdt-sidebar__link is-active" href="/clientes_fidelizados_loja.html">
+      <span class="material-symbols-outlined">groups</span> Clientes
+    </a>
+    <a class="tdt-sidebar__link" href="/minhas_campanhas_loja.html">
+      <span class="material-symbols-outlined">campaign</span> Campanhas
+    </a>
+    <a class="tdt-sidebar__link" href="/gest_o_de_ofertas_parceiro.html">
+      <span class="material-symbols-outlined">local_offer</span> Ofertas
+    </a>
+    <a class="tdt-sidebar__link" href="/meu_perfil.html">
+      <span class="material-symbols-outlined">settings</span> Configurações
+    </a>
+  </div>
+  <button id="logoutBtn" class="tdt-sidebar__link" type="button" style="width:100%;text-align:left;background:none;border:0;cursor:pointer">
+    <span class="material-symbols-outlined">logout</span> Sair
+  </button>
+</nav>
+
+<header class="tdt-appbar">
+  <div class="tdt-appbar__inner">
+    <div class="tdt-appbar__greet">
+      <span class="tdt-appbar__hello">Clientes</span>
+      <span class="tdt-appbar__sub">Sua base fidelizada</span>
+    </div>
+    <div class="tdt-appbar__actions">
+      <button class="tdt-icon-btn" type="button" aria-label="Notificações">
+        <span class="material-symbols-outlined">notifications</span>
+      </button>
+      <a href="/meu_perfil.html" class="tdt-icon-btn" aria-label="Configurações">
+        <span class="material-symbols-outlined">settings</span>
+      </a>
+    </div>
+  </div>
 </header>
-<!-- SideNavBar (Desktop Only) -->
-<nav class="hidden lg:flex flex-col fixed left-0 top-0 h-full p-4 bg-white border-r border-[#e9e7f1] h-screen w-64 font-['Inter'] text-sm font-semibold z-50">
-<div class="mb-8 px-2">
-<span class="text-lg font-bold text-[#2e2e34]">Painel da Empresa</span>
-<p class="text-xs text-slate-500 font-normal">Relacionamento local</p>
-</div>
-<div class="space-y-1 flex-1">
-<a class="flex items-center gap-3 p-3 text-slate-600 dark:text-slate-400 hover:text-[#111b3f] hover:bg-white/50 dark:hover:bg-slate-800/50 rounded-xl transition-all" href="/dashboard_parceiro.html">
-<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
-<span>Dashboard</span>
-</a>
-<a class="flex items-center gap-3 p-3 bg-white dark:bg-slate-800 text-[#111b3f] rounded-xl shadow-sm translate-x-1 transition-transform" href="/clientes_fidelizados_loja.html">
-<span class="material-symbols-outlined" data-icon="storefront">storefront</span>
-<span>Clientes</span>
-</a>
-<a class="flex items-center gap-3 p-3 text-slate-600 dark:text-slate-400 hover:text-[#111b3f] hover:bg-white/50 dark:hover:bg-slate-800/50 rounded-xl transition-all" href="/minhas_campanhas_loja.html">
-<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
-<span>Campanhas</span>
-</a>
-<a class="flex items-center gap-3 p-3 text-slate-600 dark:text-slate-400 hover:text-[#111b3f] hover:bg-white/50 dark:hover:bg-slate-800/50 rounded-xl transition-all" href="/gest_o_de_ofertas_parceiro.html">
-<span class="material-symbols-outlined" data-icon="payments">payments</span>
-<span>Ofertas</span>
-</a>
-<a class="flex items-center gap-3 p-3 text-slate-600 dark:text-slate-400 hover:text-[#111b3f] hover:bg-white/50 dark:hover:bg-slate-800/50 rounded-xl transition-all" href="/meu_perfil.html">
-<span class="material-symbols-outlined" data-icon="settings">settings</span>
-<span>Configurações</span>
-</a>
-</div>
-<a class="mt-4 mb-8 py-3 px-4 bg-[#4c1d95] text-white rounded-xl font-bold shadow-lg shadow-primary/20 flex items-center justify-center gap-2 scale-95 active:scale-90 transition-transform" href="/validar_resgate.html?modo=beneficios">
-<span class="material-symbols-outlined text-sm" data-icon="qr_code_scanner">qr_code_scanner</span>
-            Meu QR da loja
-        </a>
-<div class="border-t border-slate-300 dark:border-slate-700 pt-4 space-y-1">
-<a class="flex items-center gap-3 p-3 text-slate-600 dark:text-slate-400 hover:text-[#111b3f] rounded-xl transition-all" href="mailto:contato@temdetudo.com">
-<span class="material-symbols-outlined" data-icon="help">help</span>
-<span>Suporte</span>
-</a>
-<button id="logoutBtn" class="flex items-center gap-3 p-3 text-slate-600 hover:text-error rounded-xl transition-all w-full text-left" type="button">
-<span class="material-symbols-outlined" data-icon="logout">logout</span>
-<span>Sair</span>
-</button>
-</div>
-</nav>
-<!-- Main Content Canvas -->
-<main class="pt-20 px-4 md:px-8 max-w-5xl mx-auto">
-<!-- Hero Section -->
-<section class="mt-4 mb-8">
-<div class="relative overflow-hidden rounded-2xl p-6 text-white" style="background:#4c1d95">
-<div class="relative z-10">
-<h1 class="text-2xl font-bold font-headline mb-1">Clientes Fidelizados</h1>
-<p class="text-sm opacity-90 max-w-[280px]">Gerencie sua base de clientes frequentes e acompanhe o engajamento local.</p>
-</div>
-<div class="absolute -right-4 -bottom-4 opacity-20 transform rotate-12">
-<span class="material-symbols-outlined text-[120px]" data-icon="groups">groups</span>
-</div>
-</div>
-</section>
-<!-- Search & Filter Bento -->
-<section class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-<div class="md:col-span-3 bg-surface-container-lowest rounded-xl p-3 flex items-center gap-3 shadow-sm">
-<span class="material-symbols-outlined text-on-surface-variant" data-icon="search">search</span>
-<input id="cliBusca" class="bg-transparent border-none focus:ring-0 w-full text-sm font-medium placeholder:text-outline" placeholder="Buscar por nome, e-mail, CPF ou telefone..." type="text"/>
-</div>
-<button id="cliBuscarBtn" class="bg-surface-container rounded-xl p-3 flex items-center justify-center gap-2 text-on-surface font-semibold text-sm hover:bg-surface-container-high transition-colors" type="button">
-<span class="material-symbols-outlined text-lg" data-icon="search">search</span>
-<span class="hidden sm:inline">Buscar</span>
-            </button>
-</section>
-<!-- Quick Stats Chips -->
-<section class="flex gap-3 overflow-x-auto pb-4 no-scrollbar">
-<div class="flex-none bg-primary/10 border border-primary/20 px-4 py-2 rounded-full flex items-center gap-2">
-<span class="w-2 h-2 rounded-full bg-primary"></span>
-<span class="text-xs font-bold text-primary uppercase tracking-wider">Total: <span id="statTotal">--</span></span>
-</div>
-<div class="flex-none bg-tertiary/10 border border-tertiary/20 px-4 py-2 rounded-full flex items-center gap-2">
-<span class="w-2 h-2 rounded-full bg-tertiary"></span>
-<span class="text-xs font-bold text-tertiary uppercase tracking-wider">Ativos: <span id="statAtivos">--</span></span>
-</div>
-<div class="flex-none bg-secondary/10 border border-secondary/20 px-4 py-2 rounded-full flex items-center gap-2">
-<span class="w-2 h-2 rounded-full bg-secondary"></span>
-<span class="text-xs font-bold text-secondary uppercase tracking-wider">Inativos: <span id="statNovos">--</span></span>
-</div>
-</section>
-<!-- Customer List (Cards) -->
-<section id="clientesLista" class="space-y-4 mb-12"></section>
-<p id="clientesEmpty" class="text-xs text-outline">Nenhum cliente fidelizado.</p>
-<!-- Pagination / Load More -->
-<div class="flex flex-col items-center gap-4 mb-12">
-<a class="w-full py-4 border border-outline-variant rounded-xl text-on-surface font-bold text-sm hover:bg-surface-container transition-colors active:scale-95 text-center" href="/validar_resgate.html?modo=beneficios">
-                Meu QR da loja
-            </a>
-<p id="clientesResumo" class="text-[10px] font-label font-semibold text-outline uppercase tracking-widest">Carregando resultados...</p>
-</div>
+
+<main class="tdt-panelmain">
+  <section class="tdt-hero">
+    <div class="tdt-hero__label">Relacionamento local</div>
+    <h1 class="tdt-hero__title">Clientes fidelizados</h1>
+    <p class="tdt-hero__text">Acompanhe quem volta, quem sumiu e quem está perto da recompensa.</p>
+  </section>
+
+  <section>
+    <div style="display:grid;gap:12px">
+      <div class="tdt-searchbar">
+        <span class="material-symbols-outlined tdt-searchbar__icon">search</span>
+        <input id="cliBusca" type="search" placeholder="Buscar por nome, e-mail, CPF ou telefone" />
+      </div>
+      <button id="cliBuscarBtn" class="tdt-btn tdt-btn--ghost" type="button">
+        <span class="material-symbols-outlined">search</span> Buscar
+      </button>
+    </div>
+  </section>
+
+  <section class="tdt-kgrid" style="grid-template-columns:repeat(3,1fr)">
+    <div class="tdt-k">
+      <div class="tdt-k__l"><span class="material-symbols-outlined">group</span> Total</div>
+      <div id="statTotal" class="tdt-k__v">--</div>
+    </div>
+    <div class="tdt-k">
+      <div class="tdt-k__l"><span class="material-symbols-outlined">bolt</span> Ativos</div>
+      <div id="statAtivos" class="tdt-k__v">--</div>
+    </div>
+    <div class="tdt-k">
+      <div class="tdt-k__l"><span class="material-symbols-outlined">bedtime</span> Inativos</div>
+      <div id="statNovos" class="tdt-k__v">--</div>
+    </div>
+  </section>
+
+  <section>
+    <div class="tdt-section__head">
+      <h2 class="tdt-section__title">Sua base</h2>
+      <span id="clientesResumo" class="tdt-section__count">Carregando resultados...</span>
+    </div>
+    <div id="clientesLista" style="display:grid;gap:12px"></div>
+    <p id="clientesEmpty" class="tdt-k__d">Nenhum cliente fidelizado.</p>
+  </section>
+
+  <a class="tdt-btn tdt-btn--ghost tdt-btn--block" href="/validar_resgate.html?modo=beneficios">
+    <span class="material-symbols-outlined">qr_code_2</span> Meu QR da loja
+  </a>
 </main>
-<!-- BottomNavBar (Mobile Only) -->
-<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pt-3 pb-safe lg:hidden bg-white dark:bg-slate-950 rounded-t-[1.5rem] border-t border-[#4c1d95]/10 shadow-[0_-4px_20px_rgba(11,31,58,0.06)] backdrop-blur-md">
-<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 tap-highlight-transparent active:scale-95 transition-all" href="/dashboard_parceiro.html">
-<span class="material-symbols-outlined text-2xl" data-icon="home">home</span>
-<span class="font-['Inter'] text-[10px] font-bold uppercase tracking-wider mt-1">Inicio</span>
-</a>
-<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 tap-highlight-transparent active:scale-95 transition-all" href="/minhas_campanhas_loja.html">
-<span class="material-symbols-outlined text-2xl" data-icon="receipt_long">receipt_long</span>
-<span class="font-['Inter'] text-[10px] font-bold uppercase tracking-wider mt-1">Campanhas</span>
-</a>
-<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 tap-highlight-transparent active:scale-95 transition-all" href="/gest_o_de_ofertas_parceiro.html">
-<span class="material-symbols-outlined text-2xl" data-icon="inventory_2">inventory_2</span>
-<span class="font-['Inter'] text-[10px] font-bold uppercase tracking-wider mt-1">Ofertas</span>
-</a>
-<a class="flex flex-col items-center justify-center text-[#111b3f] relative after:content-[''] after:w-1 after:h-1 after:bg-[#4c1d95] after:rounded-full after:mt-1 tap-highlight-transparent active:scale-95 transition-all" href="/clientes_fidelizados_loja.html">
-<span class="material-symbols-outlined text-2xl" data-icon="store" style="font-variation-settings: 'FILL' 1;">store</span>
-<span class="font-['Inter'] text-[10px] font-bold uppercase tracking-wider mt-1">Clientes</span>
-</a>
-<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 tap-highlight-transparent active:scale-95 transition-all" href="/meu_perfil.html">
-<span class="material-symbols-outlined text-2xl" data-icon="person">person</span>
-<span class="font-['Inter'] text-[10px] font-bold uppercase tracking-wider mt-1">Perfil</span>
-</a>
+
+<nav class="app-mobile-dock">
+  <div class="app-mobile-dock__inner">
+    <a class="app-mobile-dock__item" href="/dashboard_parceiro.html">
+      <span class="app-mobile-dock__item-icon"><span class="material-symbols-outlined">home</span></span>
+      <span class="app-mobile-dock__item-label">Início</span>
+    </a>
+    <a class="app-mobile-dock__item app-mobile-dock__item--active" href="/clientes_fidelizados_loja.html">
+      <span class="app-mobile-dock__item-icon"><span class="material-symbols-outlined">groups</span></span>
+      <span class="app-mobile-dock__item-label">Clientes</span>
+    </a>
+    <a class="app-mobile-dock__item" href="/validar_resgate.html?modo=beneficios">
+      <span class="app-mobile-dock__item-icon"><span class="material-symbols-outlined">qr_code_scanner</span></span>
+      <span class="app-mobile-dock__item-label">Validar</span>
+    </a>
+    <a class="app-mobile-dock__item" href="/minhas_campanhas_loja.html">
+      <span class="app-mobile-dock__item-icon"><span class="material-symbols-outlined">campaign</span></span>
+      <span class="app-mobile-dock__item-label">Ofertas</span>
+    </a>
+    <a class="app-mobile-dock__item" href="/meu_perfil.html">
+      <span class="app-mobile-dock__item-icon"><span class="material-symbols-outlined">person</span></span>
+      <span class="app-mobile-dock__item-label">Perfil</span>
+    </a>
+  </div>
 </nav>
-<!-- Floating Action Button (Only on main screen) -->
-<a class="fixed bottom-24 right-6 w-14 h-14 bg-[#4c1d95] text-on-primary rounded-full shadow-lg shadow-primary/30 flex items-center justify-center lg:hidden z-40 active:scale-90 transition-transform" href="/validar_resgate.html?modo=beneficios">
-<span class="material-symbols-outlined text-3xl" data-icon="qr_code_scanner">qr_code_scanner</span>
-</a>
+
 <script src="/dist/stitch-app.min.js?v=20260721-app51"></script>
 </body></html>

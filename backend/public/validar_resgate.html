@@ -106,346 +106,92 @@
     }
   </style>
 </head>
-<body class="bg-background font-body text-on-background min-h-screen flex flex-col" data-page="validar_resgate">
-<nav class="flex justify-between items-center px-6 py-3 w-full sticky top-0 z-40 bg-[#f7f7f7]/95 backdrop-blur border-b border-[#e9e7f1] transition-all">
-<div class="font-headline font-black text-xl "><img src="/img/logo.png" alt="Tem de Tudo" class="h-8 w-auto" onerror="this.onerror=null;this.src='/img/logo.png.png';" /></div>
-<a href="/meu_perfil.html" class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-surface-container text-[#2e2e34]" aria-label="Meu perfil">
-<span class="material-symbols-outlined text-[20px]">person</span>
-</a>
-</nav>
+<body data-page="validar_resgate">
 
-<main class="flex-1 flex flex-col items-center px-6 pt-8 pb-32">
-<header class="w-full mb-8">
-      <p class="inline-flex rounded-full bg-surface-container px-4 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-on-surface-variant">Leitura de QR</p>
-<h1 class="font-headline text-2xl font-bold text-on-surface mb-2 mt-4">Ler QR Code</h1>
-      <p id="scanCameraHint" class="text-on-surface-variant text-sm leading-relaxed">Aponte a câmera para o QR Code.</p>
-      <p class="text-xs text-on-surface-variant mt-2" id="scanInstructions"></p>
+<header class="tdt-appbar">
+  <div class="tdt-appbar__inner">
+    <a href="/dashboard_parceiro.html" class="tdt-icon-btn" aria-label="Voltar">
+      <span class="material-symbols-outlined">arrow_back</span>
+    </a>
+    <div class="tdt-appbar__greet" style="margin-left:12px">
+      <span class="tdt-appbar__hello">Ler QR Code</span>
+      <span class="tdt-appbar__sub" id="scanCameraHint">Aponte a câmera para o QR Code.</span>
+    </div>
+    <div class="tdt-appbar__actions">
+      <a href="/meu_perfil.html" class="tdt-icon-btn" aria-label="Meu perfil">
+        <span class="material-symbols-outlined">person</span>
+      </a>
+    </div>
+  </div>
 </header>
 
-<div id="qrScannerCamera" class="w-full max-w-md aspect-square bg-surface-container rounded-[1.5rem] relative overflow-hidden flex items-center justify-center mb-8 border-4 border-surface-container-low">
-<video id="qrVideo" class="absolute inset-0 w-full h-full object-cover" autoplay playsinline></video>
-<div class="relative w-64 h-64 border-2 border-primary/30 rounded-xl overflow-hidden flex flex-col items-center justify-center z-10" id="scanFrame">
-<div class="qr-scanner-overlay"></div>
-<span class="material-symbols-outlined text-primary text-8xl opacity-60" id="qrPlaceholder">qr_code_2</span>
-<div id="scanSuccess" class="hidden absolute inset-0 bg-primary/20 flex items-center justify-center">
-<span class="material-symbols-outlined text-primary text-8xl" style="font-variation-settings: 'FILL' 1;">check_circle</span>
-</div>
-<button id="closeQRScanner" class="absolute top-4 right-4 w-10 h-10 bg-black/60 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-black/80 transition-colors z-30 shadow-lg" title="Fechar scanner" type="button">
-<span class="material-symbols-outlined text-lg">close</span>
-</button>
-<div class="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-primary rounded-tl-lg"></div>
-<div class="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-primary rounded-tr-lg"></div>
-<div class="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-primary rounded-bl-lg"></div>
-<div class="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-primary rounded-br-lg"></div>
-</div>
-<div class="absolute top-6 left-1/2 transform -translate-x-1/2 px-4 py-2 bg-surface-container-lowest/90 backdrop-blur rounded-full shadow-sm z-20">
-<span class="text-xs font-bold uppercase tracking-wider text-on-surface" id="scanStatus">Aguardando QR Code...</span>
-</div>
-<div class="absolute bottom-6 flex items-center gap-3 z-20">
-<button id="toggleFlash" class="px-4 py-2 bg-surface-container-lowest/80 backdrop-blur rounded-full shadow-sm flex items-center gap-2" type="button">
-<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">flashlight_on</span>
-<span class="text-[10px] font-bold uppercase tracking-wider text-on-surface">Lanterna</span>
-</button>
-<button id="switchCamera" class="px-4 py-2 bg-surface-container-lowest/80 backdrop-blur rounded-full shadow-sm flex items-center gap-2" type="button">
-<span class="material-symbols-outlined text-primary text-sm">flip_camera_android</span>
-              <span class="text-[10px] font-bold uppercase tracking-wider text-on-surface">Trocar câmera</span>
-</button>
-</div>
-</div>
+<main class="tdt-panelmain">
+  <p class="tdt-k__d" id="scanInstructions" style="text-align:center"></p>
 
-<div id="qrManualSection" class="w-full max-w-md space-y-6">
-<div class="relative">
-<div class="flex items-center justify-between mb-2">
-            <label class="font-label text-[10px] font-semibold uppercase tracking-wider text-on-surface-variant">Ou digite o código</label>
-</div>
-<div class="relative group">
-              <input id="cupomId" autocomplete="off" class="w-full h-14 px-5 bg-surface-container-lowest border-none rounded-xl text-on-surface font-semibold placeholder:text-outline-variant focus:ring-2 focus:ring-primary/20 transition-all outline-none shadow-sm" placeholder="Cole o código do QR da empresa" type="text"/>
-<span class="material-symbols-outlined absolute right-4 top-4 text-outline-variant group-focus-within:text-primary transition-colors">keyboard</span>
-</div>
-</div>
-<button id="usarCupomBtn" class="w-full h-16 bg-[#4c1d95] text-white rounded-[1.5rem] font-headline font-extrabold text-lg flex items-center justify-center gap-3 shadow-[0_8px_24px_rgba(176,23,116,0.25)] hover:scale-[1.02] active:scale-[0.98] transition-all" type="button">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">verified</span>
-                Validar Agora
-            </button>
-<div id="validarFeedback" class="hidden text-sm font-semibold text-primary text-center"></div>
-</div>
-  </main>
+  <section id="qrScannerCamera" class="tdt-scan">
+    <video id="qrVideo" class="tdt-scan__video" autoplay playsinline></video>
 
-<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-safe pt-3 bg-[#ffffff] dark:bg-slate-900 border-t border-[#00666e]/20 shadow-[0_-4px_20px_rgba(11,31,58,0.06)] rounded-t-[1.5rem] lg:hidden">
-<a class="flex flex-col items-center justify-center text-[#aeacb4] dark:text-slate-500 scale-90 duration-150 ease-in-out" href="/dashboard_parceiro.html">
-<span class="material-symbols-outlined">home</span>
-      <span class="font-['Inter'] text-[10px] font-semibold uppercase tracking-wider">Início</span>
-</a>
-<a class="flex flex-col items-center justify-center text-[#aeacb4] dark:text-slate-500 scale-90 duration-150 ease-in-out" href="/configuracoes_admin.html">
-<span class="material-symbols-outlined">widgets</span>
-<span class="font-['Inter'] text-[10px] font-semibold uppercase tracking-wider">Ferramentas</span>
-</a>
-<a class="flex flex-col items-center justify-center text-[#4c1d95] after:content-[''] after:w-1 after:h-1 after:bg-[#4c1d95] after:rounded-full after:mt-1 scale-90 duration-150 ease-in-out" href="/validar_resgate.html?modo=beneficios">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">qr_code_scanner</span>
-<span class="font-['Inter'] text-[10px] font-semibold uppercase tracking-wider">Validar</span>
-</a>
-<a class="flex flex-col items-center justify-center text-[#aeacb4] dark:text-slate-500 scale-90 duration-150 ease-in-out" href="/clientes_fidelizados_loja.html">
-<span class="material-symbols-outlined">group</span>
-<span class="font-['Inter'] text-[10px] font-semibold uppercase tracking-wider">Clientes</span>
-</a>
-<a class="flex flex-col items-center justify-center text-[#aeacb4] dark:text-slate-500 scale-90 duration-150 ease-in-out" href="/meu_perfil.html">
-<span class="material-symbols-outlined">person</span>
-<span class="font-['Inter'] text-[10px] font-semibold uppercase tracking-wider">Perfil</span>
-</a>
+    <div class="tdt-scan__status" id="scanStatus">Aguardando QR Code...</div>
+
+    <button id="closeQRScanner" class="tdt-scan__close" title="Fechar scanner" type="button">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+
+    <div class="tdt-scan__frame" id="scanFrame">
+      <span class="tdt-scan__c tdt-scan__c--tl"></span>
+      <span class="tdt-scan__c tdt-scan__c--tr"></span>
+      <span class="tdt-scan__c tdt-scan__c--bl"></span>
+      <span class="tdt-scan__c tdt-scan__c--br"></span>
+      <span class="material-symbols-outlined tdt-scan__ph" id="qrPlaceholder">qr_code_2</span>
+      <div id="scanSuccess" class="hidden tdt-scan__ok">
+        <span class="material-symbols-outlined">check_circle</span>
+      </div>
+    </div>
+
+    <div class="tdt-scan__tools">
+      <button id="toggleFlash" class="tdt-scan__tool" type="button">
+        <span class="material-symbols-outlined">flashlight_on</span> Lanterna
+      </button>
+      <button id="switchCamera" class="tdt-scan__tool" type="button">
+        <span class="material-symbols-outlined">cameraswitch</span> Trocar
+      </button>
+    </div>
+  </section>
+
+  <p class="tdt-scan__hint">Centralize o QR Code dentro da moldura. A leitura é automática.</p>
+
+  <section id="qrManualSection" class="tdt-panel">
+    <h3 class="tdt-panel__t">Sem câmera? Digite o código</h3>
+    <div class="tdt-field">
+      <input id="cupomId" class="tdt-input" autocomplete="off" type="text"
+             placeholder="Cole o código do QR" style="letter-spacing:1px" />
+    </div>
+    <button id="usarCupomBtn" class="tdt-btn tdt-btn--block" type="button">
+      <span class="material-symbols-outlined">verified</span> Validar agora
+    </button>
+    <div id="validarFeedback" class="hidden tdt-k__d" style="margin-top:12px;text-align:center"></div>
+  </section>
+</main>
+
+<nav class="app-mobile-dock">
+  <div class="app-mobile-dock__inner">
+    <a class="app-mobile-dock__item" href="/dashboard_parceiro.html">
+      <span class="app-mobile-dock__item-icon"><span class="material-symbols-outlined">home</span></span>
+      <span class="app-mobile-dock__item-label">Início</span></a>
+    <a class="app-mobile-dock__item" href="/clientes_fidelizados_loja.html">
+      <span class="app-mobile-dock__item-icon"><span class="material-symbols-outlined">groups</span></span>
+      <span class="app-mobile-dock__item-label">Clientes</span></a>
+    <a class="app-mobile-dock__item app-mobile-dock__item--active" href="/validar_resgate.html?modo=beneficios">
+      <span class="app-mobile-dock__item-icon"><span class="material-symbols-outlined">qr_code_scanner</span></span>
+      <span class="app-mobile-dock__item-label">Validar</span></a>
+    <a class="app-mobile-dock__item" href="/minhas_campanhas_loja.html">
+      <span class="app-mobile-dock__item-icon"><span class="material-symbols-outlined">campaign</span></span>
+      <span class="app-mobile-dock__item-label">Ofertas</span></a>
+    <a class="app-mobile-dock__item" href="/meu_perfil.html">
+      <span class="app-mobile-dock__item-icon"><span class="material-symbols-outlined">person</span></span>
+      <span class="app-mobile-dock__item-label">Perfil</span></a>
+  </div>
 </nav>
-
-<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
-
-<script>
-(function () {
-  const video = document.getElementById('qrVideo');
-  const statusText = document.getElementById('scanStatus');
-  const placeholder = document.getElementById('qrPlaceholder');
-  const successIndicator = document.getElementById('scanSuccess');
-  const toggleFlashBtn = document.getElementById('toggleFlash');
-  const switchCameraBtn = document.getElementById('switchCamera');
-
-  let stream = null;
-  let facingMode = 'environment';
-  let scanning = true;
-  let lastScannedCode = null;
-  let lastScanTime = 0;
-  const scanCooldown = 3000;
-
-  // Fluxo único de QR: o cliente lê o QR da empresa. A empresa nunca escaneia
-  // ninguém nesta página — ela apenas exibe o QR da loja (injetado pelo bundle).
-  const storedUser = JSON.parse(localStorage.getItem('tem_de_tudo_user') || '{}');
-  const perfil = (storedUser.perfil || storedUser.role || '').toLowerCase();
-  const isEmpresa = ['empresa', 'estabelecimento', 'parceiro'].includes(perfil);
-  const instructionEl = document.getElementById('scanInstructions');
-  let appReady = Boolean(window.__tdtAppReady);
-  let scanPending = false;
-
-  if (instructionEl && !isEmpresa) {
-    instructionEl.textContent = 'Escaneie o QR da empresa para se vincular no app.';
-  }
-
-  const resetScannerUi = () => {
-    successIndicator.classList.add('hidden');
-    placeholder.classList.remove('hidden');
-    statusText.classList.remove('text-error', 'text-primary', 'text-tertiary');
-    statusText.textContent = 'Escaneie o QR da empresa...';
-  };
-
-  const resumeScanning = (delay = 0) => {
-    setTimeout(() => {
-      scanPending = false;
-      resetScannerUi();
-      scanning = true;
-      requestAnimationFrame(scanQRCode);
-    }, delay);
-  };
-
-  window.addEventListener('tdt-app-ready', () => {
-    appReady = true;
-  });
-
-  window.addEventListener('tdt-qr-validation-result', (event) => {
-    const result = event?.detail || {};
-    if (result.source !== 'camera') return;
-
-    successIndicator.classList.toggle('hidden', !result.ok);
-
-    if (result.ok) {
-      statusText.classList.remove('text-error');
-      statusText.classList.add('text-tertiary');
-      // Vínculo concluído: o bundle redireciona para a página da empresa.
-      statusText.textContent = result.message || 'QR validado com sucesso.';
-      return;
-    }
-
-    successIndicator.classList.add('hidden');
-    statusText.classList.remove('text-primary', 'text-tertiary');
-    statusText.classList.add('text-error');
-    statusText.textContent = result.message || 'Nao foi possivel validar este QR.';
-    resumeScanning(2600);
-  });
-
-  async function startCamera() {
-    try {
-      if (stream) {
-        stream.getTracks().forEach((track) => track.stop());
-      }
-
-      const constraints = {
-        video: {
-          facingMode,
-          width: { ideal: 1280 },
-          height: { ideal: 720 },
-        },
-      };
-
-      stream = await navigator.mediaDevices.getUserMedia(constraints);
-      video.srcObject = stream;
-      placeholder.classList.add('hidden');
-      statusText.textContent = 'Camera ativa - escaneie o QR da empresa';
-
-      requestAnimationFrame(scanQRCode);
-    } catch (error) {
-      const unsupportedCamera = ['NotSupportedError', 'NotFoundError', 'OverconstrainedError'].includes(error?.name || '');
-      if (unsupportedCamera) {
-        console.warn('camera_unavailable', error?.name || error);
-        statusText.textContent = 'Camera indisponivel neste dispositivo ou navegador';
-      } else if ((error?.name || '') === 'NotAllowedError') {
-        console.warn('camera_permission_denied');
-        statusText.textContent = 'Permita o acesso a camera para continuar';
-      } else {
-        console.warn('camera_start_failed', error?.name || error);
-        statusText.textContent = 'Nao foi possivel iniciar a camera agora';
-      }
-      statusText.classList.add('text-error');
-    }
-  }
-
-  function scanQRCode() {
-    if (!scanning || video.readyState !== video.HAVE_ENOUGH_DATA) {
-      if (scanning) requestAnimationFrame(scanQRCode);
-      return;
-    }
-
-    const canvas = document.createElement('canvas');
-    const context = canvas.getContext('2d');
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-    const code = jsQR(imageData.data, imageData.width, imageData.height, {
-      inversionAttempts: 'dontInvert',
-    });
-
-    if (code && code.data) {
-      const now = Date.now();
-      if (code.data !== lastScannedCode || (now - lastScanTime) > scanCooldown) {
-        lastScannedCode = code.data;
-        lastScanTime = now;
-        handleQRCodeDetected(code.data);
-      }
-    }
-
-    if (scanning) {
-      requestAnimationFrame(scanQRCode);
-    }
-  }
-
-  async function handleQRCodeDetected(qrData) {
-    placeholder.classList.add('hidden');
-    successIndicator.classList.remove('hidden');
-    statusText.textContent = 'QR Code detectado! Validando...';
-    statusText.classList.add('text-primary');
-
-    if (navigator.vibrate) {
-      navigator.vibrate(200);
-    }
-
-    if (!appReady) {
-      statusText.textContent = 'Preparando validacao...';
-      statusText.classList.remove('text-error');
-      statusText.classList.add('text-tertiary');
-      resumeScanning(900);
-      return;
-    }
-
-    if (scanPending) {
-      return;
-    }
-
-    scanPending = true;
-    scanning = false;
-    const manualInput = document.getElementById('cupomId');
-    if (manualInput) manualInput.value = qrData;
-    window.dispatchEvent(new CustomEvent('tdt-qr-scanned', {
-      detail: {
-        codigo: qrData,
-        source: 'camera',
-      },
-    }));
-    return;
-
-  }
-
-  toggleFlashBtn.addEventListener('click', async () => {
-    if (!stream) return;
-
-    const track = stream.getVideoTracks()[0];
-    const capabilities = track.getCapabilities();
-
-    if (!capabilities.torch) {
-      alert('Lanterna não disponível neste dispositivo');
-      return;
-    }
-
-    const current = track.getSettings();
-    const newState = !current.torch;
-    await track.applyConstraints({ advanced: [{ torch: newState }] });
-    toggleFlashBtn.classList.toggle('bg-primary', newState);
-    toggleFlashBtn.classList.toggle('text-white', newState);
-  });
-
-  switchCameraBtn.addEventListener('click', () => {
-    facingMode = facingMode === 'environment' ? 'user' : 'environment';
-    startCamera();
-  });
-
-  document.getElementById('closeQRScanner').addEventListener('click', () => {
-    scanning = false;
-    scanPending = false;
-    if (stream) {
-      stream.getTracks().forEach((track) => track.stop());
-    }
-    const fallback = isEmpresa ? '/dashboard_parceiro.html' : '/meus_pontos.html';
-    const sameOriginReferrer = document.referrer && (() => {
-      try {
-        return new URL(document.referrer).origin === window.location.origin;
-      } catch {
-        return false;
-      }
-    })();
-    if (window.history.length > 1 && sameOriginReferrer) {
-      window.history.back();
-      return;
-    }
-    window.location.href = fallback;
-  });
-
-  // A empresa NAO escaneia mais o cliente: o cliente e quem le o QR da empresa.
-  // Nesta pagina, para a empresa, mostramos apenas o QR da loja (injetado pelo
-  // bundle) e escondemos a camera/validacao. O scanner segue ativo para o cliente.
-  const viewerIsEmpresa = (() => {
-    try {
-      const raw = localStorage.getItem('tem_de_tudo_user');
-      if (!raw) return false;
-      const u = JSON.parse(raw) || {};
-      const perfil = String(u.perfil || u.role || u.tipo || '').toLowerCase();
-      return perfil === 'empresa';
-    } catch { return false; }
-  })();
-
-  if (viewerIsEmpresa) {
-    document.getElementById('qrScannerCamera')?.classList.add('hidden');
-    document.getElementById('qrManualSection')?.classList.add('hidden');
-    document.getElementById('scanCameraHint')?.classList.add('hidden');
-  } else if (video) {
-    if (appReady) {
-      startCamera();
-    } else {
-      window.addEventListener('tdt-app-ready', () => startCamera(), { once: true });
-    }
-  }
-
-  window.addEventListener('beforeunload', () => {
-    scanning = false;
-    if (stream) {
-      stream.getTracks().forEach((track) => track.stop());
-    }
-  });
-})();
-</script>
 
 <script src="/dist/stitch-app.min.js?v=20260721-app51"></script>
 </body>
