@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Protótipo · Meu cartão</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="proto.css" />
+<script>(function(){try{var t=localStorage.getItem('proto-theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body data-page="cartao" data-title="Meu cartão" data-sub="Seu QR de cliente" data-back="inicio.html">
+
+<div class="ap-shell ap-shell--single ap-shell--narrow">
+  <div class="ap-main">
+
+    <!-- O CARTAO: o momento mais usado do app vira objeto de verdade -->
+    <section class="ap-qr" style="padding:26px;">
+      <div class="ap-qr__top"><span>Cartão de fidelidade</span><span>Tem de Tudo</span></div>
+
+      <div class="ap-qr__code ap-qr__code--lg"><i></i></div>
+
+      <div class="ap-qr__who">
+        <div class="ap-qr__name" style="font-size:19px;">Cliente Demo</div>
+        <div class="ap-qr__hint">Membro Prata · 320 pontos</div>
+        <div style="margin-top:14px;display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:rgba(255,255,255,0.12);border:1px solid var(--hero-line);font-size:13px;font-weight:700;letter-spacing:2px;">
+          TDT · 9F4K · 2C7A
+        </div>
+      </div>
+    </section>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <button class="ap-btn ap-btn--ghost" type="button">
+        <span class="material-symbols-outlined" style="font-size:20px">brightness_high</span> Brilho máximo
+      </button>
+      <button class="ap-btn ap-btn--ghost" type="button">
+        <span class="material-symbols-outlined" style="font-size:20px">ios_share</span> Compartilhar
+      </button>
+    </div>
+
+    <!-- Caminho inverso: ler o QR da empresa -->
+    <section class="ap-panel">
+      <div style="display:flex;align-items:center;gap:14px;">
+        <div class="ap-quick__ic ap-quick__ic--1" style="margin:0;width:52px;height:52px;">
+          <span class="material-symbols-outlined">qr_code_scanner</span>
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:15.5px;font-weight:700;">Entrar em uma empresa nova</div>
+          <div style="font-size:13px;color:var(--text-muted);margin-top:3px;line-height:1.5;">
+            Leia o QR Code que fica no balcão para se vincular e começar a pontuar.
+          </div>
+        </div>
+      </div>
+      <button class="ap-btn" type="button" style="margin-top:16px;">Ler QR da empresa</button>
+    </section>
+
+    <!-- Como funciona -->
+    <section class="ap-panel">
+      <h3 class="ap-panel__t">Como usar seu cartão</h3>
+      <div class="ap-row">
+        <div class="ap-row__ic"><span class="material-symbols-outlined">point_of_sale</span></div>
+        <div class="ap-row__b">
+          <div class="ap-row__t">Na hora de pagar</div>
+          <div class="ap-row__d">Mostre este QR e a equipe registra seus pontos na hora.</div>
+        </div>
+      </div>
+      <div class="ap-row">
+        <div class="ap-row__ic"><span class="material-symbols-outlined">redeem</span></div>
+        <div class="ap-row__b">
+          <div class="ap-row__t">Para resgatar um benefício</div>
+          <div class="ap-row__d">Escolha o benefício em Benefícios e apresente o mesmo QR.</div>
+        </div>
+      </div>
+      <div class="ap-row">
+        <div class="ap-row__ic"><span class="material-symbols-outlined">lock</span></div>
+        <div class="ap-row__b">
+          <div class="ap-row__t">É pessoal e intransferível</div>
+          <div class="ap-row__d">O código muda periodicamente por segurança — sempre abra pelo app.</div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<script src="proto-shell.js"></script>
+</body>
+</html>

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Protótipo · Painel da empresa</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="proto.css" />
+<script>(function(){try{var t=localStorage.getItem('proto-theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body data-profile="empresa" data-page="empresa-painel" data-title="Olá, Malagueta" data-sub="Seu programa de fidelidade hoje">
+
+<div class="ap-shell">
+  <div class="ap-main">
+
+    <!-- HEROI: o numero que o dono olha primeiro -->
+    <section class="ap-hero">
+      <div class="ap-hero__grid">
+        <div class="ap-hero__left">
+          <div class="ap-hero__label">Movimento de hoje</div>
+          <h1 class="ap-hero__value">18<small>clientes atendidos</small></h1>
+          <span class="ap-hero__tier"><span class="material-symbols-outlined">trending_up</span> 38% acima da média de terça</span>
+        </div>
+        <div class="ap-ring">
+          <svg width="108" height="108" viewBox="0 0 108 108" aria-hidden="true">
+            <circle cx="54" cy="54" r="46" fill="none" stroke="var(--ring-track)" stroke-width="10"/>
+            <circle cx="54" cy="54" r="46" fill="none" stroke="url(#g2)" stroke-width="10" stroke-linecap="round"
+                    stroke-dasharray="289" stroke-dashoffset="72"/>
+            <defs><linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#e91e85"/><stop offset="100%" stop-color="#f7c948"/>
+            </linearGradient></defs>
+          </svg>
+          <div class="ap-ring__txt">
+            <div class="ap-ring__num">75%</div>
+            <div class="ap-ring__cap">da meta do mês</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ap-hero__kpis">
+        <div class="ap-kpi ap-kpi--in">
+          <div class="ap-kpi__k"><span class="material-symbols-outlined">stars</span> Pontos distribuídos hoje</div>
+          <div class="ap-kpi__v">+640</div>
+        </div>
+        <div class="ap-kpi ap-kpi--out">
+          <div class="ap-kpi__k"><span class="material-symbols-outlined">redeem</span> Benefícios validados</div>
+          <div class="ap-kpi__v">7</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- KPIs do mes -->
+    <section class="ap-kgrid">
+      <div class="ap-k">
+        <div class="ap-k__l"><span class="material-symbols-outlined">group</span> Clientes</div>
+        <div class="ap-k__v">312</div>
+        <div class="ap-k__d is-up">+24 <span>no mês</span></div>
+      </div>
+      <div class="ap-k">
+        <div class="ap-k__l"><span class="material-symbols-outlined">storefront</span> Visitas</div>
+        <div class="ap-k__v">1.480</div>
+        <div class="ap-k__d is-up">+12% <span>vs. junho</span></div>
+      </div>
+      <div class="ap-k">
+        <div class="ap-k__l"><span class="material-symbols-outlined">stars</span> Pontos dados</div>
+        <div class="ap-k__v">9.320</div>
+        <div class="ap-k__d is-up">+8% <span>vs. junho</span></div>
+      </div>
+      <div class="ap-k">
+        <div class="ap-k__l"><span class="material-symbols-outlined">redeem</span> Resgates</div>
+        <div class="ap-k__v">96</div>
+        <div class="ap-k__d is-down">−5% <span>vs. junho</span></div>
+      </div>
+    </section>
+
+    <!-- GRAFICO: visitas por dia da semana (serie unica, enfase em hoje) -->
+    <section class="ap-panel">
+      <div class="ap-chart__head">
+        <div>
+          <h2 class="ap-chart__t">Visitas por dia da semana</h2>
+          <div class="ap-chart__s">Média das últimas 8 semanas · terça destacada</div>
+        </div>
+        <div class="ap-chart__act">
+          <button class="ap-btn ap-btn--ghost ap-btn--sm" type="button" data-table-toggle="tblSem" data-chart-toggle="chartSem">Ver tabela</button>
+        </div>
+      </div>
+
+      <div id="chartSem">
+        <div class="ap-bars">
+          <div class="ap-bars__c"><span class="ap-bars__v">22</span><div class="ap-bars__b" style="height:44px"></div></div>
+          <div class="ap-bars__c is-on"><span class="ap-bars__v">31</span><div class="ap-bars__b" style="height:62px"></div></div>
+          <div class="ap-bars__c"><span class="ap-bars__v">28</span><div class="ap-bars__b" style="height:56px"></div></div>
+          <div class="ap-bars__c"><span class="ap-bars__v">35</span><div class="ap-bars__b" style="height:70px"></div></div>
+          <div class="ap-bars__c"><span class="ap-bars__v">52</span><div class="ap-bars__b" style="height:104px"></div></div>
+          <div class="ap-bars__c"><span class="ap-bars__v">60</span><div class="ap-bars__b" style="height:120px"></div></div>
+          <div class="ap-bars__c"><span class="ap-bars__v">41</span><div class="ap-bars__b" style="height:82px"></div></div>
+        </div>
+        <div class="ap-xaxis">
+          <span>seg</span><span>ter</span><span>qua</span><span>qui</span><span>sex</span><span>sáb</span><span>dom</span>
+        </div>
+      </div>
+
+      <div id="tblSem" class="is-hidden">
+        <table class="ap-table">
+          <thead><tr><th>Dia</th><th>Visitas (média)</th></tr></thead>
+          <tbody>
+            <tr><td>Segunda</td><td>22</td></tr>
+            <tr><td>Terça</td><td>31</td></tr>
+            <tr><td>Quarta</td><td>28</td></tr>
+            <tr><td>Quinta</td><td>35</td></tr>
+            <tr><td>Sexta</td><td>52</td></tr>
+            <tr><td>Sábado</td><td>60</td></tr>
+            <tr><td>Domingo</td><td>41</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- PARTE-DO-TODO: o que os clientes resgatam -->
+    <section class="ap-panel">
+      <div class="ap-chart__head">
+        <div>
+          <h2 class="ap-chart__t">O que seus clientes resgatam</h2>
+          <div class="ap-chart__s">96 resgates validados em julho</div>
+        </div>
+      </div>
+
+      <div class="ap-stack" role="img" aria-label="Bônus de adesão 41, promoções 28, cartão fidelidade 18, aniversário 9">
+        <div class="ap-stack__s" style="flex:41; background:var(--c1)"></div>
+        <div class="ap-stack__s" style="flex:28; background:var(--c2)"></div>
+        <div class="ap-stack__s" style="flex:18; background:var(--c3)"></div>
+        <div class="ap-stack__s" style="flex:9; background:var(--c4)"></div>
+      </div>
+
+      <div class="ap-legend">
+        <div class="ap-legend__r"><span class="ap-legend__d" style="background:var(--c1)"></span>
+          <span class="ap-legend__n">Bônus de adesão</span><span class="ap-legend__v">41</span><span class="ap-legend__p">43%</span></div>
+        <div class="ap-legend__r"><span class="ap-legend__d" style="background:var(--c2)"></span>
+          <span class="ap-legend__n">Promoções</span><span class="ap-legend__v">28</span><span class="ap-legend__p">29%</span></div>
+        <div class="ap-legend__r"><span class="ap-legend__d" style="background:var(--c3)"></span>
+          <span class="ap-legend__n">Cartão fidelidade</span><span class="ap-legend__v">18</span><span class="ap-legend__p">19%</span></div>
+        <div class="ap-legend__r"><span class="ap-legend__d" style="background:var(--c4)"></span>
+          <span class="ap-legend__n">Aniversário</span><span class="ap-legend__v">9</span><span class="ap-legend__p">9%</span></div>
+      </div>
+    </section>
+
+    <!-- ULTIMAS VALIDACOES -->
+    <section>
+      <div class="ap-sec__head">
+        <h2 class="ap-sec__title">Últimas validações</h2>
+        <a href="empresa-clientes.html" class="ap-sec__link">Ver clientes</a>
+      </div>
+      <div class="ap-panel">
+        <div class="ap-tx">
+          <div class="ap-tx__r">
+            <div class="ap-tx__ic"><span class="material-symbols-outlined">qr_code_2</span></div>
+            <div class="ap-tx__b"><div class="ap-tx__t">Ana Fidelidade · check-in</div><div class="ap-tx__d">há 12 minutos · por Camila</div></div>
+            <div class="ap-tx__v is-in">+45</div>
+          </div>
+          <div class="ap-tx__r">
+            <div class="ap-tx__ic"><span class="material-symbols-outlined">redeem</span></div>
+            <div class="ap-tx__b"><div class="ap-tx__t">Pedro Inativo · bônus de adesão</div><div class="ap-tx__d">há 40 minutos · por Camila</div></div>
+            <div class="ap-tx__v is-out">10% off</div>
+          </div>
+          <div class="ap-tx__r">
+            <div class="ap-tx__ic"><span class="material-symbols-outlined">shopping_bag</span></div>
+            <div class="ap-tx__b"><div class="ap-tx__t">Cliente Demo · compra validada</div><div class="ap-tx__d">há 2 horas · por Bruno</div></div>
+            <div class="ap-tx__v is-in">+85</div>
+          </div>
+          <div class="ap-tx__r">
+            <div class="ap-tx__ic"><span class="material-symbols-outlined">workspace_premium</span></div>
+            <div class="ap-tx__b"><div class="ap-tx__t">Maria Aniversariante · cortesia</div><div class="ap-tx__d">ontem · por Camila</div></div>
+            <div class="ap-tx__v is-out">cortesia</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- RAIL -->
+  <aside class="ap-rail">
+    <div class="ap-qr">
+      <div class="ap-qr__top"><span>QR do balcão</span><span>Malagueta</span></div>
+      <div class="ap-qr__code"><i></i></div>
+      <div class="ap-qr__who">
+        <div class="ap-qr__name">Imprima e deixe no caixa</div>
+        <div class="ap-qr__hint">É por aqui que o cliente entra no seu programa</div>
+      </div>
+    </div>
+
+    <div class="ap-panel">
+      <h3 class="ap-panel__t">Ação rápida</h3>
+      <a href="empresa-validar.html" class="ap-btn">
+        <span class="material-symbols-outlined" style="font-size:20px">qr_code_scanner</span> Validar cliente
+      </a>
+      <a href="empresa-ofertas.html" class="ap-btn ap-btn--ghost" style="margin-top:10px">Criar oferta</a>
+    </div>
+
+    <div class="ap-panel">
+      <h3 class="ap-panel__t">Perto da recompensa</h3>
+      <div class="ap-lv">
+        <div class="ap-lv__row">
+          <div class="ap-lv__top"><span class="ap-lv__n">Ana Fidelidade (14/15)</span><span class="ap-lv__v">93%</span></div>
+          <div class="ap-lv__bar"><div class="ap-lv__fill" style="width:93%"></div></div>
+        </div>
+        <div class="ap-lv__row">
+          <div class="ap-lv__top"><span class="ap-lv__n">João Silva (13/15)</span><span class="ap-lv__v">87%</span></div>
+          <div class="ap-lv__bar"><div class="ap-lv__fill" style="width:87%"></div></div>
+        </div>
+        <div class="ap-lv__row">
+          <div class="ap-lv__top"><span class="ap-lv__n">Cliente Demo (3/15)</span><span class="ap-lv__v">20%</span></div>
+          <div class="ap-lv__bar"><div class="ap-lv__fill" style="width:20%"></div></div>
+        </div>
+      </div>
+      <p style="margin:14px 0 0;font-size:12.5px;color:var(--text-faint);line-height:1.5">
+        Uma mensagem para quem está a uma visita da recompensa costuma trazer o cliente de volta na mesma semana.
+      </p>
+    </div>
+  </aside>
+</div>
+
+<script src="proto-shell.js"></script>
+</body>
+</html>

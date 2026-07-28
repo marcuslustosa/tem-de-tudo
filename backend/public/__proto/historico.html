@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Protótipo · Histórico</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="proto.css" />
+<script>(function(){try{var t=localStorage.getItem('proto-theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body data-page="historico" data-title="Histórico" data-sub="Tudo que você ganhou e resgatou">
+
+<div class="ap-shell">
+  <div class="ap-main">
+
+    <!-- Filtro unico, acima de tudo que ele filtra -->
+    <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+      <div class="ap-seg">
+        <button class="ap-seg__i" type="button">30 dias</button>
+        <button class="ap-seg__i" type="button">3 meses</button>
+        <button class="ap-seg__i is-active" type="button">12 meses</button>
+        <button class="ap-seg__i" type="button">Tudo</button>
+      </div>
+      <span style="font-size:12.5px;color:var(--text-faint)">ago/2025 – jul/2026</span>
+    </div>
+
+    <!-- KPIs do periodo -->
+    <section style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px;">
+      <div class="ap-panel">
+        <div style="font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-faint)">Ganhos</div>
+        <div style="font-size:26px;font-weight:800;letter-spacing:-1px;margin-top:6px;color:var(--good)">+505</div>
+      </div>
+      <div class="ap-panel">
+        <div style="font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-faint)">Resgatados</div>
+        <div style="font-size:26px;font-weight:800;letter-spacing:-1px;margin-top:6px;color:var(--bad)">−185</div>
+      </div>
+      <div class="ap-panel">
+        <div style="font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-faint)">Saldo</div>
+        <div style="font-size:26px;font-weight:800;letter-spacing:-1px;margin-top:6px;">320</div>
+      </div>
+    </section>
+
+    <!-- GRAFICO 1: barras, enfase no mes atual (serie unica => sem legenda) -->
+    <section class="ap-panel">
+      <div class="ap-chart__head">
+        <div>
+          <h2 class="ap-chart__t">Pontos ganhos por mês</h2>
+          <div class="ap-chart__s">Últimos 6 meses · julho destacado</div>
+        </div>
+        <div class="ap-chart__act">
+          <button class="ap-btn ap-btn--ghost ap-btn--sm" type="button" data-table-toggle="tblMes" data-chart-toggle="chartMes">Ver tabela</button>
+        </div>
+      </div>
+
+      <div id="chartMes">
+        <div class="ap-bars">
+          <div class="ap-bars__c"><span class="ap-bars__v">40</span><div class="ap-bars__b" style="height:46px"></div></div>
+          <div class="ap-bars__c"><span class="ap-bars__v">55</span><div class="ap-bars__b" style="height:63px"></div></div>
+          <div class="ap-bars__c"><span class="ap-bars__v">30</span><div class="ap-bars__b" style="height:34px"></div></div>
+          <div class="ap-bars__c"><span class="ap-bars__v">80</span><div class="ap-bars__b" style="height:91px"></div></div>
+          <div class="ap-bars__c"><span class="ap-bars__v">90</span><div class="ap-bars__b" style="height:103px"></div></div>
+          <div class="ap-bars__c is-on"><span class="ap-bars__v">105</span><div class="ap-bars__b" style="height:120px"></div></div>
+        </div>
+        <div class="ap-xaxis">
+          <span>fev</span><span>mar</span><span>abr</span><span>mai</span><span>jun</span><span>jul</span>
+        </div>
+      </div>
+
+      <div id="tblMes" class="is-hidden">
+        <table class="ap-table">
+          <thead><tr><th>Mês</th><th>Pontos ganhos</th></tr></thead>
+          <tbody>
+            <tr><td>Fevereiro</td><td>40</td></tr>
+            <tr><td>Março</td><td>55</td></tr>
+            <tr><td>Abril</td><td>30</td></tr>
+            <tr><td>Maio</td><td>80</td></tr>
+            <tr><td>Junho</td><td>90</td></tr>
+            <tr><td>Julho</td><td>105</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- GRAFICO 2: parte-do-todo. Barra empilhada + rotulo direto em todas -->
+    <section class="ap-panel">
+      <div class="ap-chart__head">
+        <div>
+          <h2 class="ap-chart__t">De onde vieram seus pontos</h2>
+          <div class="ap-chart__s">505 pontos ganhos em 4 empresas</div>
+        </div>
+      </div>
+
+      <div class="ap-stack" role="img" aria-label="Malagueta 310, Texano 95, Makoto 60, Florenza 40">
+        <div class="ap-stack__s" style="flex:310; background:var(--c1)"></div>
+        <div class="ap-stack__s" style="flex:95; background:var(--c2)"></div>
+        <div class="ap-stack__s" style="flex:60; background:var(--c3)"></div>
+        <div class="ap-stack__s" style="flex:40; background:var(--c4)"></div>
+      </div>
+
+      <div class="ap-legend">
+        <div class="ap-legend__r">
+          <span class="ap-legend__d" style="background:var(--c1)"></span>
+          <span class="ap-legend__n">Malagueta Galpão</span>
+          <span class="ap-legend__v">310</span><span class="ap-legend__p">61%</span>
+        </div>
+        <div class="ap-legend__r">
+          <span class="ap-legend__d" style="background:var(--c2)"></span>
+          <span class="ap-legend__n">Texano Burger</span>
+          <span class="ap-legend__v">95</span><span class="ap-legend__p">19%</span>
+        </div>
+        <div class="ap-legend__r">
+          <span class="ap-legend__d" style="background:var(--c3)"></span>
+          <span class="ap-legend__n">Makoto Sushi</span>
+          <span class="ap-legend__v">60</span><span class="ap-legend__p">12%</span>
+        </div>
+        <div class="ap-legend__r">
+          <span class="ap-legend__d" style="background:var(--c4)"></span>
+          <span class="ap-legend__n">Florenza Boutique</span>
+          <span class="ap-legend__v">40</span><span class="ap-legend__p">8%</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXTRATO agrupado por mes -->
+    <section>
+      <div class="ap-sec__head">
+        <h2 class="ap-sec__title">Extrato</h2>
+        <span class="ap-sec__link" style="color:var(--text-faint)">6 lançamentos</span>
+      </div>
+
+      <div class="ap-panel" style="margin-bottom:14px;">
+        <h3 class="ap-panel__t">Julho 2026</h3>
+        <div class="ap-tx">
+          <div class="ap-tx__r">
+            <div class="ap-tx__ic"><span class="material-symbols-outlined">qr_code_2</span></div>
+            <div class="ap-tx__b"><div class="ap-tx__t">Check-in pelo QR Code</div><div class="ap-tx__d">Malagueta Galpão · 25 jul</div></div>
+            <div class="ap-tx__v is-in">+45</div>
+          </div>
+          <div class="ap-tx__r">
+            <div class="ap-tx__ic"><span class="material-symbols-outlined">redeem</span></div>
+            <div class="ap-tx__b"><div class="ap-tx__t">Combo especial resgatado</div><div class="ap-tx__d">Texano Burger · 21 jul</div></div>
+            <div class="ap-tx__v is-out">−20</div>
+          </div>
+          <div class="ap-tx__r">
+            <div class="ap-tx__ic"><span class="material-symbols-outlined">local_offer</span></div>
+            <div class="ap-tx__b"><div class="ap-tx__t">Promoção relâmpago</div><div class="ap-tx__d">Malagueta Galpão · 16 jul</div></div>
+            <div class="ap-tx__v is-in">+60</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ap-panel">
+        <h3 class="ap-panel__t">Junho 2026</h3>
+        <div class="ap-tx">
+          <div class="ap-tx__r">
+            <div class="ap-tx__ic"><span class="material-symbols-outlined">storefront</span></div>
+            <div class="ap-tx__b"><div class="ap-tx__t">Visita registrada</div><div class="ap-tx__d">Texano Burger · 28 jun</div></div>
+            <div class="ap-tx__v is-in">+30</div>
+          </div>
+          <div class="ap-tx__r">
+            <div class="ap-tx__ic"><span class="material-symbols-outlined">shopping_bag</span></div>
+            <div class="ap-tx__b"><div class="ap-tx__t">Compra validada no balcão</div><div class="ap-tx__d">Malagueta Galpão · 14 jun</div></div>
+            <div class="ap-tx__v is-in">+85</div>
+          </div>
+          <div class="ap-tx__r">
+            <div class="ap-tx__ic"><span class="material-symbols-outlined">card_giftcard</span></div>
+            <div class="ap-tx__b"><div class="ap-tx__t">Bônus de adesão validado</div><div class="ap-tx__d">Malagueta Galpão · 02 jun</div></div>
+            <div class="ap-tx__v is-in">+120</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- RAIL -->
+  <aside class="ap-rail">
+    <div class="ap-panel">
+      <h3 class="ap-panel__t">Resumo do período</h3>
+      <div class="ap-lv">
+        <div class="ap-lv__row">
+          <div class="ap-lv__top"><span class="ap-lv__n">Meta anual (1.000 pts)</span><span class="ap-lv__v">51%</span></div>
+          <div class="ap-lv__bar"><div class="ap-lv__fill" style="width:51%"></div></div>
+        </div>
+      </div>
+      <div style="display:grid;gap:10px;margin-top:18px;font-size:13.5px;">
+        <div style="display:flex"><span style="color:var(--text-muted)">Melhor mês</span><b style="margin-left:auto">Julho · 105</b></div>
+        <div style="display:flex"><span style="color:var(--text-muted)">Média mensal</span><b style="margin-left:auto">67 pts</b></div>
+        <div style="display:flex"><span style="color:var(--text-muted)">Empresa favorita</span><b style="margin-left:auto">Malagueta</b></div>
+        <div style="display:flex"><span style="color:var(--text-muted)">Visitas no período</span><b style="margin-left:auto">18</b></div>
+      </div>
+    </div>
+
+    <div class="ap-panel">
+      <h3 class="ap-panel__t">Perto de virar recompensa</h3>
+      <div class="ap-lv">
+        <div class="ap-lv__row">
+          <div class="ap-lv__top"><span class="ap-lv__n">Cartão Texano (14/15)</span><span class="ap-lv__v">93%</span></div>
+          <div class="ap-lv__bar"><div class="ap-lv__fill" style="width:93%"></div></div>
+        </div>
+        <div class="ap-lv__row">
+          <div class="ap-lv__top"><span class="ap-lv__n">Cartão Malagueta (3/15)</span><span class="ap-lv__v">20%</span></div>
+          <div class="ap-lv__bar"><div class="ap-lv__fill" style="width:20%"></div></div>
+        </div>
+      </div>
+      <a href="beneficios.html" class="ap-btn ap-btn--ghost" style="margin-top:16px;">Ver benefícios</a>
+    </div>
+  </aside>
+</div>
+
+<script src="proto-shell.js"></script>
+</body>
+</html>

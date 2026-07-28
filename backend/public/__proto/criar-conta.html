@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Protótipo · Criar conta</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="proto.css" />
+<script>(function(){try{var t=localStorage.getItem('proto-theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body class="ap-authbody" data-shell="none">
+
+<section class="ap-auth__brand">
+  <div class="ap-auth__logo"><span class="ap-brand__mark">TT</span> Tem de Tudo</div>
+  <div class="ap-auth__claim">
+    <h1>Comece a ganhar<br>em 2 minutos.</h1>
+    <p>Crie sua conta, leia o QR Code da empresa no balcão e seus pontos começam a contar na mesma hora.</p>
+    <div class="ap-auth__proof">
+      <div><b>Grátis</b><span>para o cliente</span></div>
+      <div><b>Sem app</b><span>funciona no navegador</span></div>
+      <div><b>LGPD</b><span>dados sob seu controle</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="ap-auth__form">
+  <button class="ap-themebtn ap-auth__theme" type="button" data-theme-btn>
+    <span class="material-symbols-outlined" id="themeIcon">dark_mode</span>
+    <span id="themeLabel">Escuro</span>
+  </button>
+
+  <div class="ap-auth__box">
+    <h2 class="ap-auth__t">Criar conta</h2>
+    <p class="ap-auth__s">Primeiro, o que você é na plataforma. Isso define o painel que você vai usar.</p>
+
+    <!-- Passo 1: perfil (decisao antes do formulario, nao depois) -->
+    <div class="ap-choice" style="margin-bottom:26px;">
+      <button class="ap-choice__i is-on" type="button">
+        <span class="ap-choice__ic" style="background:linear-gradient(140deg,#e91e85,#b01774)"><span class="material-symbols-outlined">person</span></span>
+        <span><span class="ap-choice__t">Sou cliente</span><span class="ap-choice__d">Quero juntar pontos e resgatar benefícios</span></span>
+        <span class="material-symbols-outlined" style="margin-left:auto;color:var(--accent)">check_circle</span>
+      </button>
+      <button class="ap-choice__i" type="button">
+        <span class="ap-choice__ic" style="background:linear-gradient(140deg,#7c3aed,#4c1d95)"><span class="material-symbols-outlined">storefront</span></span>
+        <span><span class="ap-choice__t">Tenho uma empresa</span><span class="ap-choice__d">Quero fidelizar meus clientes (passa por aprovação)</span></span>
+      </button>
+    </div>
+
+    <form onsubmit="return false;">
+      <div class="ap-field">
+        <label class="ap-field__l" for="nm">Nome completo</label>
+        <input class="ap-input" id="nm" type="text" placeholder="Como aparece no seu documento" />
+      </div>
+      <div class="ap-field">
+        <label class="ap-field__l" for="em2">E-mail</label>
+        <input class="ap-input" id="em2" type="email" placeholder="voce@email.com" />
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div class="ap-field">
+          <label class="ap-field__l" for="tel">Celular</label>
+          <input class="ap-input" id="tel" type="tel" placeholder="(11) 90000-0000" />
+        </div>
+        <div class="ap-field">
+          <label class="ap-field__l" for="nasc">Nascimento</label>
+          <input class="ap-input" id="nasc" type="text" placeholder="dd/mm/aaaa" />
+        </div>
+      </div>
+      <div class="ap-field">
+        <label class="ap-field__l" for="pw2">Senha</label>
+        <input class="ap-input" id="pw2" type="password" placeholder="Mínimo de 8 caracteres" />
+        <span style="font-size:12px;color:var(--text-faint)">Use letras e números. Nada de data de nascimento.</span>
+      </div>
+
+      <div style="display:flex;align-items:flex-start;gap:11px;margin:18px 0 22px;">
+        <div class="ap-switch"><i></i></div>
+        <span style="font-size:13px;color:var(--text-muted);line-height:1.5">
+          Li e aceito os <a href="#" class="ap-link">termos de uso</a> e a
+          <a href="#" class="ap-link">política de privacidade</a>.
+        </span>
+      </div>
+
+      <button class="ap-btn" type="submit">Criar minha conta</button>
+    </form>
+
+    <p class="ap-auth__foot">Já tem conta? <a href="entrar.html" class="ap-link">Entrar</a></p>
+  </div>
+</section>
+
+<script src="proto-shell.js"></script>
+</body>
+</html>

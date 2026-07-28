@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Protótipo · Ler QR da empresa</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="proto.css" />
+<script>(function(){try{var t=localStorage.getItem('proto-theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body data-page="inicio" data-title="Ler QR da empresa" data-sub="Aponte para o código do balcão" data-back="inicio.html">
+
+<div class="ap-shell ap-shell--single ap-shell--narrow">
+  <div class="ap-main">
+
+    <!-- CAMERA -->
+    <section class="ap-scan">
+      <div class="ap-scan__feed"></div>
+      <div class="ap-scan__hole">
+        <span class="ap-scan__c ap-scan__c--tl"></span>
+        <span class="ap-scan__c ap-scan__c--tr"></span>
+        <span class="ap-scan__c ap-scan__c--bl"></span>
+        <span class="ap-scan__c ap-scan__c--br"></span>
+        <span class="ap-scan__line"></span>
+      </div>
+      <div class="ap-scan__tools">
+        <button class="ap-scan__tool" type="button" aria-label="Lanterna"><span class="material-symbols-outlined">flashlight_on</span></button>
+        <button class="ap-scan__tool" type="button" aria-label="Trocar câmera"><span class="material-symbols-outlined">cameraswitch</span></button>
+      </div>
+      <p class="ap-scan__hint">Centralize o QR Code da empresa dentro da moldura.<br>A leitura é automática.</p>
+    </section>
+
+    <!-- Caminho alternativo: sempre existir saida sem camera -->
+    <section class="ap-panel">
+      <h3 class="ap-panel__t">Sem câmera? Digite o código</h3>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <input class="ap-input" type="text" placeholder="Ex.: TDT-EMP-9F4K" style="letter-spacing:1.5px;text-transform:uppercase" />
+        <button class="ap-btn ap-btn--sm" type="button" style="height:52px;">Vincular</button>
+      </div>
+      <p style="margin:12px 0 0;font-size:12.5px;color:var(--text-faint);line-height:1.5">
+        O código fica embaixo do QR impresso no balcão. Se não achar, peça para a equipe.
+      </p>
+    </section>
+
+    <!-- Estado de permissao negada (o caso que sempre esquecem) -->
+    <section class="ap-panel">
+      <div style="display:flex;gap:13px;align-items:flex-start;">
+        <div class="ap-row__ic" style="background:color-mix(in srgb, #d97706 16%, transparent);color:#b45309">
+          <span class="material-symbols-outlined">videocam_off</span>
+        </div>
+        <div>
+          <div style="font-size:14.5px;font-weight:700">Câmera bloqueada?</div>
+          <p style="margin:5px 0 0;font-size:13px;color:var(--text-muted);line-height:1.55">
+            Toque no cadeado ao lado do endereço, libere a câmera para este site e recarregue a página.
+          </p>
+          <button class="ap-btn ap-btn--ghost ap-btn--sm" type="button" style="margin-top:12px">Tentar de novo</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- O que acontece depois -->
+    <section class="ap-panel">
+      <h3 class="ap-panel__t">O que acontece ao ler</h3>
+      <div class="ap-row">
+        <div class="ap-row__ic"><span class="material-symbols-outlined">link</span></div>
+        <div class="ap-row__b">
+          <div class="ap-row__t">Você entra no programa da empresa</div>
+          <div class="ap-row__d">Ela passa a aparecer em "Minhas empresas".</div>
+        </div>
+      </div>
+      <div class="ap-row">
+        <div class="ap-row__ic"><span class="material-symbols-outlined">card_giftcard</span></div>
+        <div class="ap-row__b">
+          <div class="ap-row__t">O bônus de adesão é liberado</div>
+          <div class="ap-row__d">Normalmente um desconto na primeira compra.</div>
+        </div>
+      </div>
+      <div class="ap-row">
+        <div class="ap-row__ic"><span class="material-symbols-outlined">shield</span></div>
+        <div class="ap-row__b">
+          <div class="ap-row__t">Nada é cobrado</div>
+          <div class="ap-row__d">Vincular é grátis e você pode sair quando quiser.</div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<script src="proto-shell.js"></script>
+</body>
+</html>

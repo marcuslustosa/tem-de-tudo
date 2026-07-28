@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Protótipo · Painel master</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="proto.css" />
+<script>(function(){try{var t=localStorage.getItem('proto-theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body data-profile="admin" data-page="admin-painel" data-title="Painel master" data-sub="A plataforma inteira em uma tela">
+
+<div class="ap-shell">
+  <div class="ap-main">
+
+    <!-- HEROI: o que exige acao agora -->
+    <section class="ap-hero">
+      <div class="ap-hero__grid">
+        <div class="ap-hero__left">
+          <div class="ap-hero__label">Esperando você</div>
+          <h1 class="ap-hero__value">4<small>empresas na fila</small></h1>
+          <span class="ap-hero__tier"><span class="material-symbols-outlined">schedule</span> a mais antiga espera há 3 dias</span>
+        </div>
+        <div class="ap-ring">
+          <svg width="108" height="108" viewBox="0 0 108 108" aria-hidden="true">
+            <circle cx="54" cy="54" r="46" fill="none" stroke="var(--ring-track)" stroke-width="10"/>
+            <circle cx="54" cy="54" r="46" fill="none" stroke="#4ade80" stroke-width="10" stroke-linecap="round"
+                    stroke-dasharray="289" stroke-dashoffset="26"/>
+          </svg>
+          <div class="ap-ring__txt">
+            <div class="ap-ring__num">91%</div>
+            <div class="ap-ring__cap">uptime 30d</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ap-hero__kpis">
+        <div class="ap-kpi ap-kpi--in">
+          <div class="ap-kpi__k"><span class="material-symbols-outlined">person_add</span> Novos clientes (7d)</div>
+          <div class="ap-kpi__v">+318</div>
+        </div>
+        <div class="ap-kpi">
+          <div class="ap-kpi__k"><span class="material-symbols-outlined">support_agent</span> Chamados abertos</div>
+          <div class="ap-kpi__v">6</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- KPIs da plataforma -->
+    <section class="ap-kgrid">
+      <div class="ap-k">
+        <div class="ap-k__l"><span class="material-symbols-outlined">storefront</span> Empresas</div>
+        <div class="ap-k__v">180</div>
+        <div class="ap-k__d is-up">+9 <span>no mês</span></div>
+      </div>
+      <div class="ap-k">
+        <div class="ap-k__l"><span class="material-symbols-outlined">group</span> Clientes</div>
+        <div class="ap-k__v">4.286</div>
+        <div class="ap-k__d is-up">+318 <span>em 7 dias</span></div>
+      </div>
+      <div class="ap-k">
+        <div class="ap-k__l"><span class="material-symbols-outlined">stars</span> Pontos em circulação</div>
+        <div class="ap-k__v">1,2M</div>
+        <div class="ap-k__d is-up">+6% <span>vs. junho</span></div>
+      </div>
+      <div class="ap-k">
+        <div class="ap-k__l"><span class="material-symbols-outlined">payments</span> Receita recorrente</div>
+        <div class="ap-k__v">R$ 32k</div>
+        <div class="ap-k__d is-up">+4,1% <span>vs. junho</span></div>
+      </div>
+    </section>
+
+    <!-- FILA DE APROVACAO: a tarefa principal do admin -->
+    <section class="ap-panel">
+      <div class="ap-chart__head" style="margin-bottom:6px">
+        <div>
+          <h2 class="ap-chart__t">Empresas aguardando aprovação</h2>
+          <div class="ap-chart__s">Aprovar libera o painel e o QR do balcão na hora</div>
+        </div>
+        <div class="ap-chart__act">
+          <a href="admin-empresas.html" class="ap-btn ap-btn--ghost ap-btn--sm">Ver todas</a>
+        </div>
+      </div>
+
+      <div class="ap-queue">
+        <div class="ap-queue__r">
+          <span class="ap-dt__av" style="background:linear-gradient(140deg,#0ea5e9,#0c4a6e)">PD</span>
+          <div style="min-width:0;flex:1">
+            <div class="ap-dt__n">Padaria do Bairro</div>
+            <div class="ap-dt__m">CNPJ 11.222.333/0001-44 · enviada há 3 dias</div>
+          </div>
+          <div class="ap-queue__acts">
+            <button class="ap-mini" type="button">Ver</button>
+            <button class="ap-mini ap-mini--bad" type="button">Recusar</button>
+            <button class="ap-mini ap-mini--ok" type="button"><span class="material-symbols-outlined">check</span> Aprovar</button>
+          </div>
+        </div>
+        <div class="ap-queue__r">
+          <span class="ap-dt__av" style="background:linear-gradient(140deg,#a855f7,#581c87)">SB</span>
+          <div style="min-width:0;flex:1">
+            <div class="ap-dt__n">Studio Bela</div>
+            <div class="ap-dt__m">CNPJ 22.333.444/0001-55 · enviada há 2 dias</div>
+          </div>
+          <div class="ap-queue__acts">
+            <button class="ap-mini" type="button">Ver</button>
+            <button class="ap-mini ap-mini--bad" type="button">Recusar</button>
+            <button class="ap-mini ap-mini--ok" type="button"><span class="material-symbols-outlined">check</span> Aprovar</button>
+          </div>
+        </div>
+        <div class="ap-queue__r">
+          <span class="ap-dt__av" style="background:linear-gradient(140deg,#f97316,#b45309)">PT</span>
+          <div style="min-width:0;flex:1">
+            <div class="ap-dt__n">Pet Amigo</div>
+            <div class="ap-dt__m">CNPJ 33.444.555/0001-66 · enviada ontem</div>
+          </div>
+          <div class="ap-queue__acts">
+            <button class="ap-mini" type="button">Ver</button>
+            <button class="ap-mini ap-mini--bad" type="button">Recusar</button>
+            <button class="ap-mini ap-mini--ok" type="button"><span class="material-symbols-outlined">check</span> Aprovar</button>
+          </div>
+        </div>
+        <div class="ap-queue__r">
+          <span class="ap-dt__av" style="background:linear-gradient(140deg,#10b981,#065f46)">VG</span>
+          <div style="min-width:0;flex:1">
+            <div class="ap-dt__n">Verde Grill</div>
+            <div class="ap-dt__m">CNPJ 44.555.666/0001-77 · enviada hoje</div>
+          </div>
+          <div class="ap-queue__acts">
+            <button class="ap-mini" type="button">Ver</button>
+            <button class="ap-mini ap-mini--bad" type="button">Recusar</button>
+            <button class="ap-mini ap-mini--ok" type="button"><span class="material-symbols-outlined">check</span> Aprovar</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- GRAFICO: crescimento -->
+    <section class="ap-panel">
+      <div class="ap-chart__head">
+        <div>
+          <h2 class="ap-chart__t">Novas empresas por mês</h2>
+          <div class="ap-chart__s">Últimos 6 meses · julho destacado</div>
+        </div>
+        <div class="ap-chart__act">
+          <button class="ap-btn ap-btn--ghost ap-btn--sm" type="button" data-table-toggle="tblAdm" data-chart-toggle="chartAdm">Ver tabela</button>
+        </div>
+      </div>
+
+      <div id="chartAdm">
+        <div class="ap-bars">
+          <div class="ap-bars__c"><span class="ap-bars__v">6</span><div class="ap-bars__b" style="height:48px"></div></div>
+          <div class="ap-bars__c"><span class="ap-bars__v">8</span><div class="ap-bars__b" style="height:64px"></div></div>
+          <div class="ap-bars__c"><span class="ap-bars__v">5</span><div class="ap-bars__b" style="height:40px"></div></div>
+          <div class="ap-bars__c"><span class="ap-bars__v">11</span><div class="ap-bars__b" style="height:88px"></div></div>
+          <div class="ap-bars__c"><span class="ap-bars__v">13</span><div class="ap-bars__b" style="height:104px"></div></div>
+          <div class="ap-bars__c is-on"><span class="ap-bars__v">15</span><div class="ap-bars__b" style="height:120px"></div></div>
+        </div>
+        <div class="ap-xaxis"><span>fev</span><span>mar</span><span>abr</span><span>mai</span><span>jun</span><span>jul</span></div>
+      </div>
+
+      <div id="tblAdm" class="is-hidden">
+        <table class="ap-table">
+          <thead><tr><th>Mês</th><th>Novas empresas</th></tr></thead>
+          <tbody>
+            <tr><td>Fevereiro</td><td>6</td></tr><tr><td>Março</td><td>8</td></tr>
+            <tr><td>Abril</td><td>5</td></tr><tr><td>Maio</td><td>11</td></tr>
+            <tr><td>Junho</td><td>13</td></tr><tr><td>Julho</td><td>15</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- RAIL -->
+  <aside class="ap-rail">
+    <div class="ap-panel">
+      <h3 class="ap-panel__t">Saúde do sistema</h3>
+      <div class="ap-tx">
+        <div class="ap-tx__r">
+          <div class="ap-tx__ic"><span class="material-symbols-outlined">database</span></div>
+          <div class="ap-tx__b"><div class="ap-tx__t">Banco de dados</div><div class="ap-tx__d">PostgreSQL · 42ms</div></div>
+          <span class="ap-pill ap-pill--ok">ok</span>
+        </div>
+        <div class="ap-tx__r">
+          <div class="ap-tx__ic"><span class="material-symbols-outlined">notifications_active</span></div>
+          <div class="ap-tx__b"><div class="ap-tx__t">Push</div><div class="ap-tx__d">218 enviados hoje</div></div>
+          <span class="ap-pill ap-pill--ok">ok</span>
+        </div>
+        <div class="ap-tx__r">
+          <div class="ap-tx__ic"><span class="material-symbols-outlined">schedule_send</span></div>
+          <div class="ap-tx__b"><div class="ap-tx__t">Fila de jobs</div><div class="ap-tx__d">3 aguardando</div></div>
+          <span class="ap-pill ap-pill--warn">lenta</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ap-panel">
+      <h3 class="ap-panel__t">Últimas ações</h3>
+      <div class="ap-tx">
+        <div class="ap-tx__r">
+          <div class="ap-tx__ic"><span class="material-symbols-outlined">check_circle</span></div>
+          <div class="ap-tx__b"><div class="ap-tx__t">Makoto Sushi aprovada</div><div class="ap-tx__d">por Admin Demo · há 2h</div></div>
+        </div>
+        <div class="ap-tx__r">
+          <div class="ap-tx__ic"><span class="material-symbols-outlined">block</span></div>
+          <div class="ap-tx__b"><div class="ap-tx__t">Empresa Suspensa bloqueada</div><div class="ap-tx__d">por Admin Demo · ontem</div></div>
+        </div>
+        <div class="ap-tx__r">
+          <div class="ap-tx__ic"><span class="material-symbols-outlined">payments</span></div>
+          <div class="ap-tx__b"><div class="ap-tx__t">Florenza renovou o plano</div><div class="ap-tx__d">12 meses · ontem</div></div>
+        </div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script src="proto-shell.js"></script>
+</body>
+</html>

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Protótipo · Início</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="proto.css" />
+<script>(function(){try{var t=localStorage.getItem('proto-theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body data-page="inicio" data-title="Olá, Cliente" data-sub="Seus benefícios em um só lugar">
+
+<div class="ap-shell">
+  <div class="ap-main">
+
+    <!-- HEROI: saldo + anel de nivel + KPIs + sparkline -->
+    <section class="ap-hero">
+      <div class="ap-hero__grid">
+        <div class="ap-hero__left">
+          <div class="ap-hero__label">Saldo de pontos</div>
+          <h1 class="ap-hero__value">320<small>pontos</small></h1>
+          <span class="ap-hero__tier"><span class="material-symbols-outlined">workspace_premium</span> Membro Prata</span>
+        </div>
+        <div class="ap-ring">
+          <svg width="108" height="108" viewBox="0 0 108 108" aria-hidden="true">
+            <circle cx="54" cy="54" r="46" fill="none" stroke="var(--ring-track)" stroke-width="10"/>
+            <circle cx="54" cy="54" r="46" fill="none" stroke="url(#ringGrad)" stroke-width="10" stroke-linecap="round"
+                    stroke-dasharray="289" stroke-dashoffset="107"/>
+            <defs><linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#e91e85"/><stop offset="100%" stop-color="#f7c948"/>
+            </linearGradient></defs>
+          </svg>
+          <div class="ap-ring__txt">
+            <div class="ap-ring__num">64%</div>
+            <div class="ap-ring__cap">para Ouro</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ap-hero__kpis">
+        <div class="ap-kpi ap-kpi--in">
+          <div class="ap-kpi__k"><span class="material-symbols-outlined">trending_up</span> Ganhos</div>
+          <div class="ap-kpi__v">+340</div>
+        </div>
+        <div class="ap-kpi ap-kpi--out">
+          <div class="ap-kpi__k"><span class="material-symbols-outlined">redeem</span> Resgatados</div>
+          <div class="ap-kpi__v">−20</div>
+        </div>
+      </div>
+
+      <!-- Sparkline: serie unica, sem legenda; o titulo nomeia a serie -->
+      <div class="ap-spark">
+        <div class="ap-spark__cap">Saldo nos últimos 6 meses <b>+280 no período</b></div>
+        <svg viewBox="0 0 320 62" preserveAspectRatio="none" role="img" aria-label="Saldo subiu de 40 para 320 pontos em 6 meses">
+          <defs>
+            <linearGradient id="sparkFill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#e91e85" stop-opacity="0.45"/>
+              <stop offset="100%" stop-color="#e91e85" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path d="M6,48.3 L68,40.3 L130,36.8 L192,28.1 L254,16.6 L314,8 L314,60 L6,60 Z" fill="url(#sparkFill)"/>
+          <path d="M6,48.3 L68,40.3 L130,36.8 L192,28.1 L254,16.6 L314,8" fill="none"
+                stroke="#f472b6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                vector-effect="non-scaling-stroke"/>
+        </svg>
+        <span style="position:absolute;right:1px;top:24px;width:10px;height:10px;border-radius:50%;background:#fff;border:2.5px solid #e91e85;"></span>
+      </div>
+    </section>
+
+    <!-- ACOES RAPIDAS -->
+    <section class="ap-quick">
+      <a href="cartao.html" class="ap-quick__i">
+        <div class="ap-quick__ic ap-quick__ic--1"><span class="material-symbols-outlined">qr_code_scanner</span></div>
+        <div class="ap-quick__t">Ler QR</div>
+      </a>
+      <a href="beneficios.html" class="ap-quick__i">
+        <div class="ap-quick__ic ap-quick__ic--2"><span class="material-symbols-outlined">redeem</span></div>
+        <div class="ap-quick__t">Benefícios</div>
+      </a>
+      <a href="historico.html" class="ap-quick__i">
+        <div class="ap-quick__ic ap-quick__ic--3"><span class="material-symbols-outlined">history</span></div>
+        <div class="ap-quick__t">Histórico</div>
+      </a>
+      <a href="perfil.html" class="ap-quick__i">
+        <div class="ap-quick__ic ap-quick__ic--4"><span class="material-symbols-outlined">person</span></div>
+        <div class="ap-quick__t">Perfil</div>
+      </a>
+    </section>
+
+    <!-- BUSCA + CHIPS -->
+    <section style="display:grid; gap:14px;">
+      <div class="ap-search">
+        <span class="material-symbols-outlined">search</span>
+        <input type="search" placeholder="Buscar empresa ou categoria" />
+      </div>
+      <nav class="ap-chips">
+        <a href="#" class="ap-chip is-active"><span class="material-symbols-outlined">grid_view</span>Tudo</a>
+        <a href="#" class="ap-chip"><span class="material-symbols-outlined">restaurant</span>Restaurantes</a>
+        <a href="#" class="ap-chip"><span class="material-symbols-outlined">content_cut</span>Beleza</a>
+        <a href="#" class="ap-chip"><span class="material-symbols-outlined">ramen_dining</span>Japonesa</a>
+        <a href="#" class="ap-chip"><span class="material-symbols-outlined">icecream</span>Sorveterias</a>
+        <a href="#" class="ap-chip"><span class="material-symbols-outlined">pets</span>Petshops</a>
+        <a href="#" class="ap-chip"><span class="material-symbols-outlined">local_bar</span>Bares</a>
+      </nav>
+    </section>
+
+    <!-- MINHAS EMPRESAS -->
+    <section>
+      <div class="ap-sec__head">
+        <h2 class="ap-sec__title">Minhas empresas</h2>
+        <a href="#" class="ap-sec__link">Ver todas (4)</a>
+      </div>
+      <div class="ap-cards">
+        <a href="parceiro.html" class="ap-card">
+          <div class="ap-card__av" style="background:linear-gradient(140deg,#f97316,#b45309)">MG</div>
+          <div class="ap-card__b"><div class="ap-card__n">Malagueta Galpão</div><div class="ap-card__c">Restaurante · ★ 4,7</div></div>
+          <div class="ap-card__p">310 pts</div>
+        </a>
+        <a href="parceiro.html" class="ap-card">
+          <div class="ap-card__av" style="background:linear-gradient(140deg,#ef4444,#7f1d1d)">TB</div>
+          <div class="ap-card__b"><div class="ap-card__n">Texano Burger</div><div class="ap-card__c">Hamburgueria · ★ 4,0</div></div>
+          <div class="ap-card__p">95 pts</div>
+        </a>
+        <a href="parceiro.html" class="ap-card">
+          <div class="ap-card__av" style="background:linear-gradient(140deg,#0ea5e9,#0c4a6e)">MS</div>
+          <div class="ap-card__b"><div class="ap-card__n">Makoto Sushi</div><div class="ap-card__c">Japonesa · ★ 5,0</div></div>
+          <div class="ap-card__p">60 pts</div>
+        </a>
+        <a href="parceiro.html" class="ap-card">
+          <div class="ap-card__av" style="background:linear-gradient(140deg,#a855f7,#581c87)">FB</div>
+          <div class="ap-card__b"><div class="ap-card__n">Florenza Boutique</div><div class="ap-card__c">Moda/Beleza · ★ 5,0</div></div>
+          <div class="ap-card__p">40 pts</div>
+        </a>
+      </div>
+    </section>
+
+    <!-- DESCUBRA -->
+    <section>
+      <div class="ap-sec__head">
+        <h2 class="ap-sec__title">Descubra empresas</h2>
+        <a href="#" class="ap-sec__link">Ver todas</a>
+      </div>
+      <div class="ap-scroll">
+        <a href="parceiro.html" class="ap-disc">
+          <div class="ap-disc__img" style="background:linear-gradient(150deg,#fb923c,#9a3412)">
+            <span class="ap-disc__tag"><span class="material-symbols-outlined">star</span>4,7</span>
+            <div class="ap-disc__over"><div class="ap-disc__n">Malagueta Galpão</div><div class="ap-disc__m">Restaurante · 12% off hoje</div></div>
+          </div>
+        </a>
+        <a href="parceiro.html" class="ap-disc">
+          <div class="ap-disc__img" style="background:linear-gradient(150deg,#f87171,#7f1d1d)">
+            <span class="ap-disc__tag"><span class="material-symbols-outlined">star</span>4,0</span>
+            <div class="ap-disc__over"><div class="ap-disc__n">Texano Burger</div><div class="ap-disc__m">Hamburgueria · combo da semana</div></div>
+          </div>
+        </a>
+        <a href="parceiro.html" class="ap-disc">
+          <div class="ap-disc__img" style="background:linear-gradient(150deg,#38bdf8,#0c4a6e)">
+            <span class="ap-disc__tag"><span class="material-symbols-outlined">star</span>5,0</span>
+            <div class="ap-disc__over"><div class="ap-disc__n">Makoto Sushi</div><div class="ap-disc__m">Japonesa · cortesia de aniversário</div></div>
+          </div>
+        </a>
+        <a href="parceiro.html" class="ap-disc">
+          <div class="ap-disc__img" style="background:linear-gradient(150deg,#c084fc,#581c87)">
+            <span class="ap-disc__tag"><span class="material-symbols-outlined">star</span>5,0</span>
+            <div class="ap-disc__over"><div class="ap-disc__n">Florenza Boutique</div><div class="ap-disc__m">Moda · mimo da semana</div></div>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- EXTRATO (some no desktop; vive no rail) -->
+    <section class="ap-mobile-only">
+      <div class="ap-sec__head">
+        <h2 class="ap-sec__title">Atividade recente</h2>
+        <a href="historico.html" class="ap-sec__link">Ver tudo</a>
+      </div>
+      <div class="ap-panel">
+        <div class="ap-tx">
+          <div class="ap-tx__r">
+            <div class="ap-tx__ic"><span class="material-symbols-outlined">qr_code_2</span></div>
+            <div class="ap-tx__b"><div class="ap-tx__t">Check-in pelo QR Code</div><div class="ap-tx__d">Malagueta Galpão · há 2 dias</div></div>
+            <div class="ap-tx__v is-in">+45</div>
+          </div>
+          <div class="ap-tx__r">
+            <div class="ap-tx__ic"><span class="material-symbols-outlined">redeem</span></div>
+            <div class="ap-tx__b"><div class="ap-tx__t">Combo especial resgatado</div><div class="ap-tx__d">Texano Burger · há 6 dias</div></div>
+            <div class="ap-tx__v is-out">−20</div>
+          </div>
+          <div class="ap-tx__r">
+            <div class="ap-tx__ic"><span class="material-symbols-outlined">local_offer</span></div>
+            <div class="ap-tx__b"><div class="ap-tx__t">Promoção relâmpago</div><div class="ap-tx__d">Malagueta Galpão · há 11 dias</div></div>
+            <div class="ap-tx__v is-in">+60</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- RAIL DIREITO -->
+  <aside class="ap-rail">
+    <a href="cartao.html" class="ap-qr">
+      <div class="ap-qr__top"><span>Meu cartão</span><span>Tem de Tudo</span></div>
+      <div class="ap-qr__code"><i></i></div>
+      <div class="ap-qr__who">
+        <div class="ap-qr__name">Cliente Demo</div>
+        <div class="ap-qr__hint">Mostre no caixa para pontuar</div>
+      </div>
+    </a>
+
+    <div class="ap-panel">
+      <h3 class="ap-panel__t">Meu progresso</h3>
+      <div class="ap-lv">
+        <div class="ap-lv__row">
+          <div class="ap-lv__top"><span class="ap-lv__n">Nível Prata → Ouro</span><span class="ap-lv__v">64%</span></div>
+          <div class="ap-lv__bar"><div class="ap-lv__fill" style="width:64%"></div></div>
+        </div>
+        <div class="ap-lv__row">
+          <div class="ap-lv__top"><span class="ap-lv__n">Cartão Malagueta (3/15)</span><span class="ap-lv__v">20%</span></div>
+          <div class="ap-lv__bar"><div class="ap-lv__fill" style="width:20%"></div></div>
+        </div>
+        <div class="ap-lv__row">
+          <div class="ap-lv__top"><span class="ap-lv__n">Cartão Texano (14/15)</span><span class="ap-lv__v">93%</span></div>
+          <div class="ap-lv__bar"><div class="ap-lv__fill" style="width:93%"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ap-panel">
+      <h3 class="ap-panel__t">Atividade recente</h3>
+      <div class="ap-tx">
+        <div class="ap-tx__r">
+          <div class="ap-tx__ic"><span class="material-symbols-outlined">qr_code_2</span></div>
+          <div class="ap-tx__b"><div class="ap-tx__t">Check-in pelo QR</div><div class="ap-tx__d">Malagueta · há 2 dias</div></div>
+          <div class="ap-tx__v is-in">+45</div>
+        </div>
+        <div class="ap-tx__r">
+          <div class="ap-tx__ic"><span class="material-symbols-outlined">redeem</span></div>
+          <div class="ap-tx__b"><div class="ap-tx__t">Combo resgatado</div><div class="ap-tx__d">Texano · há 6 dias</div></div>
+          <div class="ap-tx__v is-out">−20</div>
+        </div>
+        <div class="ap-tx__r">
+          <div class="ap-tx__ic"><span class="material-symbols-outlined">local_offer</span></div>
+          <div class="ap-tx__b"><div class="ap-tx__t">Promoção relâmpago</div><div class="ap-tx__d">Malagueta · há 11 dias</div></div>
+          <div class="ap-tx__v is-in">+60</div>
+        </div>
+        <div class="ap-tx__r">
+          <div class="ap-tx__ic"><span class="material-symbols-outlined">shopping_bag</span></div>
+          <div class="ap-tx__b"><div class="ap-tx__t">Compra validada</div><div class="ap-tx__d">Malagueta · há 21 dias</div></div>
+          <div class="ap-tx__v is-in">+85</div>
+        </div>
+      </div>
+      <a href="historico.html" class="ap-btn ap-btn--ghost" style="margin-top:14px;">Ver histórico completo</a>
+    </div>
+  </aside>
+</div>
+
+<p class="ap-note">
+  Protótipo estático — dados fixos, sem backend. Telas: Início · Histórico · Benefícios · Cartão · Parceiro · Perfil.
+  Redimensione a janela abaixo de 1100px para ver o comportamento mobile.
+</p>
+
+<script src="proto-shell.js"></script>
+</body>
+</html>

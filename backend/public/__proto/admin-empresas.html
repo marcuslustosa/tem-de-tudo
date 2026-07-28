@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Protótipo · Gestão de empresas</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="proto.css" />
+<script>(function(){try{var t=localStorage.getItem('proto-theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body data-profile="admin" data-page="admin-empresas" data-title="Empresas" data-sub="180 cadastradas · 4 aguardando aprovação">
+
+<div class="ap-shell">
+  <div class="ap-main">
+
+    <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
+      <div class="ap-search" style="flex:1;min-width:220px;">
+        <span class="material-symbols-outlined">search</span>
+        <input type="search" placeholder="Buscar por nome, CNPJ ou responsável" />
+      </div>
+      <div class="ap-seg">
+        <button class="ap-seg__i is-active" type="button">Todas</button>
+        <button class="ap-seg__i" type="button">Pendentes (4)</button>
+        <button class="ap-seg__i" type="button">Ativas</button>
+        <button class="ap-seg__i" type="button">Bloqueadas</button>
+      </div>
+      <button class="ap-btn ap-btn--sm" type="button">
+        <span class="material-symbols-outlined" style="font-size:19px">add_business</span> Nova empresa
+      </button>
+    </div>
+
+    <section class="ap-kgrid">
+      <div class="ap-k">
+        <div class="ap-k__l"><span class="material-symbols-outlined">check_circle</span> Ativas</div>
+        <div class="ap-k__v">168</div>
+        <div class="ap-k__d is-up">93% <span>da base</span></div>
+      </div>
+      <div class="ap-k">
+        <div class="ap-k__l"><span class="material-symbols-outlined">hourglass_top</span> Pendentes</div>
+        <div class="ap-k__v">4</div>
+        <div class="ap-k__d"><span>a mais antiga há 3d</span></div>
+      </div>
+      <div class="ap-k">
+        <div class="ap-k__l"><span class="material-symbols-outlined">block</span> Bloqueadas</div>
+        <div class="ap-k__v">6</div>
+        <div class="ap-k__d is-down">+2 <span>no mês</span></div>
+      </div>
+      <div class="ap-k">
+        <div class="ap-k__l"><span class="material-symbols-outlined">event_busy</span> Vencendo</div>
+        <div class="ap-k__v">11</div>
+        <div class="ap-k__d"><span>nos próximos 30d</span></div>
+      </div>
+    </section>
+
+    <section class="ap-panel">
+      <div class="ap-chart__head" style="margin-bottom:14px">
+        <div>
+          <h2 class="ap-chart__t">Todas as empresas</h2>
+          <div class="ap-chart__s">Pendentes aparecem primeiro</div>
+        </div>
+        <div class="ap-chart__act">
+          <button class="ap-btn ap-btn--ghost ap-btn--sm" type="button">
+            <span class="material-symbols-outlined" style="font-size:18px">download</span> Exportar
+          </button>
+        </div>
+      </div>
+
+      <div class="ap-tablewrap">
+        <table class="ap-dt">
+          <thead>
+            <tr>
+              <th>Empresa</th><th>Situação</th><th>Plano</th>
+              <th style="text-align:right">Clientes</th><th>Responsável</th><th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><div class="ap-dt__who">
+                <span class="ap-dt__av" style="background:linear-gradient(140deg,#0ea5e9,#0c4a6e)">PD</span>
+                <span><span class="ap-dt__n">Padaria do Bairro</span><span class="ap-dt__m">11.222.333/0001-44</span></span>
+              </div></td>
+              <td><span class="ap-pill ap-pill--warn"><span class="material-symbols-outlined">hourglass_top</span> Pendente</span></td>
+              <td>—</td>
+              <td class="ap-dt__num">0</td>
+              <td>Sandra Lima</td>
+              <td style="text-align:right"><button class="ap-mini ap-mini--ok" type="button"><span class="material-symbols-outlined">check</span> Aprovar</button></td>
+            </tr>
+            <tr>
+              <td><div class="ap-dt__who">
+                <span class="ap-dt__av" style="background:linear-gradient(140deg,#a855f7,#581c87)">SB</span>
+                <span><span class="ap-dt__n">Studio Bela</span><span class="ap-dt__m">22.333.444/0001-55</span></span>
+              </div></td>
+              <td><span class="ap-pill ap-pill--warn"><span class="material-symbols-outlined">hourglass_top</span> Pendente</span></td>
+              <td>—</td>
+              <td class="ap-dt__num">0</td>
+              <td>Bela Rocha</td>
+              <td style="text-align:right"><button class="ap-mini ap-mini--ok" type="button"><span class="material-symbols-outlined">check</span> Aprovar</button></td>
+            </tr>
+            <tr>
+              <td><div class="ap-dt__who">
+                <span class="ap-dt__av" style="background:linear-gradient(140deg,#f97316,#b45309)">MG</span>
+                <span><span class="ap-dt__n">Malagueta Galpão</span><span class="ap-dt__m">11.111.111/0001-11</span></span>
+              </div></td>
+              <td><span class="ap-pill ap-pill--ok"><span class="material-symbols-outlined">check_circle</span> Ativa</span></td>
+              <td>Anual · até 12/2026</td>
+              <td class="ap-dt__num">312</td>
+              <td>Camila Malagueta</td>
+              <td style="text-align:right"><button class="ap-mini" type="button">Gerenciar</button></td>
+            </tr>
+            <tr>
+              <td><div class="ap-dt__who">
+                <span class="ap-dt__av" style="background:linear-gradient(140deg,#ef4444,#7f1d1d)">TB</span>
+                <span><span class="ap-dt__n">Texano Burger</span><span class="ap-dt__m">11.111.111/0001-22</span></span>
+              </div></td>
+              <td><span class="ap-pill ap-pill--ok"><span class="material-symbols-outlined">check_circle</span> Ativa</span></td>
+              <td>Mensal · vence em 12d</td>
+              <td class="ap-dt__num">208</td>
+              <td>Bruno Texano</td>
+              <td style="text-align:right"><button class="ap-mini" type="button">Gerenciar</button></td>
+            </tr>
+            <tr>
+              <td><div class="ap-dt__who">
+                <span class="ap-dt__av" style="background:linear-gradient(140deg,#94a3b8,#334155)">ES</span>
+                <span><span class="ap-dt__n">Empresa Suspensa Demo</span><span class="ap-dt__m">11.111.111/0001-66</span></span>
+              </div></td>
+              <td><span class="ap-pill ap-pill--bad"><span class="material-symbols-outlined">block</span> Bloqueada</span></td>
+              <td>Suspenso</td>
+              <td class="ap-dt__num">17</td>
+              <td>—</td>
+              <td style="text-align:right"><button class="ap-mini" type="button">Reativar</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:12px;margin-top:16px;">
+        <span style="font-size:12.5px;color:var(--text-faint)">Mostrando 5 de 180</span>
+        <div style="margin-left:auto;display:flex;gap:8px;">
+          <button class="ap-mini" type="button"><span class="material-symbols-outlined">chevron_left</span></button>
+          <button class="ap-mini" type="button"><span class="material-symbols-outlined">chevron_right</span></button>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- RAIL -->
+  <aside class="ap-rail">
+    <div class="ap-panel">
+      <h3 class="ap-panel__t">Ao aprovar uma empresa</h3>
+      <div style="display:grid;gap:14px;font-size:13.5px;color:var(--text-muted);line-height:1.5">
+        <div style="display:flex;gap:11px"><span class="material-symbols-outlined" style="color:var(--accent);font-size:20px">qr_code_2</span>
+          <span>O QR do balcão é gerado automaticamente.</span></div>
+        <div style="display:flex;gap:11px"><span class="material-symbols-outlined" style="color:var(--accent);font-size:20px">mail</span>
+          <span>O responsável recebe o acesso ao painel por e-mail.</span></div>
+        <div style="display:flex;gap:11px"><span class="material-symbols-outlined" style="color:var(--accent);font-size:20px">public</span>
+          <span>A página pública passa a aparecer para os clientes.</span></div>
+      </div>
+    </div>
+
+    <div class="ap-panel">
+      <h3 class="ap-panel__t">Planos vencendo</h3>
+      <div class="ap-tx">
+        <div class="ap-tx__r">
+          <div class="ap-tx__ic"><span class="material-symbols-outlined">event_busy</span></div>
+          <div class="ap-tx__b"><div class="ap-tx__t">Texano Burger</div><div class="ap-tx__d">vence em 12 dias</div></div>
+          <button class="ap-mini" type="button">Renovar</button>
+        </div>
+        <div class="ap-tx__r">
+          <div class="ap-tx__ic"><span class="material-symbols-outlined">event_busy</span></div>
+          <div class="ap-tx__b"><div class="ap-tx__t">Florenza Boutique</div><div class="ap-tx__d">vence em 21 dias</div></div>
+          <button class="ap-mini" type="button">Renovar</button>
+        </div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script src="proto-shell.js"></script>
+</body>
+</html>

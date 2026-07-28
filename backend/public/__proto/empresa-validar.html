@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Protótipo · Validar cliente</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="proto.css" />
+<script>(function(){try{var t=localStorage.getItem('proto-theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body data-profile="empresa" data-page="empresa-validar" data-title="Validar cliente" data-sub="Leia o QR do cliente no balcão">
+
+<div class="ap-shell">
+  <div class="ap-main">
+
+    <!-- CAMERA -->
+    <section class="ap-scan">
+      <div class="ap-scan__feed"></div>
+      <div class="ap-scan__hole">
+        <span class="ap-scan__c ap-scan__c--tl"></span>
+        <span class="ap-scan__c ap-scan__c--tr"></span>
+        <span class="ap-scan__c ap-scan__c--bl"></span>
+        <span class="ap-scan__c ap-scan__c--br"></span>
+        <span class="ap-scan__line"></span>
+      </div>
+      <div class="ap-scan__tools">
+        <button class="ap-scan__tool" type="button" aria-label="Lanterna"><span class="material-symbols-outlined">flashlight_on</span></button>
+        <button class="ap-scan__tool" type="button" aria-label="Trocar câmera"><span class="material-symbols-outlined">cameraswitch</span></button>
+      </div>
+      <p class="ap-scan__hint">Peça o QR do app do cliente e centralize na moldura.</p>
+    </section>
+
+    <section class="ap-panel">
+      <h3 class="ap-panel__t">Sem câmera? Digite o código do cliente</h3>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <input class="ap-input" type="text" placeholder="TDT · 0000 · 0000" style="letter-spacing:1.5px;text-transform:uppercase" />
+        <button class="ap-btn ap-btn--sm" type="button" style="height:52px">Buscar</button>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- RESULTADO DA LEITURA (no mobile aparece abaixo da camera) -->
+  <aside class="ap-rail ap-rail--always">
+    <div class="ap-panel">
+      <h3 class="ap-panel__t">Cliente identificado</h3>
+
+      <div style="display:flex;align-items:center;gap:14px;">
+        <div class="ap-prof__av" style="width:56px;height:56px;font-size:18px">CD</div>
+        <div style="min-width:0">
+          <div style="font-size:16px;font-weight:800;letter-spacing:-0.2px">Cliente Demo</div>
+          <div style="font-size:12.5px;color:var(--text-muted);margin-top:2px">Membro Prata · 320 pontos</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
+        <span class="ap-pill ap-pill--ok"><span class="material-symbols-outlined">check_circle</span> Vinculado</span>
+        <span class="ap-pill ap-pill--info"><span class="material-symbols-outlined">loyalty</span> Cartão 3/15</span>
+      </div>
+
+      <div style="height:1px;background:var(--border);margin:18px 0"></div>
+
+      <h3 class="ap-panel__t">Benefícios que ele pode usar</h3>
+      <div class="ap-tx">
+        <div class="ap-tx__r">
+          <div class="ap-tx__ic"><span class="material-symbols-outlined">card_giftcard</span></div>
+          <div class="ap-tx__b"><div class="ap-tx__t">Bônus de adesão · 10%</div><div class="ap-tx__d">disponível · expira em 18 dias</div></div>
+          <button class="ap-mini ap-mini--ok" type="button">Validar</button>
+        </div>
+        <div class="ap-tx__r">
+          <div class="ap-tx__ic"><span class="material-symbols-outlined">local_offer</span></div>
+          <div class="ap-tx__b"><div class="ap-tx__t">Combo de hoje · 12%</div><div class="ap-tx__d">disponível · 13 restantes</div></div>
+          <button class="ap-mini ap-mini--ok" type="button">Validar</button>
+        </div>
+        <div class="ap-tx__r">
+          <div class="ap-tx__ic"><span class="material-symbols-outlined">loyalty</span></div>
+          <div class="ap-tx__b"><div class="ap-tx__t">Recompensa do cartão</div><div class="ap-tx__d">faltam 12 visitas</div></div>
+          <button class="ap-mini" type="button" disabled style="opacity:.5;cursor:default">Bloqueado</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="ap-panel">
+      <h3 class="ap-panel__t">Registrar movimento</h3>
+      <div class="ap-field">
+        <label class="ap-field__l" for="vlr">Valor da compra (opcional)</label>
+        <input class="ap-input" id="vlr" type="text" placeholder="R$ 0,00" />
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px">
+        <button class="ap-mini" type="button">+1 visita</button>
+        <button class="ap-mini" type="button">+10 pts</button>
+        <button class="ap-mini" type="button">+50 pts</button>
+      </div>
+      <button class="ap-btn" type="button">
+        <span class="material-symbols-outlined" style="font-size:20px">check</span> Confirmar
+      </button>
+      <button class="ap-btn ap-btn--ghost" type="button" style="margin-top:10px">Cancelar leitura</button>
+    </div>
+  </aside>
+</div>
+
+<script src="proto-shell.js"></script>
+</body>
+</html>
