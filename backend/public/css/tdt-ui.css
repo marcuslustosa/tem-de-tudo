@@ -1125,6 +1125,17 @@ html[data-theme="dark"] .tdt-pill--bad { color: #fb7185; }
 html[data-theme="dark"] .tdt-pill--info { color: #60a5fa; }
 
 /* Colunas de painel */
+/* .tdt-panel e usado no balcao, no QR da loja e nos blocos que o bundle injeta,
+   mas nunca teve base: os cartoes apareciam sem fundo, sem borda e sem forma. */
+.tdt-panel {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r-md); padding: 18px; box-shadow: var(--shadow-1);
+}
+.tdt-panel + .tdt-panel { margin-top: 16px; }
+.tdt-panel__t {
+  font-size: var(--step-cap); font-weight: 800; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--text-faint); margin: 0 0 14px;
+}
 .tdt-panelgrid { display: grid; gap: 16px; }
 @media (min-width: 900px) { .tdt-panelgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
@@ -2470,3 +2481,25 @@ body[data-page="minhas_campanhas_loja"] button[id*="ancel"] {
   border: 1px solid color-mix(in srgb, #059669 32%, transparent) !important;
   opacity: 1;
 }
+
+/* ==========================================================================
+   CORES ARBITRARIAS HERDADAS  (text-[#5b5b62], bg-[#f7f7f7], ...)
+   O bundle ainda gera ~350 dessas classes do tema antigo. Sem mapeamento elas
+   nao fazem nada: todo texto secundario sai com o mesmo peso do principal e as
+   telas ficam sem hierarquia. Mapear para o hex original traria de volta o
+   branco-no-branco no tema escuro, entao cada uma vai para o TOKEN equivalente.
+   ========================================================================== */
+.text-\[\#111b3f\], .text-\[\#111B3F\], .text-\[\#2e2e34\], .text-\[\#191b2c\] { color: var(--text); }
+.text-\[\#5b5b62\], .text-\[\#8a8f9c\] { color: var(--text-muted); }
+.text-\[\#aeacb4\] { color: var(--text-faint); }
+/* O roxo herdado marcava tanto numero grande de KPI quanto rotulo pequeno. Como
+   cor de texto ele vira texto normal — pintar rotulo de acento faz a tela
+   inteira gritar. O acento fica so onde ele era de fato um icone. */
+.text-\[\#4c1d95\] { color: var(--text); }
+.material-symbols-outlined.text-\[\#4c1d95\], .text-\[\#b41340\] { color: var(--accent); }
+
+.bg-\[\#f7f7f7\], .bg-\[\#f0f2f8\], .bg-\[\#f0f0f0\], .bg-\[\#e9e7f1\] { background: var(--surface-2); }
+.bg-\[\#4c1d95\], .bg-\[\#111B3F\], .bg-\[\#111b3f\] { background: var(--hero-bg); color: #fff; }
+
+.border-\[\#e9e7f1\], .border-\[\#dedbe7\], .border-\[\#e4e7ef\] { border-color: var(--border); }
+.border-\[\#4c1d95\], .border-\[\#133f8c\] { border-color: var(--accent); }

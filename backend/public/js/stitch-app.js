@@ -1463,6 +1463,9 @@
 
     const header = document.querySelector('header');
     if (!header || header.querySelector('[data-page-back]')) return;
+    // Varias telas ja trazem o proprio botao de voltar no HTML. Injetar um
+    // segundo empilhava os dois em cima do titulo.
+    if (header.querySelector('[aria-label="Voltar"]')) return;
 
     const container = header.firstElementChild && header.firstElementChild.tagName === 'DIV'
       ? header.firstElementChild
@@ -1471,8 +1474,11 @@
     const backButton = document.createElement('button');
     backButton.type = 'button';
     backButton.setAttribute('data-page-back', '1');
-    backButton.className = 'inline-flex h-10 items-center gap-2 rounded-full bg-white/90 px-3 text-sm font-bold text-[#111B3F] shadow-sm';
-    backButton.innerHTML = '<span class="material-symbols-outlined">arrow_back</span><span>Voltar</span>';
+    backButton.setAttribute('aria-label', 'Voltar');
+    // Mesmo botao redondo do resto do app. O antigo era uma pilula branca com
+    // texto azul, herdada do tema anterior, e destoava de todas as telas.
+    backButton.className = 'tdt-icon-btn';
+    backButton.innerHTML = '<span class="material-symbols-outlined">arrow_back</span>';
     backButton.addEventListener('click', () => {
       const sameOriginReferrer = document.referrer && (() => {
         try {
@@ -5645,13 +5651,16 @@
         const main = document.querySelector('main') || document.querySelector('.main-content') || document.body;
         const qrSection = document.createElement('div');
         qrSection.id = 'empresaQRSection';
-        qrSection.className = 'w-full max-w-md mx-auto mb-6 p-5 bg-surface-container-lowest rounded-2xl shadow-sm';
+        // Classes do sistema, nao as do tema antigo: com `py-2.5` o botao de
+        // renovar ficava com metade da altura dos outros e o texto encostava.
+        qrSection.className = 'tdt-panel';
         qrSection.innerHTML = `
-          <h3 class="font-headline font-bold text-on-surface mb-3 text-center text-base">QR Code da Loja</h3>
+          <h3 class="tdt-panel__t" style="text-align:center">QR Code da Loja</h3>
           <div id="empresaQRContainer" class="flex flex-col items-center gap-2 min-h-[80px] justify-center">
             <p class="text-sm text-outline">Carregando...</p>
           </div>
-          <button id="gerarQRBtn" class="mt-4 w-full py-2.5 bg-primary text-white rounded-xl font-semibold text-sm">Gerar / Renovar QR Code</button>`;
+          <button id="gerarQRBtn" class="tdt-btn tdt-btn--block" style="margin-top:16px">
+            <span class="material-symbols-outlined">autorenew</span> Gerar / Renovar QR Code</button>`;
         main.prepend(qrSection);
 
         const renderQR = async () => {
@@ -7617,151 +7626,139 @@
       const customersWithPush = customers.filter((item) => item?.push_ativo).slice(0, 5);
 
       const host = document.querySelector('main') || document.getElementById('content') || document.body;
-      host.innerHTML = `
-        <section class="space-y-6">
-          <div class="rounded-[28px] bg-[#111B3F] p-6 text-white shadow-[0_18px_45px_rgba(17,27,63,0.18)]">
-            <div class="flex flex-wrap items-start justify-between gap-4">
-              <div class="max-w-[680px]">
-                <h1 class="text-2xl font-extrabold leading-tight">Resultados da sua operação</h1>
-              </div>
-              <div class="grid gap-3 sm:grid-cols-2">
-                <a href="/gest_o_de_ofertas_parceiro.html#empresaOffersPushSummary" class="inline-flex h-12 items-center justify-center rounded-full bg-white px-5 text-sm font-extrabold text-[#111B3F] shadow-sm">Abrir gestao de ofertas</a>
-                <a href="/validar_resgate.html?modo=beneficios" class="inline-flex h-12 items-center justify-center rounded-full border border-white/18 bg-white/10 px-5 text-sm font-bold text-white">Meu QR da loja</a>
-                <a href="/clientes_fidelizados_loja.html" class="inline-flex h-12 items-center justify-center rounded-full border border-white/18 bg-white/10 px-5 text-sm font-bold text-white">Ver clientes</a>
-                <a href="/dashboard_parceiro.html" class="inline-flex h-12 items-center justify-center rounded-full border border-white/18 bg-white/10 px-5 text-sm font-bold text-white">Voltar ao dashboard</a>
-              </div>
-            </div>
+      const linhaSimples = (titulo, detalhe) => `
+        <div class="tdt-tx__r">
+          <div class="tdt-tx__b">
+            <div class="tdt-tx__t">${titulo}</div>
+            <div class="tdt-tx__d">${detalhe}</div>
           </div>
+        </div>`;
+      const vazio = (texto) => `<p class="tdt-k__d" style="margin:0">${texto}</p>`;
 
-          <section class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            <div class="rounded-2xl bg-surface-container-lowest p-5 shadow-sm">
-              <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Clientes vinculados</p>
-              <p class="mt-2 text-3xl font-extrabold text-[#191b2c]">${linkedCustomers.toLocaleString('pt-BR')}</p>
+      host.innerHTML = `
+        <section class="tdt-hero">
+          <div class="tdt-hero__label">Operação</div>
+          <h1 class="tdt-hero__title">Resultados da sua operação</h1>
+          <p class="tdt-hero__text">Campanhas publicadas, alcance do push e movimento recente da loja.</p>
+          <div class="tdt-hero__actions">
+            <a href="/gest_o_de_ofertas_parceiro.html#empresaOffersPushSummary" class="tdt-btn tdt-btn--light">Gestão de ofertas</a>
+            <a href="/validar_resgate.html?modo=beneficios" class="tdt-btn tdt-btn--ghost">Meu QR da loja</a>
+            <a href="/clientes_fidelizados_loja.html" class="tdt-btn tdt-btn--ghost">Ver clientes</a>
+            <a href="/dashboard_parceiro.html" class="tdt-btn tdt-btn--ghost">Voltar ao painel</a>
+          </div>
+        </section>
+
+        <section class="tdt-kgrid">
+          <div class="tdt-k">
+            <div class="tdt-k__l"><span class="material-symbols-outlined">groups</span> Clientes vinculados</div>
+            <div class="tdt-k__v">${linkedCustomers.toLocaleString('pt-BR')}</div>
+          </div>
+          <div class="tdt-k">
+            <div class="tdt-k__l"><span class="material-symbols-outlined">notifications_active</span> Com push ativo</div>
+            <div class="tdt-k__v">${activePushCustomers.toLocaleString('pt-BR')}</div>
+            <div class="tdt-k__d">${linkedCustomers ? Math.round((activePushCustomers / linkedCustomers) * 100) + '% da base' : 'Sem base ainda'}</div>
+          </div>
+          <div class="tdt-k">
+            <div class="tdt-k__l"><span class="material-symbols-outlined">notifications_off</span> Sem push</div>
+            <div class="tdt-k__v">${inactivePushCustomers.toLocaleString('pt-BR')}</div>
+          </div>
+          <div class="tdt-k">
+            <div class="tdt-k__l"><span class="material-symbols-outlined">campaign</span> Promoções ativas</div>
+            <div class="tdt-k__v">${activePromotions.toLocaleString('pt-BR')}</div>
+          </div>
+        </section>
+
+        <section class="tdt-panelgrid">
+          <article class="tdt-panel">
+            <h2 class="tdt-panel__t">Situação do envio</h2>
+            <div class="tdt-kgrid" style="margin-bottom:16px">
+              <div class="tdt-k">
+                <div class="tdt-k__l">Último envio</div>
+                <div class="tdt-k__v" style="font-size:15px">${formatDatePtBr(lastSent, 'Nenhum envio')}</div>
+              </div>
+              <div class="tdt-k">
+                <div class="tdt-k__l">Promoções resgatadas</div>
+                <div class="tdt-k__v">${Number(summaryCards.total_promocoes_resgatadas || 0).toLocaleString('pt-BR')}</div>
+              </div>
+              <div class="tdt-k">
+                <div class="tdt-k__l">Clientes inativos</div>
+                <div class="tdt-k__v">${Number(summaryCards.clientes_inativos || 0).toLocaleString('pt-BR')}</div>
+              </div>
+              <div class="tdt-k">
+                <div class="tdt-k__l">Média de avaliação</div>
+                <div class="tdt-k__v">${Number(summaryCards.media_avaliacao || 0).toFixed(1).replace('.', ',')}</div>
+              </div>
             </div>
-            <div class="rounded-2xl bg-surface-container-lowest p-5 shadow-sm">
-              <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Com push ativo</p>
-              <p class="mt-2 text-3xl font-extrabold text-[#4c1d95]">${activePushCustomers.toLocaleString('pt-BR')}</p>
+            <div style="display:grid;gap:10px">
+              <a href="/gest_o_de_ofertas_parceiro.html#formOferta" class="tdt-btn tdt-btn--block">
+                <span class="material-symbols-outlined">campaign</span> Criar promoção</a>
+              <a href="/gest_o_de_ofertas_parceiro.html#returnReminderSection" class="tdt-btn tdt-btn--ghost tdt-btn--block">
+                <span class="material-symbols-outlined">alarm</span> Configurar lembrete</a>
+              <a href="/gest_o_de_ofertas_parceiro.html#birthdayBonusSection" class="tdt-btn tdt-btn--ghost tdt-btn--block">
+                <span class="material-symbols-outlined">cake</span> Bônus aniversário</a>
+              <a href="/gest_o_de_ofertas_parceiro.html#cartaoFidelidadeSection" class="tdt-btn tdt-btn--ghost tdt-btn--block">
+                <span class="material-symbols-outlined">loyalty</span> Cartão fidelidade</a>
             </div>
-            <div class="rounded-2xl bg-surface-container-lowest p-5 shadow-sm">
-              <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Sem push</p>
-              <p class="mt-2 text-3xl font-extrabold text-[#4c1d95]">${inactivePushCustomers.toLocaleString('pt-BR')}</p>
+          </article>
+
+          <article class="tdt-panel">
+            <h2 class="tdt-panel__t">Base com notificações ativas</h2>
+            <div class="tdt-tx">
+              ${customersWithPush.length
+                ? customersWithPush.map((customer) => linhaSimples(
+                    safeText(customer?.nome || customer?.name, 'Cliente'),
+                    `${safeText(customer?.email, 'Sem e-mail')} · ${Number(customer?.push_total_dispositivos || 0).toLocaleString('pt-BR')} dispositivo(s)`
+                  )).join('')
+                : vazio('Nenhum cliente vinculado ativou notificações ainda. Oriente o cliente a instalar o app e tocar em Ativar notificações.')}
             </div>
-            <div class="rounded-2xl bg-surface-container-lowest p-5 shadow-sm">
-              <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Promocoes ativas</p>
-              <p class="mt-2 text-3xl font-extrabold text-[#111B3F]">${activePromotions.toLocaleString('pt-BR')}</p>
+          </article>
+        </section>
+
+        <section class="tdt-panelgrid">
+          <article class="tdt-panel">
+            <div class="tdt-section__head">
+              <h2 class="tdt-section__title" style="font-size:17px">Campanhas publicadas</h2>
+              <a href="/gest_o_de_ofertas_parceiro.html" class="ap-sec__link" style="margin-left:auto">Gerenciar</a>
             </div>
-          </section>
+            <div class="tdt-tx">
+              ${promotions.length
+                ? promotions.slice(0, 6).map((promo) => {
+                    const ativa = promo?.ativo !== false && String(promo?.status || '').toLowerCase() !== 'pausada';
+                    return `
+                      <div class="tdt-tx__r">
+                        <div class="tdt-tx__b">
+                          <div class="tdt-tx__t">${safeText(promo?.nome || promo?.titulo, 'Promoção')}</div>
+                          <div class="tdt-tx__d">${safeText(promo?.descricao, 'Sem descrição')}<br>
+                            Validade: ${formatDatePtBr(promo?.data_expiracao || promo?.validade, 'não informada')}</div>
+                        </div>
+                        <span class="tdt-pill ${ativa ? 'tdt-pill--ok' : 'tdt-pill--warn'}">${ativa ? 'Ativa' : 'Pausada'}</span>
+                      </div>`;
+                  }).join('')
+                : vazio('Nenhuma promoção ativa. Abra a Gestão de Ofertas para publicar a primeira campanha.')}
+            </div>
+          </article>
 
-          <section class="grid gap-4 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
-            <article class="rounded-2xl bg-surface-container-lowest p-5 shadow-sm">
-              <div class="flex flex-wrap items-start justify-between gap-3">
-                <div>
-                  <p class="text-[11px] font-bold uppercase tracking-[0.16em] text-on-surface-variant">Push da empresa</p>
-                  <h2 class="mt-2 text-xl font-extrabold text-on-surface">Situacao do envio</h2>
-                </div>
-              </div>
-              <div class="mt-4 grid gap-3 sm:grid-cols-2">
-                <div class="rounded-xl bg-surface-container-low p-4">
-                  <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Último envio</p>
-                  <p class="mt-2 text-sm font-bold text-on-surface">${formatDatePtBr(lastSent, 'Nenhum envio')}</p>
-                </div>
-                <div class="rounded-xl bg-surface-container-low p-4">
-                  <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Promocoes resgatadas</p>
-                  <p class="mt-2 text-2xl font-extrabold text-[#191b2c]">${Number(summaryCards.total_promocoes_resgatadas || 0).toLocaleString('pt-BR')}</p>
-                </div>
-                <div class="rounded-xl bg-surface-container-low p-4">
-                  <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Clientes inativos</p>
-                  <p class="mt-2 text-2xl font-extrabold text-[#4c1d95]">${Number(summaryCards.clientes_inativos || 0).toLocaleString('pt-BR')}</p>
-                </div>
-                <div class="rounded-xl bg-surface-container-low p-4">
-                  <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Media de avaliacao</p>
-                  <p class="mt-2 text-2xl font-extrabold text-[#111B3F]">${Number(summaryCards.media_avaliacao || 0).toFixed(1).replace('.', ',')}</p>
-                </div>
-              </div>
-              <div class="mt-4 grid gap-2 sm:grid-cols-2">
-                <a href="/gest_o_de_ofertas_parceiro.html#formOferta" class="app-primary-button justify-center">Criar promocao</a>
-                <a href="/gest_o_de_ofertas_parceiro.html#returnReminderSection" class="app-secondary-button justify-center">Configurar lembrete</a>
-                <a href="/gest_o_de_ofertas_parceiro.html#birthdayBonusSection" class="app-secondary-button justify-center">Bonus aniversario</a>
-                <a href="/gest_o_de_ofertas_parceiro.html#cartaoFidelidadeSection" class="app-secondary-button justify-center">Cartao fidelidade</a>
-              </div>
-            </article>
-
-            <article class="rounded-2xl bg-surface-container-lowest p-5 shadow-sm">
-              <p class="text-[11px] font-bold uppercase tracking-[0.16em] text-on-surface-variant">Clientes prontos para push</p>
-              <h2 class="mt-2 text-xl font-extrabold text-on-surface">Base com notificacoes ativas</h2>
-              <div class="mt-4 space-y-3">
-                ${customersWithPush.length ? customersWithPush.map((customer) => `
-                  <div class="rounded-xl bg-surface-container-low p-4">
-                    <div class="flex items-center justify-between gap-3">
-                      <div>
-                        <p class="text-sm font-bold text-on-surface">${safeText(customer?.nome || customer?.name, 'Cliente')}</p>
-                        <p class="mt-1 text-xs text-on-surface-variant">${safeText(customer?.email, 'Sem e-mail')}</p>
-                      </div>
-                      <span class="rounded-full bg-sky-100 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-sky-700">${Number(customer?.push_total_dispositivos || 0).toLocaleString('pt-BR')} dispositivo(s)</span>
-                    </div>
-                  </div>
-                `).join('') : '<p class="text-sm text-on-surface-variant">Nenhum cliente vinculado ativou notificacoes ainda. Oriente o cliente a instalar o app e tocar em Ativar notificacoes.</p>'}
-              </div>
-            </article>
-          </section>
-
-          <section class="grid gap-4 lg:grid-cols-2">
-            <article class="rounded-2xl bg-surface-container-lowest p-5 shadow-sm">
-              <div class="flex items-center justify-between gap-3">
-                <div>
-                  <p class="text-[11px] font-bold uppercase tracking-[0.16em] text-on-surface-variant">Promocoes da vitrine</p>
-                  <h2 class="mt-2 text-xl font-extrabold text-on-surface">Campanhas publicadas</h2>
-                </div>
-                <a href="/gest_o_de_ofertas_parceiro.html" class="text-sm font-bold text-primary">Gerenciar</a>
-              </div>
-              <div class="mt-4 space-y-3">
-                ${promotions.length ? promotions.slice(0, 6).map((promo) => `
-                  <div class="rounded-xl bg-surface-container-low p-4">
-                    <div class="flex items-start justify-between gap-3">
-                      <div>
-                        <p class="text-sm font-bold text-on-surface">${safeText(promo?.nome || promo?.titulo, 'Promocao')}</p>
-                        <p class="mt-1 text-xs text-on-surface-variant">${safeText(promo?.descricao, 'Sem descricao')}</p>
-                      </div>
-                      <span class="rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${promo?.ativo !== false && String(promo?.status || '').toLowerCase() !== 'pausada' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600'}">${promo?.ativo !== false && String(promo?.status || '').toLowerCase() !== 'pausada' ? 'Ativa' : 'Pausada'}</span>
-                    </div>
-                    <div class="mt-3 flex flex-wrap items-center gap-3 text-[11px] text-on-surface-variant">
-                      <span>Validade: ${formatDatePtBr(promo?.data_expiracao || promo?.validade, 'Nao informada')}</span>
-                      <span>Push: ${safeText(promo?.notification_title || promo?.titulo, 'Não informado')}</span>
-                    </div>
-                  </div>
-                `).join('') : '<p class="text-sm text-on-surface-variant">Nenhuma promocao ativa. Abra a Gestão de Ofertas para publicar a primeira campanha.</p>'}
-              </div>
-            </article>
-
-            <article class="rounded-2xl bg-surface-container-lowest p-5 shadow-sm">
-              <p class="text-[11px] font-bold uppercase tracking-[0.16em] text-on-surface-variant">Movimento recente</p>
-              <h2 class="mt-2 text-xl font-extrabold text-on-surface">Clientes e validacoes</h2>
-              <div class="mt-4 space-y-4">
-                <div>
-                  <p class="text-xs font-bold uppercase tracking-[0.14em] text-on-surface-variant">Clientes recentes</p>
-                  <div class="mt-3 space-y-3">
-                    ${recentClients.length ? recentClients.map((customer) => `
-                      <div class="rounded-xl bg-surface-container-low p-4">
-                        <p class="text-sm font-bold text-on-surface">${safeText(customer?.nome, 'Cliente')}</p>
-                        <p class="mt-1 text-xs text-on-surface-variant">${safeText(customer?.email, 'Sem e-mail')} | Vínculo ${formatDatePtBr(customer?.data_vinculo, 'recente')}</p>
-                      </div>
-                    `).join('') : '<p class="text-sm text-on-surface-variant">Nenhum cliente recente para mostrar.</p>'}
-                  </div>
-                </div>
-                <div>
-                  <p class="text-xs font-bold uppercase tracking-[0.14em] text-on-surface-variant">Ultimas validacoes</p>
-                  <div class="mt-3 space-y-3">
-                    ${recentRedemptions.length ? recentRedemptions.map((event) => `
-                      <div class="rounded-xl bg-surface-container-low p-4">
-                        <p class="text-sm font-bold text-on-surface">${safeText(event?.cliente_nome, 'Cliente')}</p>
-                        <p class="mt-1 text-xs text-on-surface-variant">${safeText(event?.titulo, 'Benefício validado')} | ${formatDatePtBr(event?.data, 'agora')}</p>
-                      </div>
-                    `).join('') : '<p class="text-sm text-on-surface-variant">Nenhuma validação recente.</p>'}
-                  </div>
-                </div>
-              </div>
-            </article>
-          </section>
+          <article class="tdt-panel">
+            <h2 class="tdt-panel__t">Movimento recente</h2>
+            <p class="tdt-k__l" style="margin-bottom:8px">Clientes recentes</p>
+            <div class="tdt-tx" style="margin-bottom:18px">
+              ${recentClients.length
+                ? recentClients.map((customer) => linhaSimples(
+                    safeText(customer?.nome, 'Cliente'),
+                    `${safeText(customer?.email, 'Sem e-mail')} · vínculo ${formatDatePtBr(customer?.data_vinculo, 'recente')}`
+                  )).join('')
+                : vazio('Nenhum cliente recente para mostrar.')}
+            </div>
+            <p class="tdt-k__l" style="margin-bottom:8px">Últimas validações</p>
+            <div class="tdt-tx">
+              ${recentRedemptions.length
+                ? recentRedemptions.map((event) => linhaSimples(
+                    safeText(event?.cliente_nome, 'Cliente'),
+                    `${safeText(event?.titulo, 'Benefício validado')} · ${formatDatePtBr(event?.data, 'agora')}`
+                  )).join('')
+                : vazio('Nenhuma validação recente.')}
+            </div>
+          </article>
         </section>
       `;
       ui.clearPageState();
