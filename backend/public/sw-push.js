@@ -48,3 +48,23 @@ self.addEventListener('notificationclick', (event) => {
     })
   );
 });
+
+/* Handler de fetch: o Chrome so oferece a instalacao em 1 toque
+   (beforeinstallprompt) quando o service worker responde a fetch. Sem isto o
+   usuario de Android caia no passo a passo manual sem necessidade.
+   Estrategia: rede primeiro, sem cache proprio — nao muda o comportamento do
+   app, so cumpre o criterio e da uma resposta offline decente na navegacao. */
+self.addEventListener('fetch', (event) => {
+  const req = event.request;
+  if (req.method !== 'GET') return;
+
+  const url = new URL(req.url);
+  if (url.origin !== self.location.origin) return;
+  if (url.pathname.startsWith('/api/')) return;
+
+  if (req.mode === 'navigate') {
+    event.respondWith(
+      fetch(req).catch(() => caches.match('/index.html').then((r) => r || Response.error()))
+    );
+  }
+});
