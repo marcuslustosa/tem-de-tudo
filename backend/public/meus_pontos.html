@@ -13,6 +13,8 @@
   <link rel="shortcut icon" href="/img/logo.png" />
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
   <link href="/css/i9plus-phase8.css?v=20260721-app51" rel="stylesheet" />
+  <link href="/css/tdt-app.css?v=20260727-ui1" rel="stylesheet" />
+  <script src="/js/tdt-app.js?v=20260727-ui1"></script>
   <style>
     body { background: #ffffff; min-height: 100vh; }
     .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24; }
@@ -43,6 +45,13 @@
       <div class="wallet-card__top">
         <span class="wallet-card__label">Saldo de pontos</span>
         <span id="hero-nivel" class="wallet-card__tier">Membro</span>
+      </div>
+      <!-- Anel: espelha a barra de progresso, preenchido por tdt-app.js -->
+      <div class="wallet-card__ring" aria-hidden="true">
+        <span class="wallet-card__ring-in">
+          <b data-tdt-ring-num>0%</b>
+          <i>do próximo nível</i>
+        </span>
       </div>
       <h1 id="hero-saldo" class="wallet-card__balance">0 <span>Pontos</span></h1>
       <div class="wallet-card__progress">
@@ -109,6 +118,46 @@
       </div>
       <div id="featuredCompaniesList" class="tdt-feat-scroll"></div>
     </section>
+
+    <!-- Trilho lateral: so aparece no desktop, onde antes sobrava vazio. -->
+    <aside class="tdt-rail">
+      <a href="/meus_pontos.html?mostrar=meu-qrcode" class="tdt-qrcard">
+        <span class="tdt-qrcard__top"><span>Meu cartão</span><span>Tem de Tudo</span></span>
+        <span class="tdt-qrcard__box"><span class="material-symbols-outlined">qr_code_2</span></span>
+        <span class="tdt-qrcard__who">
+          <span class="tdt-qrcard__name">Mostrar meu QR</span>
+          <span class="tdt-qrcard__hint">Apresente no caixa para pontuar</span>
+        </span>
+      </a>
+
+      <div class="tdt-panel">
+        <h3 class="tdt-panel__t">Como ganhar pontos</h3>
+        <div class="tdt-steps">
+          <div class="tdt-steps__i">
+            <span class="tdt-steps__n">1</span>
+            <span>Leia o <b>QR Code da empresa</b> no balcão para entrar no programa dela.</span>
+          </div>
+          <div class="tdt-steps__i">
+            <span class="tdt-steps__n">2</span>
+            <span>Na hora de pagar, mostre o <b>seu QR</b> e a equipe registra os pontos.</span>
+          </div>
+          <div class="tdt-steps__i">
+            <span class="tdt-steps__n">3</span>
+            <span>Troque por benefícios em <b>Benefícios</b>, com validação presencial.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tdt-panel">
+        <h3 class="tdt-panel__t">Seu histórico</h3>
+        <p style="margin:0 0 14px;font-size:13.5px;line-height:1.55;color:var(--tdt-text-muted)">
+          Todo ponto ganho e resgatado fica registrado no seu extrato.
+        </p>
+        <a href="/hist_rico_de_uso.html" class="tdt-chip" style="width:100%;justify-content:center">
+          <span class="material-symbols-outlined">history</span> Ver extrato completo
+        </a>
+      </div>
+    </aside>
   </main>
 
   <script src="/dist/stitch-app.min.js?v=20260721-app51"></script>
