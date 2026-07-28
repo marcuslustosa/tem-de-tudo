@@ -2143,3 +2143,180 @@ body[data-page="configuracoes_cliente"] select:focus {
 }
 body[data-page="configuracoes_cliente"] label { font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-faint); }
 body[data-page="configuracoes_cliente"] button { width: 100%; }
+
+/* ==========================================================================
+   CORRECOES DE MOBILE (relatadas em uso real)
+   ========================================================================== */
+
+/* 1. A pagina nao pode "arrastar" para os lados. A causa principal era o dock
+      injetado pelo bundle com 6 itens numa grade fixa de 5 colunas. */
+html, body { max-width: 100%; overflow-x: hidden; }
+.app-mobile-dock__inner {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 2px; width: 100%; grid-template-columns: none;
+}
+.app-mobile-dock__item,
+.app-mobile-dock [data-mobile-dock-more] {
+  flex: 1 1 0; min-width: 0; border: 0; background: none; cursor: pointer;
+  display: inline-flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 2px; min-height: 48px; border-radius: var(--r-pill); color: var(--dock-text);
+  font: inherit; text-decoration: none;
+}
+.app-mobile-dock__item-label { font-size: 9.5px; font-weight: 600; text-align: center; }
+
+/* 2. Heroi e cartoes nunca ultrapassam a largura da tela */
+.ap-hero, .ap-shell, .ap-main, .ap-panel, .profile-hero-shell, .profile-surface-card,
+.tdt-hero, .tdt-panel, .wallet-card { max-width: 100%; }
+.ap-shell, .ap-main { min-width: 0; }
+main img, main svg, .ap-hero img, .profile-hero-shell img { max-width: 100%; }
+
+/* 3. Botao de voltar: era branco com icone azul do tema antigo */
+.profile-appbar__btn, .tdt-icon-btn, [data-page-back] {
+  background: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text) !important;
+  width: 42px; height: 42px; border-radius: var(--r-sm);
+  display: inline-grid; place-items: center; flex: 0 0 auto;
+  box-shadow: none;
+}
+[data-page-back] .material-symbols-outlined,
+.profile-appbar__btn .material-symbols-outlined { color: var(--text) !important; font-size: 22px; }
+.profile-appbar__btn--ghost { background: transparent !important; border-color: transparent !important; }
+
+/* 4. Cabecalho no celular: titulo com espaco, botao pequeno e sem esmagar */
+@media (max-width: 640px) {
+  .tdt-appbar__inner, .profile-appbar__inner, .admin-header { padding: 12px 14px; gap: 10px; }
+  .tdt-appbar__hello, .profile-appbar__title { font-size: 18px; letter-spacing: -0.3px; }
+  .tdt-appbar__sub { font-size: 12px; }
+  .tdt-icon-btn, .profile-appbar__btn, [data-page-back] { width: 38px; height: 38px; }
+  .tdt-icon-btn .material-symbols-outlined, [data-page-back] .material-symbols-outlined { font-size: 20px; }
+  .ap-hero, .tdt-hero { padding: 20px 18px; border-radius: 22px; }
+  .ap-hero__value { letter-spacing: -1.5px; }
+}
+
+/* 5. Botao "Cancelar" saia branco com texto branco na gestao de ofertas */
+button.btn--neutral, button.btn--ghost, .btn--cancel,
+body[data-page="gest_o_de_ofertas_parceiro"] button[id*="ancel"],
+body[data-page="minhas_campanhas_loja"] button[id*="ancel"] {
+  background: var(--surface-2) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: none !important;
+}
+
+/* ==========================================================================
+   SOBREPOSICOES DO BUNDLE (modal, folha de instalacao, avisos)
+   Existiam so no CSS antigo; sem elas o modal de boas-vindas do bonus e o
+   passo a passo de instalar apareciam sem forma nas telas migradas.
+   ========================================================================== */
+.tdt-modal-overlay, .tdt-install-sheet-overlay {
+  position: fixed; inset: 0; z-index: 90; display: none;
+  align-items: center; justify-content: center; padding: 20px;
+  background: rgba(6, 6, 10, 0.6); backdrop-filter: blur(6px);
+}
+.tdt-modal-overlay.is-open, .tdt-install-sheet-overlay.is-open,
+.tdt-modal-overlay[style*="display: flex"] { display: flex; }
+.tdt-modal-dialog, .tdt-install-sheet {
+  position: relative; width: min(440px, 100%); max-height: 88vh; overflow-y: auto;
+  background: var(--surface); color: var(--text);
+  border: 1px solid var(--border); border-radius: var(--r-lg);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.4); padding: 26px 22px;
+}
+.tdt-bonus-modal { text-align: center; }
+.tdt-bonus-modal__close, .tdt-install-sheet__close {
+  position: absolute; top: 14px; right: 14px; width: 38px; height: 38px;
+  border: 0; border-radius: 999px; cursor: pointer;
+  background: var(--surface-2); color: var(--text-muted); display: grid; place-items: center;
+}
+.tdt-bonus-modal__burst {
+  width: 96px; height: 96px; margin: 6px auto 14px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(233, 30, 133, 0.35), transparent 70%);
+  display: grid; place-items: center;
+}
+.tdt-bonus-modal__badge {
+  width: 76px; height: 76px; border-radius: 50%; margin: 0 auto 16px;
+  display: grid; place-items: center; color: #fff;
+  background: linear-gradient(140deg, var(--accent-2), var(--accent));
+  box-shadow: 0 14px 30px rgba(176, 23, 116, 0.35);
+}
+.tdt-bonus-modal__badge .material-symbols-outlined { font-size: 38px; }
+.tdt-bonus-modal__kicker {
+  margin: 0; font-size: 11.5px; font-weight: 800; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--accent);
+}
+[data-theme="dark"] .tdt-bonus-modal__kicker { color: #f472b6; }
+.tdt-bonus-modal__title { margin: 8px 0 0; font-size: 22px; font-weight: 800; letter-spacing: -0.4px; }
+.tdt-bonus-modal__desc { margin: 10px 0 0; font-size: 14.5px; line-height: 1.6; color: var(--text-muted); }
+.tdt-modal-dialog .btn, .tdt-modal-dialog button:not([data-close]) { margin-top: 18px; width: 100%; }
+
+/* Folha "como instalar o app" */
+.tdt-install-sheet__head { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+.tdt-install-sheet__icon { width: 52px; height: 52px; border-radius: var(--r-sm); }
+.tdt-install-sheet__title { margin: 0; font-size: 17px; font-weight: 800; }
+.tdt-install-sheet__sub { margin: 4px 0 0; font-size: 13px; color: var(--text-muted); }
+.tdt-install-sheet__steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 16px; }
+.tdt-install-sheet__steps li { display: flex; gap: 12px; align-items: flex-start; }
+.tdt-install-sheet__num {
+  width: 26px; height: 26px; border-radius: 50%; flex: 0 0 auto;
+  background: var(--accent); color: #fff; display: grid; place-items: center;
+  font-size: 12.5px; font-weight: 800;
+}
+.tdt-install-step { flex: 1; min-width: 0; }
+.tdt-install-step p { margin: 0; font-size: 14px; line-height: 1.5; color: var(--text-muted); }
+.tdt-install-step p b { color: var(--text); }
+.tdt-install-step__mock {
+  margin-top: 10px; padding: 10px 12px; border-radius: var(--r-sm);
+  background: var(--surface-2); border: 1px solid var(--border);
+  display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--text-muted);
+}
+.tdt-install-step__mock--menu { flex-direction: column; align-items: stretch; gap: 6px; }
+.tdt-install-step__menu-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 6px 4px; }
+.tdt-install-step__menu-row--hot { background: color-mix(in srgb, var(--accent) 12%, transparent); border-radius: 8px; color: var(--accent); font-weight: 700; }
+.tdt-install-step__url { flex: 1; text-align: center; }
+.tdt-install-step__confirm { margin-left: auto; padding: 5px 12px; border-radius: 999px; background: var(--accent); color: #fff; font-weight: 700; }
+.tdt-install-sheet__foot { margin: 18px 0 0; font-size: 12.5px; line-height: 1.55; color: var(--text-faint); }
+.tdt-install-sheet__ok {
+  margin-top: 16px; width: 100%; height: 48px; border: 0; border-radius: var(--r-sm); cursor: pointer;
+  background: var(--accent); color: #fff; font: inherit; font-size: 14.5px; font-weight: 700;
+}
+
+/* Avisos flutuantes e estado de pagina do bundle */
+.tdt-toast, .app-toast, [data-tdt-toast] {
+  position: fixed; left: 50%; transform: translateX(-50%); bottom: 96px; z-index: 95;
+  max-width: min(420px, calc(100% - 32px)); padding: 13px 18px; border-radius: var(--r-pill);
+  background: rgba(20, 20, 27, 0.96); color: #fff; font-size: 13.5px; font-weight: 600;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
+}
+
+/* Dock ancorado nas bordas: depender de left:50% + translate faz o dock
+   escorregar se o documento ficar mais largo que a viewport. */
+.app-mobile-dock {
+  left: 12px; right: 12px; width: auto; transform: none;
+  max-width: 430px; margin: 0 auto;
+}
+
+/* Trava de largura no celular: nenhuma tela pode arrastar para os lados */
+@media (max-width: 760px) {
+  body > *, main > *, .ap-main > *, .ap-shell > *, .tdt-home > *,
+  .ap-hero > *, .profile-hero-shell > * { max-width: 100%; }
+  .ap-shell, .tdt-home, .tdt-panelmain, main { width: 100%; padding-left: 14px; padding-right: 14px; }
+  .ap-hero, .tdt-hero, .profile-hero-shell, .ap-panel, .profile-surface-card,
+  .tdt-panel, .ap-qr, .admin-card, .admin-kpi-card { width: 100%; }
+  .ap-hero__grid { gap: 12px; }
+  .ap-ring { width: 84px; height: 84px; }
+  .ap-ring svg { width: 84px; height: 84px; }
+  /* o brilho decorativo do heroi nao empurra o layout */
+  .ap-hero::after, .tdt-hero::after, .profile-hero-shell::after, .ap-qr::after { pointer-events: none; }
+}
+
+/* Defesa final contra arrasto lateral no celular */
+@media (max-width: 760px) {
+  img, video, iframe, table, pre, svg { max-width: 100%; }
+  .ap-main > *, .tdt-home > *, main > * { min-width: 0; }
+  .ap-hero__value, .tdt-appbar__hello, .profile-appbar__title,
+  .ap-card__n, .tdt-row__name, .ap-tx__t { overflow-wrap: anywhere; }
+  .ap-quick { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .profile-quick { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .tdt-grid-shortcuts, .offer-tool-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tdt-kgrid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+}
