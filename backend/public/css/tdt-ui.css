@@ -2320,3 +2320,42 @@ body[data-page="minhas_campanhas_loja"] button[id*="ancel"] {
   .tdt-grid-shortcuts, .offer-tool-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .tdt-kgrid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
 }
+
+/* Botoes que o bundle desenha e que estavam so como texto */
+.app-primary-button, .app-secondary-button, .btn-promo-info, .ui-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 46px; padding: 0 16px; border-radius: var(--r-sm); cursor: pointer;
+  font: inherit; font-size: 14px; font-weight: 700; text-decoration: none; border: 1px solid transparent;
+}
+.app-primary-button, .ui-btn--primary, .btn-promo-info {
+  background: var(--accent); color: #fff; border-color: var(--accent);
+  box-shadow: 0 10px 22px rgba(176, 23, 116, 0.26);
+}
+.app-secondary-button, .ui-btn--ghost {
+  background: var(--surface-2); color: var(--text); border-color: var(--border); box-shadow: none;
+}
+.app-primary-button:disabled, .app-secondary-button:disabled, .btn-promo-info:disabled,
+.btn-promo-info.cursor-not-allowed {
+  background: var(--surface-2); color: var(--text-faint); border-color: var(--border);
+  box-shadow: none; cursor: not-allowed;
+}
+.ui-btn--sm { min-height: 38px; font-size: 13px; padding: 0 12px; }
+.app-primary-button .material-symbols-outlined,
+.app-secondary-button .material-symbols-outlined { font-size: 19px; }
+
+/* Vitrine no celular: cada empresa vira uma linha compacta, com a foto ao lado
+   do texto. Card com foto de 150px empilhada ocupava a tela toda e o nome
+   ficava fora do campo de visao. */
+@media (max-width: 760px) {
+  .tdt-store-grid { grid-template-columns: 1fr; gap: 12px; }
+  .tdt-store-card { display: flex; align-items: center; gap: 12px; padding: 10px; }
+  .tdt-store-card__img {
+    width: 92px; height: 92px; flex: 0 0 auto; border-radius: var(--r-sm); overflow: hidden;
+  }
+  .tdt-store-card__body { padding: 0; flex: 1; min-width: 0; }
+  .tdt-store-card__name { font-size: 15px; overflow-wrap: anywhere; }
+  .tdt-store-card__badge { top: 6px; left: 6px; font-size: 10px; padding: 3px 7px; }
+  /* mesma logica para o carrossel da home */
+  .tdt-feat-card { flex: 0 0 200px; }
+  .tdt-feat-card__img { height: 128px; }
+}

@@ -1232,6 +1232,10 @@
       const isMarkedFallback = btn.classList.contains('js-nav-fallback') || btn.hasAttribute('data-nav-fallback');
       const isExplicitCta = ['add', 'add_circle', 'add_business', 'person_add'].includes(icon) || text.includes('novo parceiro') || text.includes('novo estabelecimento');
       if (!isMarkedFallback && !isExplicitCta) return;
+      // Botao com id e gerenciado pela propria pagina (o handler dela liga pelo
+      // id). Sem esta guarda, o atalho por icone sequestrava o clique: "Criar
+      // promocao" tem icone add_circle e ia parar em /criar_conta.html.
+      if (btn.id && !isMarkedFallback) return;
 
       if (!text && !icon) return;
       const target = resolveFallbackTarget(scope, icon, text);
@@ -5554,15 +5558,32 @@
           }
         };
 
-        document.getElementById('gerarQRBtn')?.addEventListener('click', async () => {
-          const { res, data } = await api.request('/empresa/qrcode/gerar', { method: 'POST' });
-          if (res.ok && data?.success) {
-            ui.message('QR Code gerado com sucesso!', 'success');
-            await renderQR();
-          } else {
-            ui.message(data?.message || 'Erro ao gerar QR Code.', 'error');
-          }
-        });
+        // Delegado no documento: renderQR() reescreve o bloco inteiro, entao um
+        // listener presos ao botao morria no primeiro render e o "Gerar /
+        // Renovar QR Code" deixava de responder.
+        if (!window.__tdtQrGenBound) {
+          window.__tdtQrGenBound = true;
+          document.addEventListener('click', async (ev) => {
+            const alvo = ev.target?.closest?.('#gerarQRBtn');
+            if (!alvo) return;
+            ev.preventDefault();
+            alvo.disabled = true;
+            const rotulo = alvo.textContent;
+            alvo.textContent = 'Gerando...';
+            try {
+              const { res, data } = await api.request('/empresa/qrcode/gerar', { method: 'POST' });
+              if (res.ok && data?.success) {
+                ui.message('QR Code gerado com sucesso!', 'success');
+                await renderQR();
+              } else {
+                ui.message(data?.message || 'Erro ao gerar QR Code.', 'error');
+              }
+            } finally {
+              const atual = document.getElementById('gerarQRBtn');
+              if (atual) { atual.disabled = false; atual.textContent = rotulo; }
+            }
+          });
+        }
 
         await renderQR();
       }
