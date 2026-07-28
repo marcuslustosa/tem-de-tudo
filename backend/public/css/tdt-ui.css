@@ -1645,3 +1645,146 @@ body[data-page="meu_perfil"] label { font-size: 12.5px; font-weight: 700; color:
 /* O logo dentro do heroi nao pode crescer sem limite */
 .profile-hero-shell img { max-width: 100%; }
 #profileHeroCover.hidden { display: none !important; }
+
+/* Folha de atalhos: os links vinham do CSS antigo e ficaram sem forma
+   (e ilegiveis no tema escuro) nas telas convertidas. */
+.app-mobile-sheet__grabber {
+  width: 42px; height: 4px; border-radius: 999px; margin: 0 auto 16px;
+  background: var(--border);
+}
+.app-mobile-sheet__grid { display: grid; gap: 10px; }
+@media (min-width: 560px) { .app-mobile-sheet__grid { grid-template-columns: 1fr 1fr; } }
+.app-mobile-sheet__link {
+  display: flex; align-items: center; gap: 12px; min-height: 58px; padding: 0 16px;
+  border-radius: var(--r-sm); text-decoration: none;
+  background: var(--surface-2); border: 1px solid var(--border);
+  color: var(--text); font-size: 14px; font-weight: 700;
+}
+.app-mobile-sheet__link .material-symbols-outlined { color: var(--accent); font-size: 22px; }
+[data-theme="dark"] .app-mobile-sheet__link .material-symbols-outlined { color: #f472b6; }
+.app-mobile-sheet__link:active { transform: scale(0.98); }
+
+/* ==========================================================================
+   VITRINE E DETALHE DO PARCEIRO
+   ========================================================================== */
+.tdt-store-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+@media (min-width: 640px) { .tdt-store-grid { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 1024px) { .tdt-store-grid { grid-template-columns: repeat(3, 1fr); } }
+.tdt-store-skel { height: 190px; border-radius: var(--r-md); background: var(--surface-2); }
+.tdt-store-card {
+  display: block; text-decoration: none; overflow: hidden; position: relative;
+  border-radius: var(--r-md); background: var(--surface);
+  border: 1px solid var(--border); box-shadow: var(--shadow-1); color: var(--text);
+  transition: transform 0.12s ease, box-shadow 0.15s ease;
+}
+.tdt-store-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-2); }
+.tdt-store-card__img { position: relative; height: 150px; background: var(--surface-2); }
+.tdt-store-card__img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.tdt-store-card__badge {
+  position: absolute; top: 10px; left: 10px; padding: 5px 10px; border-radius: var(--r-pill);
+  background: rgba(0,0,0,0.55); backdrop-filter: blur(6px); color: #fff; font-size: 11px; font-weight: 700;
+}
+.tdt-store-card__body { padding: 14px; }
+.tdt-store-card__name { font-size: 15.5px; font-weight: 700; letter-spacing: -0.2px; color: var(--text); }
+.tdt-store-card__meta { margin-top: 4px; font-size: var(--step-cap); color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+.tdt-store-card__star { display: inline-flex; align-items: center; gap: 3px; color: #f0a500; font-weight: 800; }
+.tdt-store-card__star .material-symbols-outlined { font-size: 15px; }
+
+/* Detalhe */
+.tdt-detail { display: grid; gap: 18px; }
+.tdt-cover {
+  position: relative; height: 190px; border-radius: var(--r-lg); overflow: hidden;
+  background: var(--surface-2); box-shadow: var(--shadow-1);
+}
+.tdt-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.tdt-cover::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 35%, rgba(0,0,0,0.7)); }
+.tdt-detail-head { display: flex; align-items: flex-end; gap: 14px; margin-top: -46px; position: relative; z-index: 2; padding: 0 4px; }
+.tdt-detail-logo {
+  width: 76px; height: 76px; border-radius: var(--r-md); flex: 0 0 auto; object-fit: cover;
+  background: var(--surface); border: 3px solid var(--surface); box-shadow: var(--shadow-1);
+}
+.tdt-detail-name { font-size: 21px; font-weight: 800; letter-spacing: -0.4px; color: var(--text); }
+.tdt-detail-cat, .tdt-detail-meta { font-size: var(--step-cap); color: var(--text-muted); margin-top: 3px; }
+.tdt-detail-addr { font-size: var(--step-cap); color: var(--text-muted); line-height: 1.55; }
+.tdt-detail-hint { font-size: 12.5px; color: var(--text-faint); text-align: center; line-height: 1.5; }
+.tdt-detail-cta {
+  display: inline-flex; align-items: center; justify-content: center; gap: 9px; width: 100%;
+  height: 50px; border-radius: var(--r-sm); background: var(--accent); color: #fff;
+  font-size: 14.5px; font-weight: 700; text-decoration: none; border: 0; cursor: pointer;
+  box-shadow: 0 10px 22px rgba(176, 23, 116, 0.28);
+}
+.tdt-detail-icons, .tdt-social { display: flex; gap: 10px; flex-wrap: wrap; }
+.tdt-icon-action, .tdt-social a {
+  width: 44px; height: 44px; border-radius: var(--r-sm); display: grid; place-items: center;
+  background: var(--surface-2); color: var(--text); border: 1px solid var(--border); text-decoration: none;
+}
+.tdt-rating-pill, .tdt-chip-status {
+  display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: var(--r-pill);
+  background: var(--surface-2); color: var(--text-muted); font-size: 12.5px; font-weight: 700;
+}
+.tdt-linked-badge {
+  display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: var(--r-sm);
+  background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--accent);
+  font-size: 13.5px; font-weight: 700;
+}
+[data-theme="dark"] .tdt-linked-badge { color: #f472b6; }
+.tdt-progress { height: 8px; border-radius: var(--r-pill); background: var(--surface-2); overflow: hidden; }
+.tdt-progress > * { height: 100%; border-radius: var(--r-pill); background: linear-gradient(90deg, var(--accent-2), var(--accent)); }
+.tdt-loyalty-meta { font-size: var(--step-cap); color: var(--text-muted); }
+.tdt-reviews-top { display: flex; align-items: center; gap: 14px; }
+.tdt-reviews-score { font-size: 34px; font-weight: 800; letter-spacing: -1px; color: var(--text); }
+.tdt-review-star { color: #f0a500; }
+.tdt-contact { display: grid; gap: 2px; }
+.tdt-contact__row { display: flex; align-items: center; gap: 13px; padding: 13px 0; border-bottom: 1px solid var(--border); }
+.tdt-contact__row:last-child { border-bottom: 0; }
+.tdt-contact__icon { width: 40px; height: 40px; border-radius: var(--r-sm); background: var(--surface-2); color: var(--text-muted); display: grid; place-items: center; flex: 0 0 auto; }
+.tdt-contact__k { font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-faint); font-weight: 700; }
+.tdt-contact__v { font-size: 14px; font-weight: 600; color: var(--text); margin-top: 2px; }
+.tdt-benefit {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md);
+  box-shadow: var(--shadow-1); overflow: hidden;
+}
+.tdt-benefit--pad { padding: 16px; }
+.tdt-benefit__head { display: flex; align-items: center; gap: 12px; }
+.tdt-benefit__icon { width: 44px; height: 44px; border-radius: var(--r-sm); flex: 0 0 auto; display: grid; place-items: center; background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--accent); }
+[data-theme="dark"] .tdt-benefit__icon { color: #f472b6; }
+.tdt-benefit__img { width: 100%; height: 132px; object-fit: cover; display: block; }
+.tdt-benefit__title { font-size: 15.5px; font-weight: 700; color: var(--text); }
+.tdt-benefit__desc { font-size: var(--step-cap); color: var(--text-muted); line-height: 1.55; margin-top: 4px; }
+.tdt-benefit__hint { font-size: 12px; color: var(--text-faint); margin-top: 6px; }
+.tdt-block { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md); box-shadow: var(--shadow-1); padding: 18px; }
+.tdt-block__title { font-size: 15.5px; font-weight: 800; color: var(--text); margin: 0 0 10px; }
+.tdt-block__text { font-size: 14px; color: var(--text-muted); line-height: 1.6; margin: 0; }
+
+/* Busca e chips com o nome tdt-* (usados pelas telas que mantiveram markup) */
+.tdt-searchbar {
+  display: flex; align-items: center; gap: 11px; height: 52px; padding: 0 16px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-pill);
+  box-shadow: var(--shadow-1); color: var(--text-faint);
+}
+.tdt-searchbar input {
+  flex: 1; min-width: 0; border: 0; outline: 0; background: transparent;
+  font: inherit; font-size: 14.5px; color: var(--text);
+}
+.tdt-searchbar input::placeholder { color: var(--text-faint); }
+.tdt-searchbar__icon { color: var(--text-faint); flex: 0 0 auto; }
+.tdt-searchbar button, .tdt-search-btn {
+  flex: 0 0 auto; height: 40px; padding: 0 16px; border: 0; cursor: pointer;
+  border-radius: var(--r-pill); background: var(--accent); color: #fff;
+  font: inherit; font-size: 13.5px; font-weight: 700;
+}
+.tdt-chips { display: flex; gap: 9px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
+.tdt-chips::-webkit-scrollbar { display: none; }
+.tdt-chip {
+  display: inline-flex; align-items: center; gap: 7px; flex: 0 0 auto;
+  height: 40px; padding: 0 16px; border-radius: var(--r-pill); cursor: pointer;
+  background: var(--surface); border: 1px solid var(--border); color: var(--text-muted);
+  font: inherit; font-size: 13.5px; font-weight: 600; text-decoration: none;
+}
+.tdt-chip .material-symbols-outlined { font-size: 18px; }
+.tdt-chip.is-active, .tdt-chip.bg-primary {
+  background: var(--accent); border-color: var(--accent); color: #fff;
+  box-shadow: 0 8px 18px rgba(176, 23, 116, 0.26);
+}
+.tdt-section { margin-bottom: 26px; }
+.tdt-section__title { font-size: var(--step-h2); font-weight: 800; letter-spacing: -0.3px; color: var(--text); margin: 0; }
