@@ -311,6 +311,13 @@ Route::prefix('admin')->group(function () {
         
         Route::middleware(['admin.permission:manage_system'])->group(function () {
             Route::post('/cleanup-logs', [AdminReportController::class, 'cleanupLogs']);
+
+            // Provisiona a demo sob demanda. O provisionamento do boot nao roda
+            // de forma confiavel neste ambiente; isto reaproveita os mesmos
+            // comandos. Desliga com DEMO_PROVISION_ENDPOINT=false.
+            Route::get('/demo/status', [\App\Http\Controllers\Admin\DemoProvisionController::class, 'status']);
+            Route::post('/demo/seed', [\App\Http\Controllers\Admin\DemoProvisionController::class, 'seed'])
+                ->middleware('rate.limit:5:1');
         });
 
         // NotificaÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âµes administrativas
