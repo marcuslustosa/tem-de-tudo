@@ -889,7 +889,10 @@ body.ap-authbody { padding: 0; display: grid; min-height: 100vh; grid-template-c
 /* O bundle usa .hidden para esconder skeleton, vazios e secoes.
    Precisa vencer o display:grid/flex dos containers. Esta folha nao e usada em
    pagina com Tailwind, entao nao ha risco de quebrar `hidden lg:flex`. */
-.hidden { display: none !important; }
+/* ATENCAO: `hidden lg:flex` e usado pelas sidebars. Se .hidden levar
+   !important sem excecao, a barra lateral nunca aparece no desktop. */
+.hidden:not([class*="lg\:"]) { display: none !important; }
+.hidden[class*="lg\:"] { display: none; }
 
 /* Barra "Instalar o aplicativo" injetada pelo bundle */
 .tdt-install-bar {
@@ -1330,7 +1333,10 @@ body[data-page^="gest_o_"] tbody tr:hover { background: var(--tdt-surface-2); }
 .flex { display: flex; }
 .inline-flex { display: inline-flex; }
 .grid { display: grid; }
-.hidden { display: none !important; }
+/* ATENCAO: `hidden lg:flex` e usado pelas sidebars. Se .hidden levar
+   !important sem excecao, a barra lateral nunca aparece no desktop. */
+.hidden:not([class*="lg\:"]) { display: none !important; }
+.hidden[class*="lg\:"] { display: none; }
 .flex-col { flex-direction: column; }
 .flex-wrap { flex-wrap: wrap; }
 .flex-1 { flex: 1 1 0%; }
@@ -1644,7 +1650,10 @@ body[data-page="meu_perfil"] label { font-size: 12.5px; font-weight: 700; color:
 }
 /* O logo dentro do heroi nao pode crescer sem limite */
 .profile-hero-shell img { max-width: 100%; }
-#profileHeroCover.hidden { display: none !important; }
+#profileHeroCover/* ATENCAO: `hidden lg:flex` e usado pelas sidebars. Se .hidden levar
+   !important sem excecao, a barra lateral nunca aparece no desktop. */
+.hidden:not([class*="lg\:"]) { display: none !important; }
+.hidden[class*="lg\:"] { display: none; }
 
 /* Folha de atalhos: os links vinham do CSS antigo e ficaram sem forma
    (e ilegiveis no tema escuro) nas telas convertidas. */
@@ -1788,3 +1797,141 @@ body[data-page="meu_perfil"] label { font-size: 12.5px; font-weight: 700; color:
 }
 .tdt-section { margin-bottom: 26px; }
 .tdt-section__title { font-size: var(--step-h2); font-weight: 800; letter-spacing: -0.3px; color: var(--text); margin: 0; }
+
+/* ==========================================================================
+   PAINEL ADMIN
+   As telas de admin tem componentes proprios; recebem o visual do sistema sem
+   reescrever markup. Sidebar e cabecalho seguem o mesmo desenho do cliente.
+   ========================================================================== */
+.admin-header {
+  position: sticky; top: 0; z-index: 40;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: saturate(1.4) blur(14px);
+  border-bottom: 1px solid var(--border);
+}
+.admin-card, .admin-kpi-card, .admin-search-stack {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r-md); box-shadow: var(--shadow-1);
+}
+.admin-card:hover, .admin-kpi-card:hover { box-shadow: var(--shadow-2); }
+.admin-kpi-number { color: var(--text); font-weight: 800; font-size: 27px; line-height: 1; letter-spacing: -1px; }
+.admin-section-title { color: var(--text); font-size: var(--step-h2); font-weight: 800; letter-spacing: -0.3px; }
+.admin-search-stack-label { color: var(--text-faint); font-size: 11.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+.admin-nav-item {
+  display: flex; align-items: center; gap: 12px; height: 46px; padding: 0 12px;
+  border-radius: var(--r-sm); color: var(--text-muted); text-decoration: none;
+  font-size: 14.5px; font-weight: 600; transition: background 0.15s, color 0.15s;
+}
+.admin-nav-item .material-symbols-outlined { font-size: 22px; }
+.admin-nav-item:hover { background: var(--surface-2); color: var(--text); }
+.admin-nav-item.is-active, .admin-nav-item[aria-current="page"], .admin-nav-item.active {
+  background: var(--accent); color: #fff; box-shadow: 0 8px 18px rgba(176, 23, 116, 0.26);
+}
+.admin-nav-item.is-active .material-symbols-outlined,
+.admin-nav-item[aria-current="page"] .material-symbols-outlined,
+.admin-nav-item.active .material-symbols-outlined { color: #fff; }
+.admin-icon-box {
+  width: 42px; height: 42px; border-radius: var(--r-sm); display: inline-grid; place-items: center;
+  background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--accent); flex: 0 0 auto;
+}
+[data-theme="dark"] .admin-icon-box { color: #f472b6; }
+.admin-icon-box.teal { background: color-mix(in srgb, #4c1d95 14%, transparent); color: #6d28d9; }
+[data-theme="dark"] .admin-icon-box.teal { color: #a78bfa; }
+.admin-badge-live {
+  display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: var(--r-pill);
+  background: color-mix(in srgb, #059669 16%, transparent); color: #047857;
+  font-size: 12px; font-weight: 700;
+}
+[data-theme="dark"] .admin-badge-live { color: #4ade80; }
+
+/* Barra lateral do admin (markup proprio da pagina, com nav > a) */
+@media (min-width: 1024px) {
+  body[data-page$="_master"] > nav:first-of-type,
+  body[data-page="gestao_pontos"] > nav:first-of-type,
+  body[data-page="configuracoes_admin"] > nav:first-of-type,
+  body[data-page="revenda_painel"] > nav:first-of-type {
+    background: var(--surface) !important; border-right: 1px solid var(--border) !important;
+  }
+}
+
+/* Imagens decorativas do admin nao podem crescer sem limite */
+body[data-page$="_master"] img:not([class*="w-"]):not([class*="h-"]) { max-width: 100%; height: auto; }
+.admin-header + * img[alt=""], .admin-hero-illustration { max-width: 180px; }
+@media (min-width: 1024px) {
+  .lg\:flex { display: flex !important; }
+  .lg\:grid { display: grid !important; }
+  .lg\:block { display: block !important; }
+  .lg\:ml-64 { margin-left: 256px; }
+  .lg\:pl-64 { padding-left: 256px; }
+  .lg\:pl-72 { padding-left: 288px; }
+  .lg\:pb-0 { padding-bottom: 0; }
+  .lg\:max-w-\[1180px\] { max-width: 1180px; }
+}
+.w-64 { width: 256px; }
+.fixed { position: fixed; }
+.top-0 { top: 0; } .left-0 { left: 0; } .right-0 { right: 0; } .bottom-0 { bottom: 0; }
+.h-screen { height: 100vh; } .h-full { height: 100%; }
+.z-40 { z-index: 40; } .z-50 { z-index: 50; }
+.flex-col { flex-direction: column; }
+.sticky { position: sticky; }
+.mx-auto { margin-left: auto; margin-right: auto; }
+.max-w-5xl { max-width: 1024px; } .max-w-7xl { max-width: 1280px; } .max-w-md { max-width: 480px; }
+.max-w-\[1600px\] { max-width: 1600px; }
+.pt-6 { padding-top: 24px; } .pt-20 { padding-top: 80px; } .pb-24 { padding-bottom: 96px; } .pb-10 { padding-bottom: 40px; }
+.px-6 { padding-left: 24px; padding-right: 24px; }
+.py-4 { padding-top: 16px; padding-bottom: 16px; }
+.mb-8 { margin-bottom: 32px; } .mb-6 { margin-bottom: 24px; }
+.space-y-1 > * + * { margin-top: 4px; }
+.space-y-6 > * + * { margin-top: 24px; }
+.space-y-8 > * + * { margin-top: 32px; }
+.gap-6 { gap: 24px; }
+
+/* Ajustes de layout do admin (markup proprio, sem Tailwind agora) */
+.md\:flex-row { }
+@media (min-width: 768px) { .md\:flex-row { flex-direction: row; } }
+.justify-end { justify-content: flex-end; }
+.text-left { text-align: left; }
+.ml-1 { margin-left: 4px; } .ml-auto { margin-left: auto; }
+.h-9 { height: 36px; } .w-9 { width: 36px; }
+.h-10 { height: 40px; } .w-10 { width: 40px; }
+.h-8 { height: 32px; } .w-8 { width: 32px; }
+.border-2 { border-width: 2px; border-style: solid; }
+.rounded-2xl { border-radius: var(--r-md); }
+.backdrop-blur { backdrop-filter: blur(12px); }
+
+/* Ilustracoes decorativas (avatar de placeholder, marca d'agua da loja) nao
+   podem crescer: sem o Tailwind elas perdiam a medida e ocupavam a tela. */
+body[data-page$="_master"] img,
+body[data-page="gestao_pontos"] img,
+body[data-page="configuracoes_admin"] img,
+body[data-page="revenda_painel"] img { max-width: 100%; height: auto; }
+body[data-page$="_master"] img[src*="placeholder"],
+body[data-page$="_master"] img[alt*="avatar"],
+body[data-page$="_master"] img[alt*="profile"] { width: 36px; height: 36px; object-fit: cover; border-radius: 999px; }
+body[data-page$="_master"] svg:not([width]) { max-width: 120px; max-height: 120px; }
+
+/* O cabecalho da tela fica a esquerda; o bloco de status vai para a direita */
+body[data-page$="_master"] main > section:first-child > div {
+  display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+}
+body[data-page$="_master"] main > section:first-child > div > div:first-child { flex: 1; min-width: 240px; }
+
+/* Cartoes de status da gestao de estabelecimentos */
+.estabs-status-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r-md); box-shadow: var(--shadow-1); padding: 16px;
+}
+.estabs-status-label {
+  margin: 0; font-size: 11.5px; font-weight: 700; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--text-faint);
+}
+.estabs-status-value { margin: 9px 0 0; font-size: 27px; font-weight: 800; letter-spacing: -1px; color: var(--text); }
+.estabs-status-helper { margin: 5px 0 0; font-size: 12.5px; color: var(--text-muted); line-height: 1.45; }
+.estabs-status-card--pending .estabs-status-value { color: var(--tdt-warn, #d97706); }
+.estabs-status-card--active .estabs-status-value { color: #059669; }
+.estabs-status-card--suspended .estabs-status-value,
+.estabs-status-card--rejected .estabs-status-value { color: #e11d48; }
+[data-theme="dark"] .estabs-status-card--active .estabs-status-value { color: #4ade80; }
+[data-theme="dark"] .estabs-status-card--suspended .estabs-status-value,
+[data-theme="dark"] .estabs-status-card--rejected .estabs-status-value { color: #fb7185; }
+@media (min-width: 1280px) { .xl\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
