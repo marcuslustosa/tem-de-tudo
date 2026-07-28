@@ -267,7 +267,7 @@ button { font-family: inherit; }
 .ap-ring__cap { font-size: 10.5px; color: var(--hero-muted); margin-top: 3px; letter-spacing: 0.04em; }
 .ap-ring--ink .ap-ring__cap { color: var(--text-muted); }
 
-.ap-hero__kpis { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 22px; }
+.ap-hero__kpis { position: relative; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 22px; }
 .ap-kpi { background: rgba(255, 255, 255, 0.08); border: 1px solid var(--hero-line); border-radius: var(--r-sm); padding: 13px 14px; }
 .ap-kpi__k { display: flex; align-items: center; gap: 6px; font-size: var(--step-micro); color: var(--hero-muted); }
 .ap-kpi__k .material-symbols-outlined { font-size: 15px; }
@@ -285,7 +285,7 @@ button { font-family: inherit; }
 .ap-spark svg { display: block; width: 100%; height: 62px; }
 
 /* ---------- 4. ACOES RAPIDAS ---------- */
-.ap-quick { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.ap-quick { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
 .ap-quick__i {
   background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md);
   padding: 16px 8px 13px; text-align: center; box-shadow: var(--shadow-1);
@@ -324,8 +324,8 @@ button { font-family: inherit; }
 .ap-sec__link { margin-left: auto; font-size: var(--step-cap); font-weight: 700; color: var(--accent); }
 [data-theme="dark"] .ap-sec__link { color: #f472b6; }
 
-.ap-cards { display: grid; grid-template-columns: 1fr; gap: 12px; }
-@media (min-width: 640px) { .ap-cards { grid-template-columns: 1fr 1fr; } }
+.ap-cards { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+@media (min-width: 640px) { .ap-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .ap-card {
   display: flex; align-items: center; gap: 14px; padding: 14px;
   background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md);
@@ -503,8 +503,8 @@ button { font-family: inherit; }
 .is-hidden { display: none !important; }
 
 /* ---------- 11. BENEFICIOS ---------- */
-.ap-bens { display: grid; grid-template-columns: 1fr; gap: 16px; }
-@media (min-width: 700px) { .ap-bens { grid-template-columns: 1fr 1fr; } }
+.ap-bens { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
+@media (min-width: 700px) { .ap-bens { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .ap-ben { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md); overflow: hidden; box-shadow: var(--shadow-1); display: flex; flex-direction: column; }
 .ap-ben__img { position: relative; height: 132px; }
 .ap-ben__badge {
@@ -533,7 +533,7 @@ button { font-family: inherit; }
 .ap-fid__b { flex: 1; min-width: 0; }
 .ap-fid__t { font-size: 15px; font-weight: 700; }
 .ap-fid__d { font-size: var(--step-cap); color: var(--text-muted); margin-top: 4px; line-height: 1.5; }
-.ap-stamps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 14px; }
+.ap-stamps { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; margin-top: 14px; }
 .ap-stamp { aspect-ratio: 1; border-radius: var(--r-xs); background: var(--surface-2); display: grid; place-items: center; color: var(--text-faint); font-size: 12px; font-weight: 700; }
 .ap-stamp.is-on { background: color-mix(in srgb, var(--accent) 14%, transparent); color: var(--accent); }
 .ap-stamp.is-on .material-symbols-outlined { font-size: 18px; }
@@ -560,7 +560,7 @@ button { font-family: inherit; }
    meio da tela e sobra uma faixa preta embaixo. */
 body.ap-authbody {
   padding: 0; display: grid; min-height: 100vh;
-  grid-template-columns: 1fr; grid-auto-rows: minmax(100vh, auto); align-items: stretch;
+  grid-template-columns: minmax(0, 1fr); grid-auto-rows: minmax(100vh, auto); align-items: stretch;
 }
 body.ap-authbody > section { min-height: 100%; }
 @media (min-width: 1000px) {
@@ -683,8 +683,8 @@ body.ap-authbody > section { min-height: 100%; }
 [data-theme="dark"] .ap-pill--bad { color: #fb7185; }
 [data-theme="dark"] .ap-pill--info { color: #60a5fa; }
 
-.ap-kgrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-@media (min-width: 800px) { .ap-kgrid { grid-template-columns: repeat(4, 1fr); } }
+.ap-kgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+@media (min-width: 800px) { .ap-kgrid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 .ap-k { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md); padding: 16px; box-shadow: var(--shadow-1); }
 .ap-k__l { display: flex; align-items: center; gap: 7px; font-size: var(--step-micro); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-faint); }
 .ap-k__l .material-symbols-outlined { font-size: 16px; }
@@ -759,8 +759,8 @@ body.ap-authbody > section { min-height: 100%; }
 .hidden { display: none; }
 
 /* Lista de empresas vinculadas -> cartao .ap-card */
-.tdt-list { display: grid; grid-template-columns: 1fr; gap: 12px; }
-@media (min-width: 640px) { .tdt-list { grid-template-columns: 1fr 1fr; } }
+.tdt-list { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+@media (min-width: 640px) { .tdt-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .tdt-row {
   display: flex; align-items: center; gap: 14px; padding: 14px; text-decoration: none;
   background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md);
@@ -1044,7 +1044,7 @@ html[data-theme="dark"] { --tdt-good: #4ade80; --tdt-bad: #fb7185; }
   background: #fff; object-fit: contain; padding: 8px;
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
 }
-.tdt-hero__actions { display: grid; gap: 10px; margin-top: 20px; grid-template-columns: 1fr 1fr; }
+.tdt-hero__actions { display: grid; gap: 10px; margin-top: 20px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 @media (min-width: 900px) { .tdt-hero__actions { margin-top: 0; width: 320px; align-content: start; } }
 
 /* Botoes */
@@ -1062,8 +1062,8 @@ html[data-theme="dark"] { --tdt-good: #4ade80; --tdt-bad: #fb7185; }
 .tdt-btn--block { width: 100%; }
 
 /* KPIs */
-.tdt-kgrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-@media (min-width: 800px) { .tdt-kgrid { grid-template-columns: repeat(4, 1fr); } }
+.tdt-kgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+@media (min-width: 800px) { .tdt-kgrid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 .tdt-k {
   background: var(--tdt-surface); border: 1px solid var(--tdt-border);
   border-radius: var(--tdt-r-md); padding: 16px; box-shadow: var(--tdt-shadow-1);
@@ -1093,8 +1093,8 @@ html[data-theme="dark"] { --tdt-good: #4ade80; --tdt-bad: #fb7185; }
   background: color-mix(in srgb, var(--tdt-accent) 12%, transparent); color: var(--tdt-accent); font-size: 22px;
 }
 html[data-theme="dark"] .empresa-shortcut-card .material-symbols-outlined { color: #f472b6; }
-.tdt-grid-shortcuts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-@media (min-width: 700px) { .tdt-grid-shortcuts { grid-template-columns: repeat(4, 1fr); } }
+.tdt-grid-shortcuts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+@media (min-width: 700px) { .tdt-grid-shortcuts { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 
 /* Linhas de movimento / listas de painel */
 .tdt-tx { display: flex; flex-direction: column; }
@@ -1126,7 +1126,7 @@ html[data-theme="dark"] .tdt-pill--info { color: #60a5fa; }
 
 /* Colunas de painel */
 .tdt-panelgrid { display: grid; gap: 16px; }
-@media (min-width: 900px) { .tdt-panelgrid { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 900px) { .tdt-panelgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
 /* Coluna do painel: mesma medida do app do cliente */
 .tdt-panelmain {
@@ -1176,9 +1176,9 @@ body[data-page="gestao_pontos"] .text-on-surface-variant { color: var(--tdt-text
   background: color-mix(in srgb, var(--tdt-accent) 12%, transparent); color: var(--tdt-accent); font-size: 22px;
 }
 html[data-theme="dark"] .offer-tool-card .material-symbols-outlined { color: #f472b6; }
-.offer-tool-strip { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-@media (min-width: 700px) { .offer-tool-strip { grid-template-columns: repeat(3, 1fr); } }
-@media (min-width: 1100px) { .offer-tool-strip { grid-template-columns: repeat(6, 1fr); } }
+.offer-tool-strip { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+@media (min-width: 700px) { .offer-tool-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 1100px) { .offer-tool-strip { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
 
 /* Formularios dos paineis */
 .tdt-field { display: grid; gap: 7px; margin-bottom: 14px; }
@@ -1196,7 +1196,7 @@ html[data-theme="dark"] .offer-tool-card .material-symbols-outlined { color: #f4
   box-shadow: 0 0 0 4px color-mix(in srgb, var(--tdt-accent) 16%, transparent);
 }
 .tdt-input::placeholder, .tdt-textarea::placeholder { color: var(--tdt-text-faint); }
-.tdt-fieldrow { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.tdt-fieldrow { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 .tdt-check { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--tdt-text); margin-bottom: 14px; }
 .tdt-check input { width: 20px; height: 20px; accent-color: var(--tdt-accent); }
 
@@ -1346,6 +1346,10 @@ body[data-page^="gest_o_"] tbody tr:hover { background: var(--tdt-surface-2); }
 .flex { display: flex; }
 .inline-flex { display: inline-flex; }
 .grid { display: grid; }
+/* Item de grid tem min-width:auto = min-content: um titulo com white-space
+   nowrap la dentro empurra a coluna inteira e a pagina passa a arrastar de
+   lado. Com min-width:0 a coluna encolhe e quem trunca trunca de verdade. */
+.grid > * { min-width: 0; }
 .flex-col { flex-direction: column; }
 .flex-wrap { flex-wrap: wrap; }
 .flex-1 { flex: 1 1 0%; }
@@ -1358,7 +1362,13 @@ body[data-page^="gest_o_"] tbody tr:hover { background: var(--tdt-surface-2); }
 .text-center { text-align: center; }
 .text-right { text-align: right; }
 .uppercase { text-transform: uppercase; }
-.truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* ATENCAO ao min-width: com white-space:nowrap o minimo automatico do elemento
+   passa a ser o texto INTEIRO. Como item de flex/grid ele empurrava o pai para
+   fora da tela em vez de cortar — era o que fazia o perfil arrastar de lado.
+   Quem trunca nunca deve alargar o pai. */
+.truncate {
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0;
+}
 
 .gap-1 { gap: 4px; } .gap-2 { gap: 8px; } .gap-3 { gap: 12px; } .gap-4 { gap: 16px; }
 .mt-1 { margin-top: 4px; } .mt-2 { margin-top: 8px; } .mt-3 { margin-top: 12px; }
@@ -1449,8 +1459,8 @@ body[data-page^="gest_o_"] tbody tr:hover { background: var(--tdt-surface-2); }
 /* KPIs do painel: 2 colunas no celular, 4 no desktop (o inline das paginas
    nao deve travar em 2 numa tela larga) */
 @media (min-width: 900px) {
-  .tdt-kgrid { grid-template-columns: repeat(4, 1fr) !important; }
-  .tdt-kgrid--3 { grid-template-columns: repeat(3, 1fr) !important; }
+  .tdt-kgrid { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+  .tdt-kgrid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
 }
 
 /* Grades responsivas usadas pelos blocos injetados */
@@ -1564,7 +1574,7 @@ body[data-profile="painel"] .tdt-appbar__inner,
 
 /* Atalhos em tile */
 .profile-quick {
-  display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px;
 }
 .profile-quick > a, .profile-quick > button {
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
@@ -1669,7 +1679,7 @@ body[data-page="meu_perfil"] label { font-size: 12.5px; font-weight: 700; color:
   background: var(--border);
 }
 .app-mobile-sheet__grid { display: grid; gap: 10px; }
-@media (min-width: 560px) { .app-mobile-sheet__grid { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 560px) { .app-mobile-sheet__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .app-mobile-sheet__link {
   display: flex; align-items: center; gap: 12px; min-height: 58px; padding: 0 16px;
   border-radius: var(--r-sm); text-decoration: none;
@@ -1683,9 +1693,9 @@ body[data-page="meu_perfil"] label { font-size: 12.5px; font-weight: 700; color:
 /* ==========================================================================
    VITRINE E DETALHE DO PARCEIRO
    ========================================================================== */
-.tdt-store-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
-@media (min-width: 640px) { .tdt-store-grid { grid-template-columns: 1fr 1fr; } }
-@media (min-width: 1024px) { .tdt-store-grid { grid-template-columns: repeat(3, 1fr); } }
+.tdt-store-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
+@media (min-width: 640px) { .tdt-store-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1024px) { .tdt-store-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 .tdt-store-skel { height: 190px; border-radius: var(--r-md); background: var(--surface-2); }
 .tdt-store-card {
   display: block; text-decoration: none; overflow: hidden; position: relative;
@@ -1748,7 +1758,7 @@ body[data-page="meu_perfil"] label { font-size: 12.5px; font-weight: 700; color:
 /* ATENCAO: .tdt-detail-cta e o CONTAINER dos botoes, nao um botao. Estilizado
    como botao, os dois filhos ficavam colados dentro de uma unica pilula rosa. */
 .tdt-detail-cta { display: grid; gap: 10px; }
-.tdt-detail-cta:has(> .btn:nth-child(2):last-child) { grid-template-columns: 1fr 1fr; }
+.tdt-detail-cta:has(> .btn:nth-child(2):last-child) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .tdt-detail-icons, .tdt-social { display: flex; gap: 10px; flex-wrap: wrap; }
 /* Icone + rotulo lado a lado: em caixa fixa de 44px o texto vazava por tras. */
 .tdt-icon-action {
@@ -2382,7 +2392,7 @@ body[data-page="minhas_campanhas_loja"] button[id*="ancel"] {
    do texto. Card com foto de 150px empilhada ocupava a tela toda e o nome
    ficava fora do campo de visao. */
 @media (max-width: 760px) {
-  .tdt-store-grid { grid-template-columns: 1fr; gap: 12px; }
+  .tdt-store-grid { grid-template-columns: minmax(0, 1fr); gap: 12px; }
   .tdt-store-card { display: flex; align-items: center; gap: 12px; padding: 10px; }
   .tdt-store-card__img {
     width: 92px; height: 92px; flex: 0 0 auto; border-radius: var(--r-sm); overflow: hidden;
