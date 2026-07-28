@@ -613,15 +613,44 @@ html[data-theme="dark"] .tdt-pill--info { color: #60a5fa; }
    !important porque o CDN injeta o <style> depois desta folha. */
 body[data-page="dashboard_parceiro"] .bg-surface-container-lowest,
 body[data-page="dashboard_parceiro"] .bg-surface-container-low,
-body[data-page="dashboard_parceiro"] .bg-surface-container {
+body[data-page="dashboard_parceiro"] .bg-surface-container,
+body[data-page="gest_o_de_ofertas_parceiro"] .bg-surface-container-lowest,
+body[data-page="gest_o_de_ofertas_parceiro"] .bg-surface-container-low,
+body[data-page="gest_o_de_ofertas_parceiro"] .bg-surface-container,
+body[data-page="gestao_pontos"] .bg-surface-container-lowest,
+body[data-page="gestao_pontos"] .bg-surface-container-low {
   background-color: var(--tdt-surface) !important;
   border: 1px solid var(--tdt-border) !important;
   border-radius: var(--tdt-r-md) !important;
   box-shadow: var(--tdt-shadow-1) !important;
 }
-body[data-page="dashboard_parceiro"] .text-on-surface { color: var(--tdt-text) !important; }
+body[data-page="dashboard_parceiro"] .text-on-surface,
+body[data-page="gest_o_de_ofertas_parceiro"] .text-on-surface,
+body[data-page="gestao_pontos"] .text-on-surface { color: var(--tdt-text) !important; }
 body[data-page="dashboard_parceiro"] .text-on-surface-variant,
-body[data-page="dashboard_parceiro"] .text-outline { color: var(--tdt-text-muted) !important; }
+body[data-page="dashboard_parceiro"] .text-outline,
+body[data-page="gest_o_de_ofertas_parceiro"] .text-on-surface-variant,
+body[data-page="gest_o_de_ofertas_parceiro"] .text-outline,
+body[data-page="gestao_pontos"] .text-on-surface-variant { color: var(--tdt-text-muted) !important; }
+
+/* Tiles de ferramenta da gestao de ofertas */
+.offer-tool-card {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 9px;
+  min-height: 96px; padding: 16px 8px; text-align: center; text-decoration: none;
+  background: var(--tdt-surface); border: 1px solid var(--tdt-border);
+  border-radius: var(--tdt-r-md); box-shadow: var(--tdt-shadow-1);
+  color: var(--tdt-text); font-size: 12.5px; font-weight: 600;
+  transition: transform 0.12s ease, box-shadow 0.15s ease;
+}
+.offer-tool-card:hover { transform: translateY(-2px); box-shadow: var(--tdt-shadow-2); }
+.offer-tool-card .material-symbols-outlined {
+  width: 44px; height: 44px; border-radius: var(--tdt-r-sm); display: grid; place-items: center;
+  background: color-mix(in srgb, var(--tdt-accent) 12%, transparent); color: var(--tdt-accent); font-size: 22px;
+}
+html[data-theme="dark"] .offer-tool-card .material-symbols-outlined { color: #f472b6; }
+.offer-tool-strip { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+@media (min-width: 700px) { .offer-tool-strip { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 1100px) { .offer-tool-strip { grid-template-columns: repeat(6, 1fr); } }
 
 /* Formularios dos paineis */
 .tdt-field { display: grid; gap: 7px; margin-bottom: 14px; }
@@ -700,6 +729,73 @@ body[data-page="dashboard_parceiro"] .text-outline { color: var(--tdt-text-muted
   display: grid; place-items: center;
 }
 .tdt-scan__hint { margin: 16px auto 0; max-width: 460px; text-align: center; font-size: 13.5px; line-height: 1.55; color: var(--tdt-text-muted); }
+
+/* ---------- CONTROLES NATIVOS NAS TELAS DE PAINEL ----------
+   As telas de gestao (empresa e admin) tem dezenas de campos escritos com
+   utilitario Tailwind. Em vez de reescrever cada um, o proprio elemento recebe
+   o visual do sistema. Especificidade (0,1,1) vence a do utilitario (0,1,0),
+   entao funciona mesmo com o CDN injetando estilo depois. */
+body[data-page="gestao_pontos"] input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+body[data-page="gestao_pontos"] select,
+body[data-page="gestao_pontos"] textarea,
+body[data-page="gest_o_de_ofertas_parceiro"] input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+body[data-page="gest_o_de_ofertas_parceiro"] select,
+body[data-page="gest_o_de_ofertas_parceiro"] textarea,
+body[data-page="gest_o_de_estabelecimentos"] input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+body[data-page="gest_o_de_estabelecimentos"] select,
+body[data-page="gest_o_de_usu_rios_master"] input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+body[data-page="gest_o_de_usu_rios_master"] select,
+body[data-page="gest_o_de_clientes_master"] input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+body[data-page="gest_o_de_clientes_master"] select,
+body[data-page="configuracoes_admin"] input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+body[data-page="configuracoes_admin"] select,
+body[data-page="configuracoes_admin"] textarea {
+  min-height: 48px; padding: 12px 15px; border-radius: var(--tdt-r-sm);
+  background: var(--tdt-surface); border: 1px solid var(--tdt-border);
+  color: var(--tdt-text); font: inherit; font-size: 15px; outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+body[data-page="gestao_pontos"] textarea,
+body[data-page="gest_o_de_ofertas_parceiro"] textarea,
+body[data-page="configuracoes_admin"] textarea { min-height: 92px; line-height: 1.5; }
+body[data-page="gestao_pontos"] input:focus,
+body[data-page="gestao_pontos"] select:focus,
+body[data-page="gestao_pontos"] textarea:focus,
+body[data-page="gest_o_de_ofertas_parceiro"] input:focus,
+body[data-page="gest_o_de_ofertas_parceiro"] select:focus,
+body[data-page="gest_o_de_ofertas_parceiro"] textarea:focus,
+body[data-page="gest_o_de_estabelecimentos"] input:focus,
+body[data-page="gest_o_de_usu_rios_master"] input:focus,
+body[data-page="gest_o_de_clientes_master"] input:focus,
+body[data-page="configuracoes_admin"] input:focus {
+  border-color: var(--tdt-accent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--tdt-accent) 16%, transparent);
+}
+body[data-page="gestao_pontos"] input[type="checkbox"],
+body[data-page="gest_o_de_ofertas_parceiro"] input[type="checkbox"],
+body[data-page="configuracoes_admin"] input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--tdt-accent); }
+
+/* Tabelas de gestao */
+body[data-page="gestao_pontos"] table,
+body[data-page^="gest_o_"] table,
+body[data-page="relat_rios_gerais_master"] table,
+body[data-page="tickets_admin_master"] table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+body[data-page="gestao_pontos"] th,
+body[data-page^="gest_o_"] th,
+body[data-page="relat_rios_gerais_master"] th,
+body[data-page="tickets_admin_master"] th {
+  text-align: left; padding: 11px 12px; font-size: 11.5px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em; color: var(--tdt-text-faint);
+  border-bottom: 1px solid var(--tdt-border); white-space: nowrap;
+}
+body[data-page="gestao_pontos"] td,
+body[data-page^="gest_o_"] td,
+body[data-page="relat_rios_gerais_master"] td,
+body[data-page="tickets_admin_master"] td {
+  padding: 13px 12px; border-bottom: 1px solid var(--tdt-border); color: var(--tdt-text);
+}
+body[data-page="gestao_pontos"] tbody tr:hover,
+body[data-page^="gest_o_"] tbody tr:hover { background: var(--tdt-surface-2); }
 
 /* ---------- 17. BOTAO DE TEMA ---------- */
 .tdt-theme-btn {
