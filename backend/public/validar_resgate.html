@@ -7,8 +7,8 @@
 <link href="/img/apple-touch-icon.png" rel="apple-touch-icon"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-  <link href="/css/tdt-ui.css?v=20260728-ui31" rel="stylesheet" />
-  <script src="/js/tdt-app.js?v=20260728-ui31"></script>
+  <link href="/css/tdt-ui.css?v=20260728-ui32" rel="stylesheet" />
+  <script src="/js/tdt-app.js?v=20260728-ui32"></script>
 <style>
         .glass-panel {
             background: rgba(222, 219, 231, 0.6);
@@ -388,8 +388,13 @@
 </script>
 
   <script>
-  /* Balcao: a empresa le o QR do cliente e lanca em poucos toques.
-     O cliente nao pode creditar a si mesmo — por isso a leitura e da loja. */
+  /* BALCAO
+     Uma leitura do QR do cliente traz tudo que o caixa precisa decidir:
+     /empresa/clientes/qrcode/consultar ja devolve vinculo, cartao fidelidade com
+     progresso, bonus de adesao, bonus de aniversario e promocoes, cada um com o
+     seu proprio can_validate. Entao a tela nao pergunta nada: mostra so os botoes
+     que o servidor autorizou, com o carimbo da visita em primeiro lugar.
+     O cliente nunca credita a si mesmo - por isso quem le e a loja. */
   (function () {
     var painel = document.getElementById('empresaScanResult');
     var corpo = document.getElementById('ercCorpo');
@@ -403,108 +408,237 @@
     }
     if (!ehEmpresa()) return;
 
-    var token = function () { return localStorage.getItem('tem_de_tudo_token') || ''; };
-    var cartaoId = null;
+    function esc(v) {
+      return String(v == null ? '' : v).replace(/[&<>"']/g, function (ch) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch];
+      });
+    }
 
     async function api(rota, opcoes) {
       var o = opcoes || {};
       o.headers = Object.assign({
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token()
+        'Authorization': 'Bearer ' + (localStorage.getItem('tem_de_tudo_token') || '')
       }, o.headers || {});
       var res = await fetch('/api' + rota, o);
       var json = await res.json().catch(function () { return {}; });
-      return { res: res, json: json };
+      return { ok: res.ok && json.success !== false, json: json };
     }
 
     function aviso(texto, tipo) {
-      corpo.insertAdjacentHTML('beforeend',
-        '<p class="ap-msg ap-msg--' + (tipo || 'info') + '" style="margin-top:12px">' + texto + '</p>');
+      var box = document.getElementById('ercAviso');
+      if (!box) return;
+      box.textContent = texto || '';
+      box.className = texto ? 'ap-msg ap-msg--' + (tipo || 'info') : 'ap-msg hidden';
+      if (texto) box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
-    async function carregarCartao() {
-      if (cartaoId) return cartaoId;
-      var r = await api('/empresa/cartao-fidelidade');
-      var lista = (r.json && (r.json.data || r.json)) || [];
-      if (Array.isArray(lista) && lista.length) cartaoId = lista[0].id;
-      return cartaoId;
+    /* Redesenha a barra a partir do snapshot devolvido pela acao, para o caixa
+       ver o novo saldo do cartao sem ter que ler o QR de novo. */
+    function pintarProgresso(snapshot) {
+      var p = snapshot && snapshot.progress;
+      if (!p) return;
+      var barra = document.getElementById('ercProgresso');
+      var texto = document.getElementById('ercProgressoTxt');
+      if (barra) barra.style.width = Math.max(0, Math.min(100, Number(p.percentage) || 0)) + '%';
+      if (texto) texto.textContent = p.progress_label || '';
+      var resgate = corpo.querySelector('[data-acao="recompensa"]');
+      if (resgate) resgate.classList.toggle('hidden', !p.reward_available);
+      var ponto = corpo.querySelector('[data-acao="ponto"]');
+      if (ponto && snapshot.can_add_point === false) ponto.classList.add('hidden');
+    }
+
+    async function acao(botao, chamada, mensagemOk, aoConcluir) {
+      if (botao.disabled) return;
+      botao.disabled = true;
+      var rotulo = botao.innerHTML;
+      botao.innerHTML = '<span class="material-symbols-outlined">hourglass_top</span> Enviando...';
+      aviso('');
+      try {
+        var r = await chamada();
+        if (r.ok) {
+          if (navigator.vibrate) navigator.vibrate(120);
+          aviso(mensagemOk, 'success');
+          var d = (r.json && r.json.data) || {};
+          pintarProgresso(d.cartao_fidelidade || d);
+          botao.innerHTML = rotulo;
+          if (aoConcluir) aoConcluir(botao);
+          return true;
+        }
+        aviso((r.json && r.json.message) || 'Nao foi possivel concluir a operacao.', 'error');
+      } catch (e) {
+        aviso('Erro de rede. Confira a conexao e tente de novo.', 'error');
+      }
+      botao.disabled = false;
+      botao.innerHTML = rotulo;
+      return false;
+    }
+
+    function concluido(botao, texto) {
+      botao.disabled = true;
+      botao.classList.add('tdt-btn--done');
+      botao.innerHTML = '<span class="material-symbols-outlined">check_circle</span> ' + esc(texto);
     }
 
     function desenhar(dados) {
-      var c = (dados && dados.cliente) || {};
-      var v = (dados && dados.vinculo) || {};
-      var b = (dados && dados.bonus_adesao) || {};
-      var iniciais = (c.nome || '?').trim().split(/\s+/).slice(0, 2)
-        .map(function (p) { return p.charAt(0).toUpperCase(); }).join('');
-
-      corpo.innerHTML =
-        '<div style="display:flex;align-items:center;gap:14px">' +
-          '<div class="tdt-client-card__avatar">' + iniciais + '</div>' +
-          '<div style="flex:1;min-width:0">' +
-            '<div style="font-size:17px;font-weight:800;letter-spacing:-0.2px">' + (c.nome || 'Cliente') + '</div>' +
-            '<div style="font-size:12.5px;color:var(--text-muted);margin-top:2px">' + (c.email || '') + '</div>' +
-          '</div>' +
-        '</div>' +
-        '<div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">' +
-          '<span class="tdt-pill ' + (v.existe ? 'tdt-pill--ok' : 'tdt-pill--warn') + '">' +
-            (v.existe ? 'Vinculado' : 'Primeira visita') + '</span>' +
-          (b && b.disponivel ? '<span class="tdt-pill tdt-pill--info">Bonus de adesao disponivel</span>' : '') +
-        '</div>' +
-        '<div style="display:grid;gap:10px;margin-top:18px">' +
-          '<button type="button" class="tdt-btn" data-acao="ponto">' +
-            '<span class="material-symbols-outlined">add_circle</span> Lancar 1 ponto no cartao</button>' +
-          '<button type="button" class="tdt-btn tdt-btn--ghost" data-acao="nova">' +
-            '<span class="material-symbols-outlined">qr_code_scanner</span> Ler outro cliente</button>' +
-        '</div>';
-
-      corpo.querySelector('[data-acao="nova"]').addEventListener('click', function () {
-        painel.classList.add('hidden');
-        window.location.reload();
+      var d = dados || {};
+      var cli = d.cliente || {};
+      var vinculo = d.vinculo || {};
+      var fid = d.cartao_fidelidade || {};
+      var prog = fid.progress || {};
+      var adesao = d.bonus_adesao || {};
+      var aniversario = d.bonus_aniversario || {};
+      var promos = (d.promocoes && d.promocoes.items) || [];
+      var promosValidaveis = promos.filter(function (p) {
+        return p.can_present_qr === true || p.viewer_status === 'available';
       });
 
-      corpo.querySelector('[data-acao="ponto"]').addEventListener('click', async function () {
-        var botao = this;
-        botao.disabled = true;
-        var rotulo = botao.innerHTML;
-        botao.textContent = 'Lancando...';
-        try {
-          var id = await carregarCartao();
-          if (!id) { aviso('Esta loja ainda nao tem cartao fidelidade configurado.', 'error'); return; }
-          var r = await api('/empresa/cartao-fidelidade/' + id + '/clientes/' + c.id + '/adicionar-ponto', { method: 'POST' });
-          if (r.res.ok && r.json.success !== false) {
-            aviso('Ponto lancado para ' + (c.nome || 'o cliente') + '.', 'success');
-            botao.remove();
-          } else {
-            aviso(r.json.message || 'Nao foi possivel lancar o ponto.', 'error');
-            botao.disabled = false; botao.innerHTML = rotulo;
-          }
-        } catch (e) {
-          aviso('Erro de rede ao lancar o ponto.', 'error');
-          botao.disabled = false; botao.innerHTML = rotulo;
+      var iniciais = String(cli.nome || '?').trim().split(/\s+/).slice(0, 2)
+        .map(function (p) { return p.charAt(0).toUpperCase(); }).join('');
+
+      var partes = [];
+
+      partes.push(
+        '<div class="erc-head">' +
+          '<div class="tdt-client-card__avatar erc-avatar">' + esc(iniciais) + '</div>' +
+          '<div class="erc-head__b">' +
+            '<div class="erc-nome">' + esc(cli.nome || 'Cliente') + '</div>' +
+            '<div class="erc-sub">' + esc(cli.telefone || cli.email || '') + '</div>' +
+          '</div>' +
+        '</div>'
+      );
+
+      var selos = ['<span class="tdt-pill ' + (vinculo.existe ? 'tdt-pill--ok' : 'tdt-pill--warn') + '">' +
+        (vinculo.existe ? 'Cliente vinculado' : 'Primeira visita') + '</span>'];
+      if (promosValidaveis.length) {
+        selos.push('<span class="tdt-pill tdt-pill--info">' + promosValidaveis.length +
+          (promosValidaveis.length > 1 ? ' promocoes' : ' promocao') + '</span>');
+      }
+      partes.push('<div class="erc-pills">' + selos.join('') + '</div>');
+
+      // Cartao fidelidade: so aparece quando a loja tem cartao configurado.
+      if (fid.card && prog.required_points) {
+        partes.push(
+          '<div class="erc-prog">' +
+            '<div class="erc-prog__top">' +
+              '<span>' + esc(fid.card.titulo || 'Cartao fidelidade') + '</span>' +
+              '<span id="ercProgressoTxt">' + esc(prog.progress_label || '') + '</span>' +
+            '</div>' +
+            '<div class="tdt-progress"><div id="ercProgresso" style="width:' +
+              (Number(prog.percentage) || 0) + '%"></div></div>' +
+            (fid.card.recompensa_descricao
+              ? '<div class="erc-prog__rw">Recompensa: ' + esc(fid.card.recompensa_descricao) + '</div>'
+              : '') +
+          '</div>'
+        );
+      } else if (fid.message) {
+        partes.push('<p class="erc-nota">' + esc(fid.message) + '</p>');
+      }
+
+      // Acoes: a do dia a dia primeiro, grande, no alcance do polegar.
+      var acoes = [];
+      if (fid.can_add_point && fid.card) {
+        acoes.push('<button type="button" class="tdt-btn tdt-btn--block erc-acao" data-acao="ponto">' +
+          '<span class="material-symbols-outlined">add_circle</span> Carimbar visita' +
+          (prog.points_per_visit > 1 ? ' (+' + prog.points_per_visit + ')' : '') + '</button>');
+      }
+      acoes.push('<button type="button" class="tdt-btn tdt-btn--block erc-acao erc-acao--premio' +
+        (fid.can_redeem ? '' : ' hidden') + '" data-acao="recompensa">' +
+        '<span class="material-symbols-outlined">workspace_premium</span> Entregar recompensa</button>');
+
+      if (adesao.can_validate && adesao.bonus && adesao.bonus.id) {
+        acoes.push('<button type="button" class="tdt-btn tdt-btn--ghost erc-acao" data-acao="adesao" ' +
+          'data-id="' + adesao.bonus.id + '"><span class="material-symbols-outlined">redeem</span> ' +
+          'Validar ' + esc(adesao.bonus.titulo || 'bonus de adesao') + '</button>');
+      }
+      if (aniversario.can_validate && aniversario.bonus && aniversario.bonus.id) {
+        acoes.push('<button type="button" class="tdt-btn tdt-btn--ghost erc-acao" data-acao="aniversario" ' +
+          'data-id="' + aniversario.bonus.id + '"><span class="material-symbols-outlined">cake</span> ' +
+          'Validar bonus de aniversario</button>');
+      }
+      promosValidaveis.forEach(function (p) {
+        acoes.push('<button type="button" class="tdt-btn tdt-btn--ghost erc-acao" data-acao="promocao" ' +
+          'data-id="' + p.id + '"><span class="material-symbols-outlined">local_offer</span> ' +
+          'Validar ' + esc(p.titulo || 'promocao') + '</button>');
+      });
+
+      partes.push('<div class="erc-acoes">' + acoes.join('') + '</div>');
+      partes.push('<p id="ercAviso" class="ap-msg hidden"></p>');
+      partes.push('<button type="button" class="tdt-btn tdt-btn--ghost erc-nova" data-acao="nova">' +
+        '<span class="material-symbols-outlined">qr_code_scanner</span> Ler outro cliente</button>');
+
+      corpo.innerHTML = partes.join('');
+
+      corpo.addEventListener('click', function (ev) {
+        var botao = ev.target.closest('[data-acao]');
+        if (!botao || !corpo.contains(botao)) return;
+        var tipo = botao.getAttribute('data-acao');
+        var id = botao.getAttribute('data-id');
+        var cartaoId = fid.card && fid.card.id;
+
+        if (tipo === 'nova') { window.location.reload(); return; }
+
+        if (tipo === 'ponto' && cartaoId) {
+          acao(botao, function () {
+            return api('/empresa/cartao-fidelidade/' + cartaoId + '/clientes/' + cli.id + '/adicionar-ponto',
+              { method: 'POST' });
+          }, 'Visita carimbada para ' + (cli.nome || 'o cliente') + '.');
+          return;
+        }
+
+        if (tipo === 'recompensa' && cartaoId) {
+          acao(botao, function () {
+            return api('/empresa/cartao-fidelidade/' + cartaoId + '/clientes/' + cli.id + '/resgatar',
+              { method: 'POST' });
+          }, 'Recompensa entregue. O cartao recomeca do zero.');
+          return;
+        }
+
+        var rotas = {
+          adesao: '/empresa/bonus-adesao/',
+          aniversario: '/empresa/bonus-aniversario/',
+          promocao: '/empresa/promocoes/'
+        };
+        if (rotas[tipo] && id) {
+          acao(botao, function () {
+            return api(rotas[tipo] + id + '/validar', {
+              method: 'POST', body: JSON.stringify({ cliente_id: cli.id })
+            });
+          }, 'Benefício validado para ' + (cli.nome || 'o cliente') + '.', function (b) {
+            concluido(b, 'Validado');
+          });
         }
       });
 
       painel.classList.remove('hidden');
-      painel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      painel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function falha(mensagem) {
+      corpo.innerHTML = '<p class="ap-msg ap-msg--error" style="margin:0">' + esc(mensagem) + '</p>' +
+        '<button type="button" class="tdt-btn tdt-btn--ghost erc-nova" data-acao="nova">' +
+        '<span class="material-symbols-outlined">refresh</span> Ler de novo</button>';
+      var b = corpo.querySelector('[data-acao="nova"]');
+      if (b) b.addEventListener('click', function () { window.location.reload(); });
+      painel.classList.remove('hidden');
     }
 
     async function consultar(codigo) {
-      corpo.innerHTML = '<p style="margin:0;color:var(--text-muted);font-size:14px">Consultando cliente...</p>';
       painel.classList.remove('hidden');
+      corpo.innerHTML = '<p class="erc-nota" style="margin:0">Consultando cliente...</p>';
       try {
         var r = await api('/empresa/clientes/qrcode/consultar', {
           method: 'POST', body: JSON.stringify({ qrcode: codigo })
         });
-        if (!r.res.ok || r.json.success === false) {
-          corpo.innerHTML = '';
-          aviso(r.json.message || 'QR do cliente invalido ou expirado. Peca para ele atualizar o codigo.', 'error');
+        if (!r.ok) {
+          falha((r.json && r.json.message) ||
+            'QR invalido ou expirado. Peca ao cliente para tocar em atualizar no app.');
           return;
         }
         desenhar(r.json.data || {});
       } catch (e) {
-        corpo.innerHTML = '';
-        aviso('Erro de rede na consulta.', 'error');
+        falha('Erro de rede na consulta. Confira a conexao.');
       }
     }
 
