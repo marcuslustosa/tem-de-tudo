@@ -87,6 +87,11 @@
 
   <p class="tdt-scan__hint">Centralize o QR Code dentro da moldura. A leitura é automática.</p>
 
+  <section id="empresaScanResult" class="tdt-panel hidden">
+    <h3 class="tdt-panel__t">Cliente identificado</h3>
+    <div id="ercCorpo"></div>
+  </section>
+
   <section id="qrManualSection" class="tdt-panel">
     <h3 class="tdt-panel__t">Sem câmera? Digite o código</h3>
     <div class="tdt-field">
@@ -353,10 +358,18 @@
     } catch { return false; }
   })();
 
+  // A empresa TAMBEM le: e assim que ela credita ponto e valida beneficio no
+  // balcao. O cliente le o QR da loja para entrar; a loja le o QR do cliente
+  // para lancar. Os dois caminhos existem e usam a mesma camera.
   if (viewerIsEmpresa) {
-    document.getElementById('qrScannerCamera')?.classList.add('hidden');
-    document.getElementById('qrManualSection')?.classList.add('hidden');
-    document.getElementById('scanCameraHint')?.classList.add('hidden');
+    const dica = document.getElementById('scanCameraHint');
+    if (dica) dica.textContent = 'Aponte para o QR do cliente para lancar pontos ou validar um beneficio.';
+    if (instructionEl) instructionEl.textContent = 'Peca ao cliente para abrir "Meu cartao" no app.';
+    if (video) {
+      if (appReady) { startCamera(); } else {
+        window.addEventListener('tdt-app-ready', () => startCamera(), { once: true });
+      }
+    }
   } else if (video) {
     if (appReady) {
       startCamera();
@@ -373,5 +386,142 @@
   });
 })();
 </script>
+
+  <script>
+  /* Balcao: a empresa le o QR do cliente e lanca em poucos toques.
+     O cliente nao pode creditar a si mesmo — por isso a leitura e da loja. */
+  (function () {
+    var painel = document.getElementById('empresaScanResult');
+    var corpo = document.getElementById('ercCorpo');
+    if (!painel || !corpo) return;
+
+    function ehEmpresa() {
+      try {
+        var u = JSON.parse(localStorage.getItem('tem_de_tudo_user') || '{}');
+        return String(u.perfil || u.role || u.tipo || '').toLowerCase() === 'empresa';
+      } catch (e) { return false; }
+    }
+    if (!ehEmpresa()) return;
+
+    var token = function () { return localStorage.getItem('tem_de_tudo_token') || ''; };
+    var cartaoId = null;
+
+    async function api(rota, opcoes) {
+      var o = opcoes || {};
+      o.headers = Object.assign({
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token()
+      }, o.headers || {});
+      var res = await fetch('/api' + rota, o);
+      var json = await res.json().catch(function () { return {}; });
+      return { res: res, json: json };
+    }
+
+    function aviso(texto, tipo) {
+      corpo.insertAdjacentHTML('beforeend',
+        '<p class="ap-msg ap-msg--' + (tipo || 'info') + '" style="margin-top:12px">' + texto + '</p>');
+    }
+
+    async function carregarCartao() {
+      if (cartaoId) return cartaoId;
+      var r = await api('/empresa/cartao-fidelidade');
+      var lista = (r.json && (r.json.data || r.json)) || [];
+      if (Array.isArray(lista) && lista.length) cartaoId = lista[0].id;
+      return cartaoId;
+    }
+
+    function desenhar(dados) {
+      var c = (dados && dados.cliente) || {};
+      var v = (dados && dados.vinculo) || {};
+      var b = (dados && dados.bonus_adesao) || {};
+      var iniciais = (c.nome || '?').trim().split(/\s+/).slice(0, 2)
+        .map(function (p) { return p.charAt(0).toUpperCase(); }).join('');
+
+      corpo.innerHTML =
+        '<div style="display:flex;align-items:center;gap:14px">' +
+          '<div class="tdt-client-card__avatar">' + iniciais + '</div>' +
+          '<div style="flex:1;min-width:0">' +
+            '<div style="font-size:17px;font-weight:800;letter-spacing:-0.2px">' + (c.nome || 'Cliente') + '</div>' +
+            '<div style="font-size:12.5px;color:var(--text-muted);margin-top:2px">' + (c.email || '') + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">' +
+          '<span class="tdt-pill ' + (v.existe ? 'tdt-pill--ok' : 'tdt-pill--warn') + '">' +
+            (v.existe ? 'Vinculado' : 'Primeira visita') + '</span>' +
+          (b && b.disponivel ? '<span class="tdt-pill tdt-pill--info">Bonus de adesao disponivel</span>' : '') +
+        '</div>' +
+        '<div style="display:grid;gap:10px;margin-top:18px">' +
+          '<button type="button" class="tdt-btn" data-acao="ponto">' +
+            '<span class="material-symbols-outlined">add_circle</span> Lancar 1 ponto no cartao</button>' +
+          '<button type="button" class="tdt-btn tdt-btn--ghost" data-acao="nova">' +
+            '<span class="material-symbols-outlined">qr_code_scanner</span> Ler outro cliente</button>' +
+        '</div>';
+
+      corpo.querySelector('[data-acao="nova"]').addEventListener('click', function () {
+        painel.classList.add('hidden');
+        window.location.reload();
+      });
+
+      corpo.querySelector('[data-acao="ponto"]').addEventListener('click', async function () {
+        var botao = this;
+        botao.disabled = true;
+        var rotulo = botao.innerHTML;
+        botao.textContent = 'Lancando...';
+        try {
+          var id = await carregarCartao();
+          if (!id) { aviso('Esta loja ainda nao tem cartao fidelidade configurado.', 'error'); return; }
+          var r = await api('/empresa/cartao-fidelidade/' + id + '/clientes/' + c.id + '/adicionar-ponto', { method: 'POST' });
+          if (r.res.ok && r.json.success !== false) {
+            aviso('Ponto lancado para ' + (c.nome || 'o cliente') + '.', 'success');
+            botao.remove();
+          } else {
+            aviso(r.json.message || 'Nao foi possivel lancar o ponto.', 'error');
+            botao.disabled = false; botao.innerHTML = rotulo;
+          }
+        } catch (e) {
+          aviso('Erro de rede ao lancar o ponto.', 'error');
+          botao.disabled = false; botao.innerHTML = rotulo;
+        }
+      });
+
+      painel.classList.remove('hidden');
+      painel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    async function consultar(codigo) {
+      corpo.innerHTML = '<p style="margin:0;color:var(--text-muted);font-size:14px">Consultando cliente...</p>';
+      painel.classList.remove('hidden');
+      try {
+        var r = await api('/empresa/clientes/qrcode/consultar', {
+          method: 'POST', body: JSON.stringify({ qrcode: codigo })
+        });
+        if (!r.res.ok || r.json.success === false) {
+          corpo.innerHTML = '';
+          aviso(r.json.message || 'QR do cliente invalido ou expirado. Peca para ele atualizar o codigo.', 'error');
+          return;
+        }
+        desenhar(r.json.data || {});
+      } catch (e) {
+        corpo.innerHTML = '';
+        aviso('Erro de rede na consulta.', 'error');
+      }
+    }
+
+    window.addEventListener('tdt-qr-scanned', function (ev) {
+      var codigo = (ev && ev.detail && ev.detail.codigo) || '';
+      if (codigo) consultar(String(codigo).trim());
+    });
+
+    var manual = document.getElementById('usarCupomBtn');
+    if (manual) {
+      manual.addEventListener('click', function () {
+        var campo = document.getElementById('cupomId');
+        var v = campo && campo.value ? campo.value.trim() : '';
+        if (v) consultar(v);
+      });
+    }
+  })();
+  </script>
 </body>
 </html>
