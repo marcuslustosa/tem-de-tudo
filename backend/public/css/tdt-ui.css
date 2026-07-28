@@ -1935,3 +1935,44 @@ body[data-page$="_master"] main > section:first-child > div > div:first-child { 
 [data-theme="dark"] .estabs-status-card--suspended .estabs-status-value,
 [data-theme="dark"] .estabs-status-card--rejected .estabs-status-value { color: #fb7185; }
 @media (min-width: 1280px) { .xl\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+/* Campos herdados do markup antigo (classes .field / .lbl) */
+.field {
+  width: 100%; min-height: 50px; padding: 12px 15px; border-radius: var(--r-sm);
+  background: var(--surface); border: 1px solid var(--border); color: var(--text);
+  font: inherit; font-size: 15px; outline: none;
+}
+.field:focus { border-color: var(--accent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 16%, transparent); }
+.field.pl-11 { padding-left: 44px; }
+.lbl { display: block; margin-bottom: 7px; font-size: 12.5px; font-weight: 700; color: var(--text-muted); }
+.md\:col-span-2 { grid-column: span 2 / span 2; }
+@media (max-width: 767px) { .md\:col-span-2 { grid-column: auto; } }
+.app-primary-button {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
+  min-height: 50px; border-radius: var(--r-sm); border: 0; cursor: pointer;
+  background: var(--accent); color: #fff; font: inherit; font-size: 14.5px; font-weight: 700;
+  box-shadow: 0 10px 22px rgba(176, 23, 116, 0.28);
+}
+
+/* Botoes herdados (.btn) e icone dentro de campo */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 48px; padding: 0 18px; border-radius: var(--r-sm); border: 1px solid var(--border);
+  background: var(--surface-2); color: var(--text); cursor: pointer;
+  font: inherit; font-size: 14.5px; font-weight: 700; text-decoration: none;
+}
+.btn--primary {
+  background: var(--accent); border-color: var(--accent); color: #fff;
+  box-shadow: 0 10px 22px rgba(176, 23, 116, 0.28);
+}
+.btn--dark { background: #17131f; border-color: #17131f; color: #fff; }
+.btn--neutral { background: var(--surface-2); color: var(--text); }
+.btn--block { width: 100%; }
+.btn--sm { min-height: 40px; font-size: 13.5px; padding: 0 14px; }
+.btn[disabled] { opacity: 0.55; cursor: not-allowed; box-shadow: none; }
+
+.left-3 { left: 12px; }
+.top-1\/2 { top: 50%; }
+.-translate-y-1\/2 { transform: translateY(-50%); }
+.relative > .material-symbols-outlined.absolute { color: var(--accent); font-size: 20px; pointer-events: none; }
+[data-theme="dark"] .relative > .material-symbols-outlined.absolute { color: #f472b6; }

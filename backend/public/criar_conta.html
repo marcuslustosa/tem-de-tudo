@@ -2,46 +2,44 @@
 <html class="light" lang="pt-BR">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Criar conta - Tem de Tudo</title>
   <meta name="theme-color" content="#ffffff" />
-  <title>Tem de Tudo - Criar Conta</title>
-  <link rel="manifest" href="/manifest.json" />  <link rel="icon" type="image/png" href="/img/logo.png" />
-  <link rel="shortcut icon" href="/img/logo.png" />
-  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
-  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-  <link href="/css/i9plus-phase8.css?v=20260721-app51" rel="stylesheet" />
-  <link href="/css/tdt-app.css?v=20260727-ui1" rel="stylesheet" />
-  <script src="/js/tdt-app.js?v=20260727-ui1"></script>
-  <style>
-    body { background: #ffffff; min-height: 100dvh; }
-    .material-symbols-outlined { font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24; }
-    .field { display:block; width:100%; padding:12px 16px; background:var(--i9-surface-soft); border:1px solid transparent; border-radius:14px; color:#17171c; font-size:15px; outline:none; transition:border-color .15s ease, background .15s ease; }
-    .field:focus { background:#fff; border-color:rgba(176,23,116,.35); }
-    .lbl { display:block; font-size:12.5px; font-weight:600; color:#4b5061; margin:0 0 6px 2px; }
-  </style>
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const perfilSelect = document.getElementById('sgPerfil');
-      const tipo = new URLSearchParams(window.location.search).get('tipo');
-      if (tipo === 'empresa' && perfilSelect) {
-        perfilSelect.value = 'empresa';
-        document.getElementById('empresaFields')?.classList.remove('hidden');
-      }
-    });
-  </script>
-  <script src="/dist/stitch-app.min.js?v=20260721-app51" defer></script>
+  <link rel="icon" type="image/png" href="/img/logo.png" />
+  <link rel="manifest" href="/manifest.json" />
+  <link href="/css/tdt-ui.css?v=20260728-ui16" rel="stylesheet" />
+  <script src="/js/tdt-app.js?v=20260728-ui16"></script>
 </head>
-<body class="text-[#17171c]" data-page="criar_conta">
-  <main class="mx-auto w-full max-w-[520px] px-5 pb-10 pt-8">
-    <div class="text-center">
-      <img alt="Tem de Tudo" src="/img/logo.png" onerror="this.onerror=null;this.src='/img/logo.png.png';" class="mx-auto h-14 w-auto" />
-      <h1 class="mt-5 text-2xl font-extrabold text-[#111B3F]">Criar sua conta</h1>
-      <p class="mt-1 text-sm text-[#6b7280]">É rápido. Preencha os dados abaixo para começar.</p>
-    </div>
+<body class="ap-authbody" data-page="criar_conta">
 
-    <form id="signupForm" class="mt-7 space-y-4">
+<section class="ap-auth__brand">
+  <a class="ap-auth__logo" href="/">
+    <img src="/img/logo.png" alt="" style="width:38px;height:38px;border-radius:12px;object-fit:contain;background:#fff;padding:4px" />
+    Tem de Tudo
+  </a>
+  <div class="ap-auth__claim">
+    <h1>Comece a ganhar<br>em 2 minutos.</h1>
+    <p>Crie sua conta, leia o QR Code da empresa no balcão e seus pontos começam a contar na mesma hora.</p>
+    <div class="ap-auth__proof">
+      <div><b>Grátis</b><span>para o cliente</span></div>
+      <div><b>Sem app</b><span>funciona no navegador</span></div>
+      <div><b>LGPD</b><span>dados sob seu controle</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="ap-auth__form">
+  <button class="ap-themebtn ap-auth__theme" type="button" data-tdt-theme-toggle>
+    <span class="material-symbols-outlined" data-tdt-theme-icon>dark_mode</span>
+    <span data-tdt-theme-label>Escuro</span>
+  </button>
+  <div class="ap-auth__box">
+    <h2 class="ap-auth__t">Criar conta</h2>
+    <p class="ap-auth__s">Escolha o perfil e preencha os dados. Empresa passa por aprovação antes de publicar.</p>
+
+<form id="signupForm" class="mt-7 space-y-4">
       <div id="perfilContainer">
         <label class="lbl">Tipo de conta</label>
         <div class="relative">
@@ -124,10 +122,10 @@
       <button type="submit" class="btn btn--primary btn--block mt-2">Criar conta</button>
     </form>
 
-    <p class="mt-6 text-center text-sm text-[#6b7280]">
-      Já tem conta?
-      <a class="font-bold text-[#4c1d95] hover:underline underline-offset-4 ml-1" href="/entrar.html">Entrar</a>
-    </p>
-  </main>
+    <p class="ap-auth__foot">Já tem conta? <a href="/entrar.html" class="ap-link">Entrar</a></p>
+  </div>
+</section>
+
+<script src="/dist/stitch-app.min.js?v=20260721-app51"></script>
 </body>
 </html>
