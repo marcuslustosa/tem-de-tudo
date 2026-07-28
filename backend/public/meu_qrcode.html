@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Meu cartão - Tem de Tudo</title>
+  <meta name="theme-color" content="#ffffff" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" type="image/png" href="/img/logo.png" />
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
+  <link href="/css/tdt-ui.css?v=20260728-ui23" rel="stylesheet" />
+  <script src="/js/tdt-app.js?v=20260728-ui23"></script>
+</head>
+<body data-page="meu_qrcode">
+
+  <header class="tdt-appbar">
+    <div class="tdt-appbar__inner">
+      <a href="/meus_pontos.html" class="tdt-icon-btn" aria-label="Voltar">
+        <span class="material-symbols-outlined">arrow_back</span>
+      </a>
+      <div class="tdt-appbar__greet">
+        <span class="tdt-appbar__hello">Meu cartão</span>
+        <span class="tdt-appbar__sub">Apresente no balcão para pontuar</span>
+      </div>
+      <div class="tdt-appbar__actions"></div>
+    </div>
+  </header>
+
+  <div class="ap-shell ap-shell--single ap-shell--narrow">
+    <div class="ap-main">
+
+      <!-- O CARTAO -->
+      <section class="ap-qr" style="padding:26px">
+        <div class="ap-qr__top"><span>Cartão de fidelidade</span><span>Tem de Tudo</span></div>
+
+        <div class="ap-qr__code ap-qr__code--lg" id="qrBox">
+          <div id="qrSkeleton" style="width:100%;height:100%;border-radius:10px;background:linear-gradient(90deg,#eee,#f7f7f7,#eee)"></div>
+        </div>
+
+        <div class="ap-qr__who">
+          <div class="ap-qr__name" id="qrNome" style="font-size:19px">Carregando…</div>
+          <div class="ap-qr__hint" id="qrNivel"></div>
+          <div class="ap-code" id="qrCodigo" style="margin-top:14px;display:none"></div>
+          <div class="ap-qr__hint" id="qrValidade" style="margin-top:12px"></div>
+        </div>
+      </section>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <button class="ap-btn ap-btn--ghost" type="button" id="btnBrilho">
+          <span class="material-symbols-outlined" style="font-size:20px">brightness_high</span> Brilho máximo
+        </button>
+        <button class="ap-btn ap-btn--ghost" type="button" id="btnAtualizar">
+          <span class="material-symbols-outlined" style="font-size:20px">refresh</span> Atualizar código
+        </button>
+      </div>
+
+      <p id="qrMensagem" class="ap-msg hidden"></p>
+
+      <!-- Caminho inverso -->
+      <section class="ap-panel">
+        <div style="display:flex;align-items:center;gap:14px">
+          <div class="ap-quick__ic ap-quick__ic--1" style="margin:0;width:52px;height:52px">
+            <span class="material-symbols-outlined">qr_code_scanner</span>
+          </div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:15.5px;font-weight:700">Entrar em uma empresa nova</div>
+            <div style="font-size:13px;color:var(--text-muted);margin-top:3px;line-height:1.5">
+              Leia o QR Code que fica no balcão para se vincular e começar a pontuar.
+            </div>
+          </div>
+        </div>
+        <a href="/validar_resgate.html?modo=vinculo-empresa" class="ap-btn" style="margin-top:16px">Ler QR da empresa</a>
+      </section>
+
+      <section class="ap-panel">
+        <h3 class="ap-panel__t">Como usar</h3>
+        <div class="ap-tx">
+          <div class="ap-tx__r">
+            <div class="ap-tx__ic"><span class="material-symbols-outlined">point_of_sale</span></div>
+            <div class="ap-tx__b">
+              <div class="ap-tx__t">Na hora de pagar</div>
+              <div class="ap-tx__d">Mostre este QR e a equipe registra seus pontos.</div>
+            </div>
+          </div>
+          <div class="ap-tx__r">
+            <div class="ap-tx__ic"><span class="material-symbols-outlined">redeem</span></div>
+            <div class="ap-tx__b">
+              <div class="ap-tx__t">Para resgatar um benefício</div>
+              <div class="ap-tx__d">Escolha em Benefícios e apresente o mesmo QR.</div>
+            </div>
+          </div>
+          <div class="ap-tx__r">
+            <div class="ap-tx__ic"><span class="material-symbols-outlined">lock_clock</span></div>
+            <div class="ap-tx__b">
+              <div class="ap-tx__t">O código expira sozinho</div>
+              <div class="ap-tx__d">Por segurança ele é renovado a cada leitura ou a cada hora.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="/dist/stitch-app.min.js?v=20260721-app51"></script>
+  <script>
+    /* O QR do cliente e gerado sob demanda por /api/cliente/meu-qrcode e ate
+       agora nao tinha tela: o link antigo apenas recarregava a home. */
+    (function () {
+      var box = document.getElementById('qrBox');
+      var nome = document.getElementById('qrNome');
+      var nivel = document.getElementById('qrNivel');
+      var codigo = document.getElementById('qrCodigo');
+      var validade = document.getElementById('qrValidade');
+      var msg = document.getElementById('qrMensagem');
+      var btnAtualizar = document.getElementById('btnAtualizar');
+      var btnBrilho = document.getElementById('btnBrilho');
+      var timer = null;
+
+      function aviso(texto, tipo) {
+        if (!msg) return;
+        msg.textContent = texto || '';
+        msg.className = texto ? 'ap-msg ap-msg--' + (tipo || 'error') : 'ap-msg hidden';
+      }
+
+      function usuario() {
+        try { return JSON.parse(localStorage.getItem('tem_de_tudo_user') || '{}'); } catch (e) { return {}; }
+      }
+
+      function contagem(expiraEm) {
+        if (timer) clearInterval(timer);
+        if (!expiraEm) { validade.textContent = ''; return; }
+        var fim = new Date(expiraEm).getTime();
+        var tick = function () {
+          var falta = Math.max(0, Math.floor((fim - Date.now()) / 1000));
+          if (falta <= 0) {
+            clearInterval(timer);
+            validade.textContent = 'Código expirado. Toque em atualizar.';
+            return;
+          }
+          var m = Math.floor(falta / 60), s = falta % 60;
+          validade.textContent = 'Válido por ' + m + ':' + (s < 10 ? '0' : '') + s;
+        };
+        tick();
+        timer = setInterval(tick, 1000);
+      }
+
+      async function carregar() {
+        var token = localStorage.getItem('tem_de_tudo_token');
+        if (!token) { window.location.href = '/entrar.html?next=/meu_qrcode.html'; return; }
+
+        aviso('');
+        btnAtualizar.disabled = true;
+        try {
+          var res = await fetch('/api/cliente/meu-qrcode', {
+            headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/json' }
+          });
+          var json = await res.json().catch(function () { return {}; });
+          if (!res.ok || json.success === false) {
+            aviso(json.message || 'Não foi possível gerar seu QR agora. Tente de novo.', 'error');
+            return;
+          }
+          var d = json.data || {};
+          if (d.qrcode_svg) {
+            box.innerHTML = d.qrcode_svg;
+            var svg = box.querySelector('svg');
+            if (svg) { svg.setAttribute('width', '100%'); svg.setAttribute('height', '100%'); svg.style.display = 'block'; }
+          }
+          var u = usuario();
+          nome.textContent = u.name || 'Meu cartão';
+          nivel.textContent = (u.nivel ? 'Membro ' + u.nivel : '') + (u.pontos != null ? ' · ' + u.pontos + ' pontos' : '');
+          if (d.codigo) {
+            codigo.textContent = String(d.codigo).slice(-12).toUpperCase();
+            codigo.style.display = 'inline-flex';
+          }
+          contagem(d.expira_em);
+        } catch (e) {
+          console.error('QR_FALHOU', e);
+          aviso('Erro de rede ao gerar o QR. Verifique a conexão.', 'error');
+        } finally {
+          btnAtualizar.disabled = false;
+        }
+      }
+
+      btnAtualizar.addEventListener('click', carregar);
+      btnBrilho.addEventListener('click', function () {
+        document.documentElement.setAttribute('data-theme', 'light');
+        document.body.style.filter = document.body.style.filter ? '' : 'brightness(1.15)';
+      });
+
+      carregar();
+    })();
+  </script>
+</body>
+</html>
