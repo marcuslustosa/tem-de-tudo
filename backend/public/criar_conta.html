@@ -9,8 +9,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
   <link rel="icon" type="image/png" href="/img/logo.png" />
   <link rel="manifest" href="/manifest.json" />
-  <link href="/css/tdt-ui.css?v=20260728-ui23" rel="stylesheet" />
-  <script src="/js/tdt-app.js?v=20260728-ui23"></script>
+  <link href="/css/tdt-ui.css?v=20260728-ui24" rel="stylesheet" />
+  <script src="/js/tdt-app.js?v=20260728-ui24"></script>
 </head>
 <body class="ap-authbody" data-page="criar_conta">
 
@@ -127,5 +127,21 @@
 </section>
 
 <script src="/dist/stitch-app.min.js?v=20260721-app51"></script>
+  <script>
+    /* Preselecao do perfil pela URL (?tipo=empresa ou ?perfil=empresa).
+       Existia antes da reescrita e se perdeu; sem isto quem vem de
+       "Tenho uma empresa" cai no formulario de cliente. */
+    document.addEventListener('DOMContentLoaded', function () {
+      var p = new URLSearchParams(window.location.search);
+      var tipo = (p.get('tipo') || p.get('perfil') || '').toLowerCase();
+      var sel = document.getElementById('sgPerfil');
+      if (tipo === 'empresa' && sel) {
+        sel.value = 'empresa';
+        sel.dispatchEvent(new Event('change', { bubbles: true }));
+        var bloco = document.getElementById('empresaFields');
+        if (bloco) bloco.classList.remove('hidden');
+      }
+    });
+  </script>
 </body>
 </html>

@@ -7,7 +7,7 @@
 <link href="/img/apple-touch-icon.png" rel="apple-touch-icon"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-  <link href="/css/tdt-ui.css?v=20260728-ui23" rel="stylesheet" />
+  <link href="/css/tdt-ui.css?v=20260728-ui24" rel="stylesheet" />
   <script src="/js/tdt-app.js?v=20260727-ui1"></script>
 <style>
         .glass-panel {
@@ -121,5 +121,257 @@
 </nav>
 
 <script src="/dist/stitch-app.min.js?v=20260721-app51"></script>
+  <!-- Scanner de camera: este script existia na versao anterior e se perdeu na
+       reescrita da tela. Sem ele a camera nunca liga. -->
+  <script>
+(function () {
+  const video = document.getElementById('qrVideo');
+  const statusText = document.getElementById('scanStatus');
+  const placeholder = document.getElementById('qrPlaceholder');
+  const successIndicator = document.getElementById('scanSuccess');
+  const toggleFlashBtn = document.getElementById('toggleFlash');
+  const switchCameraBtn = document.getElementById('switchCamera');
+
+  let stream = null;
+  let facingMode = 'environment';
+  let scanning = true;
+  let lastScannedCode = null;
+  let lastScanTime = 0;
+  const scanCooldown = 3000;
+
+  // Fluxo único de QR: o cliente lê o QR da empresa. A empresa nunca escaneia
+  // ninguém nesta página — ela apenas exibe o QR da loja (injetado pelo bundle).
+  const storedUser = JSON.parse(localStorage.getItem('tem_de_tudo_user') || '{}');
+  const perfil = (storedUser.perfil || storedUser.role || '').toLowerCase();
+  const isEmpresa = ['empresa', 'estabelecimento', 'parceiro'].includes(perfil);
+  const instructionEl = document.getElementById('scanInstructions');
+  let appReady = Boolean(window.__tdtAppReady);
+  let scanPending = false;
+
+  if (instructionEl && !isEmpresa) {
+    instructionEl.textContent = 'Escaneie o QR da empresa para se vincular no app.';
+  }
+
+  const resetScannerUi = () => {
+    successIndicator.classList.add('hidden');
+    placeholder.classList.remove('hidden');
+    statusText.classList.remove('text-error', 'text-primary', 'text-tertiary');
+    statusText.textContent = 'Escaneie o QR da empresa...';
+  };
+
+  const resumeScanning = (delay = 0) => {
+    setTimeout(() => {
+      scanPending = false;
+      resetScannerUi();
+      scanning = true;
+      requestAnimationFrame(scanQRCode);
+    }, delay);
+  };
+
+  window.addEventListener('tdt-app-ready', () => {
+    appReady = true;
+  });
+
+  window.addEventListener('tdt-qr-validation-result', (event) => {
+    const result = event?.detail || {};
+    if (result.source !== 'camera') return;
+
+    successIndicator.classList.toggle('hidden', !result.ok);
+
+    if (result.ok) {
+      statusText.classList.remove('text-error');
+      statusText.classList.add('text-tertiary');
+      // Vínculo concluído: o bundle redireciona para a página da empresa.
+      statusText.textContent = result.message || 'QR validado com sucesso.';
+      return;
+    }
+
+    successIndicator.classList.add('hidden');
+    statusText.classList.remove('text-primary', 'text-tertiary');
+    statusText.classList.add('text-error');
+    statusText.textContent = result.message || 'Nao foi possivel validar este QR.';
+    resumeScanning(2600);
+  });
+
+  async function startCamera() {
+    try {
+      if (stream) {
+        stream.getTracks().forEach((track) => track.stop());
+      }
+
+      const constraints = {
+        video: {
+          facingMode,
+          width: { ideal: 1280 },
+          height: { ideal: 720 },
+        },
+      };
+
+      stream = await navigator.mediaDevices.getUserMedia(constraints);
+      video.srcObject = stream;
+      placeholder.classList.add('hidden');
+      statusText.textContent = 'Camera ativa - escaneie o QR da empresa';
+
+      requestAnimationFrame(scanQRCode);
+    } catch (error) {
+      const unsupportedCamera = ['NotSupportedError', 'NotFoundError', 'OverconstrainedError'].includes(error?.name || '');
+      if (unsupportedCamera) {
+        console.warn('camera_unavailable', error?.name || error);
+        statusText.textContent = 'Camera indisponivel neste dispositivo ou navegador';
+      } else if ((error?.name || '') === 'NotAllowedError') {
+        console.warn('camera_permission_denied');
+        statusText.textContent = 'Permita o acesso a camera para continuar';
+      } else {
+        console.warn('camera_start_failed', error?.name || error);
+        statusText.textContent = 'Nao foi possivel iniciar a camera agora';
+      }
+      statusText.classList.add('text-error');
+    }
+  }
+
+  function scanQRCode() {
+    if (!scanning || video.readyState !== video.HAVE_ENOUGH_DATA) {
+      if (scanning) requestAnimationFrame(scanQRCode);
+      return;
+    }
+
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+    const code = jsQR(imageData.data, imageData.width, imageData.height, {
+      inversionAttempts: 'dontInvert',
+    });
+
+    if (code && code.data) {
+      const now = Date.now();
+      if (code.data !== lastScannedCode || (now - lastScanTime) > scanCooldown) {
+        lastScannedCode = code.data;
+        lastScanTime = now;
+        handleQRCodeDetected(code.data);
+      }
+    }
+
+    if (scanning) {
+      requestAnimationFrame(scanQRCode);
+    }
+  }
+
+  async function handleQRCodeDetected(qrData) {
+    placeholder.classList.add('hidden');
+    successIndicator.classList.remove('hidden');
+    statusText.textContent = 'QR Code detectado! Validando...';
+    statusText.classList.add('text-primary');
+
+    if (navigator.vibrate) {
+      navigator.vibrate(200);
+    }
+
+    if (!appReady) {
+      statusText.textContent = 'Preparando validacao...';
+      statusText.classList.remove('text-error');
+      statusText.classList.add('text-tertiary');
+      resumeScanning(900);
+      return;
+    }
+
+    if (scanPending) {
+      return;
+    }
+
+    scanPending = true;
+    scanning = false;
+    const manualInput = document.getElementById('cupomId');
+    if (manualInput) manualInput.value = qrData;
+    window.dispatchEvent(new CustomEvent('tdt-qr-scanned', {
+      detail: {
+        codigo: qrData,
+        source: 'camera',
+      },
+    }));
+    return;
+
+  }
+
+  toggleFlashBtn.addEventListener('click', async () => {
+    if (!stream) return;
+
+    const track = stream.getVideoTracks()[0];
+    const capabilities = track.getCapabilities();
+
+    if (!capabilities.torch) {
+      alert('Lanterna não disponível neste dispositivo');
+      return;
+    }
+
+    const current = track.getSettings();
+    const newState = !current.torch;
+    await track.applyConstraints({ advanced: [{ torch: newState }] });
+    toggleFlashBtn.classList.toggle('bg-primary', newState);
+    toggleFlashBtn.classList.toggle('text-white', newState);
+  });
+
+  switchCameraBtn.addEventListener('click', () => {
+    facingMode = facingMode === 'environment' ? 'user' : 'environment';
+    startCamera();
+  });
+
+  document.getElementById('closeQRScanner').addEventListener('click', () => {
+    scanning = false;
+    scanPending = false;
+    if (stream) {
+      stream.getTracks().forEach((track) => track.stop());
+    }
+    const fallback = isEmpresa ? '/dashboard_parceiro.html' : '/meus_pontos.html';
+    const sameOriginReferrer = document.referrer && (() => {
+      try {
+        return new URL(document.referrer).origin === window.location.origin;
+      } catch {
+        return false;
+      }
+    })();
+    if (window.history.length > 1 && sameOriginReferrer) {
+      window.history.back();
+      return;
+    }
+    window.location.href = fallback;
+  });
+
+  // A empresa NAO escaneia mais o cliente: o cliente e quem le o QR da empresa.
+  // Nesta pagina, para a empresa, mostramos apenas o QR da loja (injetado pelo
+  // bundle) e escondemos a camera/validacao. O scanner segue ativo para o cliente.
+  const viewerIsEmpresa = (() => {
+    try {
+      const raw = localStorage.getItem('tem_de_tudo_user');
+      if (!raw) return false;
+      const u = JSON.parse(raw) || {};
+      const perfil = String(u.perfil || u.role || u.tipo || '').toLowerCase();
+      return perfil === 'empresa';
+    } catch { return false; }
+  })();
+
+  if (viewerIsEmpresa) {
+    document.getElementById('qrScannerCamera')?.classList.add('hidden');
+    document.getElementById('qrManualSection')?.classList.add('hidden');
+    document.getElementById('scanCameraHint')?.classList.add('hidden');
+  } else if (video) {
+    if (appReady) {
+      startCamera();
+    } else {
+      window.addEventListener('tdt-app-ready', () => startCamera(), { once: true });
+    }
+  }
+
+  window.addEventListener('beforeunload', () => {
+    scanning = false;
+    if (stream) {
+      stream.getTracks().forEach((track) => track.stop());
+    }
+  });
+})();
+</script>
 </body>
 </html>
