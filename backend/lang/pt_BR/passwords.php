@@ -1,0 +1,13 @@
+<?php
+
+/*
+ * Mensagens do fluxo de recuperacao de senha.
+ */
+
+return [
+    'reset' => 'Sua senha foi redefinida.',
+    'sent' => 'Enviamos o link de recuperação para o seu e-mail.',
+    'throttled' => 'Aguarde um pouco antes de tentar de novo.',
+    'token' => 'Este link de recuperação é inválido ou expirou.',
+    'user' => 'Não encontramos uma conta com esse e-mail.',
+];
