@@ -9725,6 +9725,8 @@
       const listEl = document.getElementById('revEmpresasList');
       const skelEl = document.getElementById('revEmpresasSkeleton');
       const emptyEl = document.getElementById('revEmpresasEmpty');
+      const totalEl = document.getElementById('revTotalEmpresas');
+      const ativosEl = document.getElementById('revTotalAtivos');
       let saldoAtual = 0;
 
       document.getElementById('revLogout')?.addEventListener('click', () => auth.logout());
@@ -9734,7 +9736,11 @@
         if (res.ok && data?.success !== false) {
           saldoAtual = Number(data?.data?.creditos || 0);
           if (saldoEl) saldoEl.textContent = brl(saldoAtual);
-          if (vencEl) vencEl.textContent = `Vencimento: ${data?.data?.vencimento ? formatDatePtBr(data.data.vencimento) : 'sem vencimento'}`;
+          if (vencEl) {
+            vencEl.textContent = data?.data?.vencimento
+              ? `Seu acesso vence em ${formatDatePtBr(data.data.vencimento)}`
+              : 'Seu acesso não tem data de vencimento.';
+          }
         }
       };
 
@@ -9743,52 +9749,111 @@
         const lista = (res.ok && data?.success !== false) ? toArray(data?.data) : [];
         skelEl?.classList.add('hidden');
         emptyEl?.classList.toggle('hidden', lista.length > 0);
+
+        const ativos = lista.filter((e) => String(e.status || '').toLowerCase() === 'active').length;
+        if (totalEl) totalEl.textContent = String(lista.length);
+        if (ativosEl) ativosEl.textContent = String(ativos);
+
         if (!listEl) return;
-        listEl.innerHTML = lista.map((e) => `
-          <article class="ui-card ui-card--hover !p-4 flex items-center justify-between gap-3">
-            <div>
-              <p class="font-bold text-[#111B3F]">${safeText(e.nome, 'Estabelecimento')}</p>
-              <p class="text-xs text-slate-500">${safeText(e.plano, 'Sem plano')} · ${safeText(e.telefone, 'sem telefone')}</p>
-            </div>
-            <div class="text-right">
-              <span class="ui-badge ${e.status === 'active' ? 'ui-badge--success' : 'ui-badge--neutral'}">${e.status === 'active' ? 'Ativo' : safeText(e.status, '-')}</span>
-              <p class="text-[11px] text-slate-500 mt-1">${e.vencimento ? 'Vence ' + formatDatePtBr(e.vencimento) : ''}</p>
-            </div>
-          </article>`).join('');
+        listEl.innerHTML = lista.map((e) => {
+          const ativo = String(e.status || '').toLowerCase() === 'active';
+          const iniciais = String(e.nome || '?').trim().split(/\s+/).slice(0, 2)
+            .map((p) => p.charAt(0).toUpperCase()).join('');
+          return `
+            <a class="tdt-row" href="/detalhe_do_parceiro.html?id=${encodeURIComponent(e.id)}">
+              <div class="tdt-client-card__avatar">${safeText(iniciais, '?')}</div>
+              <div class="tdt-row__body">
+                <div class="tdt-row__name">${safeText(e.nome, 'Estabelecimento')}</div>
+                <div class="tdt-row__meta">${safeText(e.plano, 'Sem plano')}${e.telefone ? ' · ' + safeText(e.telefone, '') : ''}</div>
+                ${e.vencimento ? `<div class="tdt-row__meta">Vence ${formatDatePtBr(e.vencimento)}</div>` : ''}
+              </div>
+              <span class="tdt-pill ${ativo ? 'tdt-pill--ok' : 'tdt-pill--warn'}">${ativo ? 'Ativo' : safeText(e.status, 'Pendente')}</span>
+            </a>`;
+        }).join('');
       };
 
-      const openCreate = async () => {
-        // busca planos para o seletor (reusa /admin? nao: revenda nao tem. usa lista fixa dos planos via /revenda/me? )
+      const openCreate = () => {
         const overlay = document.createElement('div');
         overlay.className = 'tdt-modal-overlay';
         overlay.innerHTML = `
-          <div class="tdt-modal-dialog">
-            <div class="flex items-center justify-between mb-4"><p class="font-headline font-extrabold text-on-surface">Novo estabelecimento</p><button type="button" data-close class="text-on-surface-variant"><span class="material-symbols-outlined">close</span></button></div>
-            <p class="text-xs text-on-surface-variant mb-3">Saldo: <b>${brl(saldoAtual)}</b>. O valor do plano é descontado ao criar.</p>
-            <div class="space-y-3">
-              <div><label class="ui-label">Nome</label><input data-f="nome" class="ui-input" placeholder="Nome do estabelecimento" /></div>
-              <div><label class="ui-label">Usuário (e-mail)</label><input data-f="email" type="email" class="ui-input" placeholder="empresa@exemplo.com" /></div>
-              <div><label class="ui-label">Senha</label><input data-f="senha" type="password" class="ui-input" placeholder="Mínimo 6 caracteres" /></div>
-              <div><label class="ui-label">Telefone</label><input data-f="telefone" class="ui-input" placeholder="(00) 00000-0000" /></div>
-              <div><label class="ui-label">Validade</label><select data-f="dias" class="ui-select">${[['30 dias', 30], ['3 meses', 90], ['6 meses', 180], ['12 meses', 365]].map(([l, d]) => `<option value="${d}">${l}</option>`).join('')}</select></div>
+          <div class="tdt-modal-dialog" role="dialog" aria-label="Novo estabelecimento">
+            <div class="tdt-section__head" style="margin-bottom:6px">
+              <h3 class="tdt-section__title" style="font-size:19px">Novo estabelecimento</h3>
+              <button type="button" data-close class="tdt-icon-btn" aria-label="Fechar" style="margin-left:auto">
+                <span class="material-symbols-outlined">close</span>
+              </button>
             </div>
-            <button type="button" data-save class="ui-btn ui-btn--primary ui-btn--block mt-4">Criar estabelecimento</button>
-            <p data-msg class="text-xs text-on-surface-variant mt-2"></p>`;
+            <p class="tdt-k__d" style="margin:0 0 16px">Saldo disponível: <b>${brl(saldoAtual)}</b>. O valor do plano é descontado na criação.</p>
+            <div style="display:grid;gap:12px">
+              <div class="tdt-field">
+                <label class="tdt-field__l" for="revNome">Nome do estabelecimento</label>
+                <input id="revNome" data-f="nome" class="tdt-input" placeholder="Ex.: Padaria do Bairro" />
+              </div>
+              <div class="tdt-field">
+                <label class="tdt-field__l" for="revEmail">E-mail de acesso</label>
+                <input id="revEmail" data-f="email" type="email" class="tdt-input" placeholder="empresa@exemplo.com" autocomplete="off" />
+              </div>
+              <div class="tdt-field">
+                <label class="tdt-field__l" for="revSenha">Senha</label>
+                <input id="revSenha" data-f="senha" type="password" class="tdt-input" placeholder="Mínimo 6 caracteres" autocomplete="new-password" />
+              </div>
+              <div class="tdt-field">
+                <label class="tdt-field__l" for="revTelefone">Telefone</label>
+                <input id="revTelefone" data-f="telefone" class="tdt-input" placeholder="(00) 00000-0000" />
+              </div>
+              <div class="tdt-field">
+                <label class="tdt-field__l" for="revDias">Validade do plano</label>
+                <select id="revDias" data-f="dias" class="tdt-select">
+                  ${[['30 dias', 30], ['3 meses', 90], ['6 meses', 180], ['12 meses', 365]]
+                    .map(([l, d]) => `<option value="${d}">${l}</option>`).join('')}
+                </select>
+              </div>
+            </div>
+            <button type="button" data-save class="tdt-btn tdt-btn--block" style="margin-top:18px">
+              <span class="material-symbols-outlined">add_business</span> Criar estabelecimento</button>
+            <p data-msg class="ap-msg hidden"></p>
+          </div>`;
         document.body.appendChild(overlay);
+
         const close = () => overlay.remove();
         overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
         overlay.querySelector('[data-close]')?.addEventListener('click', close);
-        const g = (f) => overlay.querySelector(`[data-f="${f}"]`)?.value;
-        const msg = overlay.querySelector('[data-msg]');
+
+        const campo = (f) => overlay.querySelector(`[data-f="${f}"]`)?.value;
+        const msgEl = overlay.querySelector('[data-msg]');
+        const aviso = (texto, tom) => {
+          if (!msgEl) return;
+          msgEl.textContent = texto || '';
+          msgEl.className = texto ? `ap-msg ap-msg--${tom || 'error'}` : 'ap-msg hidden';
+        };
+
         overlay.querySelector('[data-save]')?.addEventListener('click', async (ev) => {
-          const nome = g('nome')?.trim(); const email = g('email')?.trim(); const senha = g('senha');
-          if (!nome || !email || !senha || senha.length < 6) { if (msg) { msg.textContent = 'Preencha nome, e-mail e senha (mín. 6).'; msg.className = 'text-xs text-rose-600 mt-2'; } return; }
-          ev.currentTarget.disabled = true; if (msg) { msg.textContent = 'Criando...'; msg.className = 'text-xs text-on-surface-variant mt-2'; }
-          const body = { nome, email, senha, telefone: g('telefone')?.trim(), dias: Number(g('dias') || 30) };
+          const botao = ev.currentTarget;
+          const nome = (campo('nome') || '').trim();
+          const email = (campo('email') || '').trim();
+          const senha = campo('senha') || '';
+          if (!nome || !email || senha.length < 6) {
+            aviso('Preencha nome, e-mail e uma senha de pelo menos 6 caracteres.', 'error');
+            return;
+          }
+          botao.disabled = true;
+          const rotulo = botao.innerHTML;
+          botao.textContent = 'Criando...';
+          aviso('');
+          const body = { nome, email, senha, telefone: (campo('telefone') || '').trim(), dias: Number(campo('dias') || 30) };
           const { res, data } = await api.request('/revenda/empresas', { method: 'POST', body: JSON.stringify(body) }, { notify: false });
-          if (res.ok && data?.success !== false) { ui.message(data?.message || 'Estabelecimento criado.', 'success'); close(); await Promise.all([loadSaldo(), loadEmpresas()]); }
-          else { if (msg) { msg.textContent = data?.message || 'Não foi possível criar.'; msg.className = 'text-xs text-rose-600 mt-2'; } ev.currentTarget.disabled = false; }
+          if (res.ok && data?.success !== false) {
+            ui.message(data?.message || 'Estabelecimento criado.', 'success');
+            close();
+            await Promise.all([loadSaldo(), loadEmpresas()]);
+            return;
+          }
+          aviso(data?.message || 'Não foi possível criar o estabelecimento.', 'error');
+          botao.disabled = false;
+          botao.innerHTML = rotulo;
         });
+
+        overlay.querySelector('[data-f="nome"]')?.focus();
       };
 
       document.getElementById('btnRevNovaEmpresa')?.addEventListener('click', openCreate);

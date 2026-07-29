@@ -1,54 +1,90 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-theme="light">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Painel da Revenda - Tem de Tudo</title>
-  <link rel="icon" type="image/png" href="/img/logo.png" />
-  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
+  <meta name="theme-color" content="#ffffff" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-  <link href="/css/tdt-ui.css?v=20260728-ui44" rel="stylesheet" />
-  <script src="/js/tdt-app.js?v=20260728-ui44"></script>
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" type="image/png" href="/img/logo.png" />
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
+  <link href="/css/tdt-ui.css?v=20260728-ui45" rel="stylesheet" />
+  <script src="/js/tdt-app.js?v=20260728-ui45"></script>
 </head>
-<body data-page="revenda_painel" class="bg-[#f7f7f7] text-[#1e1e1e] min-h-screen pb-16" style="font-family:'Inter',sans-serif">
-  <header class="bg-white border-b border-[#e9e7f1] sticky top-0 z-40">
-    <div class="max-w-3xl mx-auto flex items-center justify-between px-4 py-3">
-      <div class="flex items-center gap-2">
-        <img src="/img/logo.png" alt="Tem de Tudo" class="h-8 w-auto" onerror="this.onerror=null;this.src='/img/logo.png.png';" />
-        <span class="text-sm font-bold text-[#111B3F]">Painel da Revenda</span>
+<body data-page="revenda_painel">
+
+  <header class="tdt-appbar">
+    <div class="tdt-appbar__inner">
+      <div class="tdt-appbar__greet">
+        <span class="tdt-appbar__hello">Painel da Revenda</span>
+        <span class="tdt-appbar__sub">Seus estabelecimentos e seu saldo</span>
       </div>
-      <button id="revLogout" type="button" class="ui-btn ui-btn--outline ui-btn--sm">Sair</button>
+      <div class="tdt-appbar__actions">
+        <button id="revLogout" type="button" class="tdt-icon-btn" aria-label="Sair">
+          <span class="material-symbols-outlined">logout</span>
+        </button>
+      </div>
     </div>
   </header>
 
-  <main class="max-w-3xl mx-auto px-4 pt-5 space-y-5">
-    <!-- Saldo -->
-    <section class="rounded-3xl p-6 text-white shadow-lg" style="background:#4c1d95">
-      <p class="text-[11px] font-bold uppercase tracking-[0.2em] text-white/70">Seu saldo</p>
-      <h1 id="revSaldo" class="mt-2 text-4xl font-extrabold">R$ --</h1>
-      <p id="revVencimento" class="mt-2 text-sm text-white/85">Vencimento: --</p>
+  <main class="tdt-panelmain">
+
+    <!-- SALDO: e dele que sai o custo de cada estabelecimento criado, entao
+         fica no heroi, junto do botao que gasta esse saldo. -->
+    <section class="tdt-hero">
+      <div class="tdt-hero__label">Seu saldo</div>
+      <h1 class="tdt-hero__title" id="revSaldo">R$ --</h1>
+      <p class="tdt-hero__text" id="revVencimento">Carregando…</p>
+      <div class="tdt-hero__actions" style="grid-template-columns:minmax(0,1fr)">
+        <button id="btnRevNovaEmpresa" type="button" class="tdt-btn tdt-btn--light">
+          <span class="material-symbols-outlined">add_business</span> Cadastrar estabelecimento
+        </button>
+      </div>
     </section>
 
-    <div class="flex items-center justify-between gap-3">
-      <h2 class="text-xl font-extrabold text-[#111B3F]">Meus estabelecimentos</h2>
-      <button id="btnRevNovaEmpresa" type="button" class="ui-btn ui-btn--primary ui-btn--sm">
-        <span class="material-symbols-outlined text-base">add_business</span>Cadastrar
-      </button>
-    </div>
+    <section class="tdt-kgrid">
+      <div class="tdt-k">
+        <div class="tdt-k__l"><span class="material-symbols-outlined">storefront</span> Estabelecimentos</div>
+        <div class="tdt-k__v" id="revTotalEmpresas">--</div>
+      </div>
+      <div class="tdt-k">
+        <div class="tdt-k__l"><span class="material-symbols-outlined">check_circle</span> Ativos</div>
+        <div class="tdt-k__v" id="revTotalAtivos">--</div>
+      </div>
+    </section>
 
-    <div id="revEmpresasList" class="space-y-3"></div>
-    <div id="revEmpresasSkeleton" class="space-y-3">
-      <div class="tdt-skeleton-card"><div class="tdt-skeleton h-4 w-1/2"></div><div class="tdt-skeleton h-3 w-1/3 mt-2"></div></div>
-      <div class="tdt-skeleton-card"><div class="tdt-skeleton h-4 w-1/2"></div><div class="tdt-skeleton h-3 w-1/3 mt-2"></div></div>
-    </div>
-    <div id="revEmpresasEmpty" class="ui-empty hidden">
-      <span class="ui-empty__icon"><span class="material-symbols-outlined">storefront</span></span>
-      <p class="ui-empty__title">Nenhum estabelecimento ainda</p>
-      <p class="ui-empty__desc">Use o botão "Cadastrar" para criar o primeiro. O valor do plano é descontado do seu saldo.</p>
-    </div>
+    <section>
+      <div class="tdt-section__head">
+        <h2 class="tdt-section__title">Meus estabelecimentos</h2>
+      </div>
+
+      <div id="revEmpresasSkeleton" class="tdt-list">
+        <div class="tdt-skel-row">
+          <div style="flex:1">
+            <div class="tdt-skel-box" style="width:55%;height:14px"></div>
+            <div class="tdt-skel-box" style="width:35%;height:11px;margin-top:8px"></div>
+          </div>
+        </div>
+        <div class="tdt-skel-row">
+          <div style="flex:1">
+            <div class="tdt-skel-box" style="width:45%;height:14px"></div>
+            <div class="tdt-skel-box" style="width:40%;height:11px;margin-top:8px"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="revEmpresasEmpty" class="tdt-empty hidden">
+        <div class="tdt-empty__icon"><span class="material-symbols-outlined">storefront</span></div>
+        <p style="margin:0">Nenhum estabelecimento ainda.<br>
+          Toque em <b>Cadastrar</b> para criar o primeiro — o valor do plano sai do seu saldo.</p>
+      </div>
+
+      <div id="revEmpresasList" class="tdt-list"></div>
+    </section>
   </main>
 
-  <script src="/dist/stitch-app.min.js?v=20260721-app55"></script>
+  <script src="/dist/stitch-app.min.js?v=20260721-app56"></script>
 </body>
 </html>
