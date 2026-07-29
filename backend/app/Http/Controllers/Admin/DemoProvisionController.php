@@ -99,7 +99,7 @@ class DemoProvisionController extends Controller
 
     private function isEnabled(): bool
     {
-        $value = env('DEMO_PROVISION_ENDPOINT', true);
+        $value = config('demo.endpoint_provisionamento');
 
         if (is_bool($value)) {
             return $value;

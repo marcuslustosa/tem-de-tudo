@@ -24,29 +24,32 @@ class EnsureDemoAccess extends Command
 
         $syncPasswords = (bool) $this->option('sync-passwords');
 
+        // Mesma fonte do seeder: config/demo.php. Ler env() aqui deixava os dois
+        // caminhos livres para divergir, e um `config:cache` no deploy faria
+        // este comando cair silenciosamente nos defaults locais.
         $admin = $this->upsertUser(
-            email: (string) env('DEMO_ADMIN_EMAIL', 'admin@demo.local'),
-            name: (string) env('DEMO_ADMIN_NAME', 'Admin Demo i9Plus'),
+            email: (string) config('demo.admin_email'),
+            name: (string) config('demo.admin_nome'),
             perfil: 'admin',
-            password: (string) env('DEMO_ADMIN_PASSWORD', 'password'),
+            password: (string) config('demo.admin_senha'),
             telefone: '(11) 99999-1001',
             syncPassword: $syncPasswords
         );
 
         $empresaUser = $this->upsertUser(
-            email: (string) env('DEMO_EMPRESA_EMAIL', 'malagueta@demo.local'),
-            name: (string) env('DEMO_EMPRESA_NAME', 'Camila Malagueta'),
+            email: (string) config('demo.empresa_email'),
+            name: (string) config('demo.empresa_nome'),
             perfil: 'empresa',
-            password: (string) env('DEMO_EMPRESA_PASSWORD', 'password'),
+            password: (string) config('demo.empresa_senha'),
             telefone: '(11) 99999-1002',
             syncPassword: $syncPasswords
         );
 
         $cliente = $this->upsertUser(
-            email: (string) env('DEMO_CLIENTE_EMAIL', 'joao@demo.local'),
-            name: (string) env('DEMO_CLIENTE_NAME', 'Joao Cliente Demo'),
+            email: (string) config('demo.cliente_email'),
+            name: (string) config('demo.cliente_nome'),
             perfil: 'cliente',
-            password: (string) env('DEMO_CLIENTE_PASSWORD', 'password'),
+            password: (string) config('demo.cliente_senha'),
             telefone: '(11) 99999-1003',
             syncPassword: $syncPasswords
         );
@@ -73,7 +76,7 @@ class EnsureDemoAccess extends Command
 
     private function isDemoAccessEnabled(): bool
     {
-        $value = env('DEMO_ACCESS_ENABLED', true);
+        $value = config('demo.acesso_habilitado');
         if (is_bool($value)) {
             return $value;
         }
@@ -185,7 +188,7 @@ class EnsureDemoAccess extends Command
         }
 
         $defaults = [
-            'nome' => (string) env('DEMO_EMPRESA_RAZAO', 'Malagueta Galpao'),
+            'nome' => (string) config('demo.empresa_razao'),
             'ramo' => 'restaurante',
             'categoria' => 'Restaurante',
             'descricao' => 'Galpao gastronomico com almoco executivo, happy hour e fidelizacao por QR Code.',
@@ -194,7 +197,7 @@ class EnsureDemoAccess extends Command
             'whatsapp' => '(11) 98888-2101',
             'instagram' => '@malaguetagalpao',
             'facebook' => 'malaguetagalpao',
-            'cnpj' => (string) env('DEMO_EMPRESA_CNPJ', '11.111.111/0001-11'),
+            'cnpj' => (string) config('demo.empresa_cnpj'),
             'ativo' => $this->dbBooleanValue('empresas', 'ativo', true),
             'status' => Empresa::STATUS_ACTIVE,
             'points_multiplier' => 1.0,
