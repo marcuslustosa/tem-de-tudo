@@ -4281,7 +4281,10 @@
         const reviewSubmitEl = document.getElementById('partnerReviewSubmit');
         const reviewShowQrEl = document.getElementById('partnerReviewShowQr');
         const reviewHintEl = document.getElementById('partnerMyReviewHint');
-        const reviewStars = Array.from(document.querySelectorAll('.partner-review-star'));
+        // Selecao por data-rating, nao por classe: a classe mudou na migracao
+        // visual e o seletor antigo passou a devolver zero estrelas — a nota
+        // nunca era registrada e todo envio caia em 'escolha uma nota de 1 a 5'.
+        const reviewStars = Array.from(document.querySelectorAll('#partnerReviewStars [data-rating]'));
         let selectedReviewRating = 0;
         let myReview = null;
 
@@ -4289,12 +4292,10 @@
           selectedReviewRating = Number(rating || 0);
           reviewStars.forEach((button) => {
             const buttonRating = Number(button.dataset.rating || 0);
-            const isActive = buttonRating <= selectedReviewRating;
-            button.className = `partner-review-star inline-flex h-11 w-11 items-center justify-center rounded-full text-lg font-extrabold shadow-sm transition-all ${
-              isActive
-                ? 'bg-[#111B3F] text-white'
-                : 'bg-white text-slate-400'
-            }`;
+            // Alterna uma classe em vez de reescrever o className inteiro com
+            // utilitarios do tema antigo, que nao existem mais no CSS.
+            button.classList.toggle('is-active', buttonRating <= selectedReviewRating);
+            button.setAttribute('aria-pressed', String(buttonRating === selectedReviewRating));
           });
         };
 
